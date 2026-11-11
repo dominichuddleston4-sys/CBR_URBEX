@@ -1,7 +1,7 @@
 {
-  "name": "CBR Urbex",
-  "short_name": "CBR Urbex",
-  "description": "Canberra urbex research leads and field notes",
+  "name": "Canberra Explorer",
+  "short_name": "Canberra Explorer",
+  "description": "Canberra urbex research leads, local history and field notes",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
