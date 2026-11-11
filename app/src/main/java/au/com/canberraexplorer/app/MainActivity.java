@@ -3,12 +3,19 @@ package au.com.canberraexplorer.app;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageInfo;
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.webkit.WebResourceRequest;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
+import android.webkit.WebResourceRequest;
 import android.webkit.GeolocationPermissions;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -16,6 +23,7 @@ import android.webkit.WebViewClient;
 import android.webkit.WebSettings;
 import android.view.View;
 import android.graphics.Color;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 import java.io.BufferedReader;
@@ -25,24 +33,30 @@ import java.net.URL;
 
 public class MainActivity extends Activity {
     private static final int LOCATION_REQUEST = 42;
+    private static final int INSTALL_PERMISSION_REQUEST = 43;
     private static final String UPDATE_INFO_URL = "https://dominichuddleston4-sys.github.io/CBR_URBEX/version.json";
+    private static final String PREFS = "canberra_explorer_updates";
+    private static final String PENDING_DOWNLOAD = "pending_download_id";
     private WebView webView;
     private GeolocationPermissions.Callback geoCallback;
     private String geoOrigin;
     private AlertDialog updateDialog;
     private volatile boolean updateCheckRunning = false;
+    private DownloadManager downloadManager;
+    private BroadcastReceiver downloadReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setStatusBarColor(Color.rgb(10, 24, 17));
         getWindow().setNavigationBarColor(Color.BLACK);
+        downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+        registerDownloadReceiver();
 
         webView = new WebView(this);
         webView.setBackgroundColor(Color.rgb(10, 24, 17));
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
-        // Keep target=_blank Google Maps links inside this WebView so the URL handler can open Maps externally.
         settings.setSupportMultipleWindows(false);
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
@@ -55,27 +69,17 @@ public class MainActivity extends Activity {
             private boolean openGoogleMaps(String url) {
                 Uri uri = Uri.parse(url);
                 String host = uri.getHost();
-                if (host == null || !(host.equals("www.google.com") || host.equals("google.com") || host.equals("maps.google.com") || host.equals("maps.app.goo.gl"))) {
-                    return false;
-                }
+                if (host == null || !(host.equals("www.google.com") || host.equals("google.com") || host.equals("maps.google.com") || host.equals("maps.app.goo.gl"))) return false;
                 if (!uri.getPath().startsWith("/maps") && !host.equals("maps.app.goo.gl")) return false;
                 try {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                    startActivity(intent);
-                } catch (Exception e) {
-                    try {
-                        Intent browser = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(browser);
-                    } catch (Exception ignored) { }
-                }
+                    startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                } catch (Exception ignored) { }
                 return true;
             }
-
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 return openGoogleMaps(request.getUrl().toString());
             }
-
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 return openGoogleMaps(url);
@@ -90,26 +94,47 @@ public class MainActivity extends Activity {
                 } else {
                     geoOrigin = origin;
                     geoCallback = callback;
-                    requestPermissions(new String[] {
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    }, LOCATION_REQUEST);
+                    requestPermissions(new String[] { Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION }, LOCATION_REQUEST);
                 }
             }
         });
         setContentView(webView);
+        if (savedInstanceState == null) webView.loadUrl("https://dominichuddleston4-sys.github.io/CBR_URBEX/");
+        else webView.restoreState(savedInstanceState);
+    }
 
-        if (savedInstanceState == null) {
-            webView.loadUrl("https://dominichuddleston4-sys.github.io/CBR_URBEX/");
-        } else {
-            webView.restoreState(savedInstanceState);
-        }
+    private void registerDownloadReceiver() {
+        downloadReceiver = new BroadcastReceiver() {
+            @Override public void onReceive(Context context, Intent intent) {
+                long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+                long pending = getPreferences(MODE_PRIVATE).getLong(PENDING_DOWNLOAD, -2);
+                if (id != pending) return;
+                getPreferences(MODE_PRIVATE).edit().remove(PENDING_DOWNLOAD).apply();
+                installDownloadedApk(id);
+            }
+        };
+        IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+        if (Build.VERSION.SDK_INT >= 33) registerReceiver(downloadReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+        else registerReceiver(downloadReceiver, filter);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         checkForApkUpdate();
+        long pending = getPreferences(MODE_PRIVATE).getLong(PENDING_DOWNLOAD, -1);
+        if (pending >= 0) {
+            DownloadManager.Query query = new DownloadManager.Query().setFilterById(pending);
+            try (android.database.Cursor cursor = downloadManager.query(query)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    int status = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS));
+                    if (status == DownloadManager.STATUS_SUCCESSFUL) {
+                        getPreferences(MODE_PRIVATE).edit().remove(PENDING_DOWNLOAD).apply();
+                        installDownloadedApk(pending);
+                    }
+                }
+            } catch (Exception ignored) { }
+        }
     }
 
     private void checkForApkUpdate() {
@@ -128,15 +153,13 @@ public class MainActivity extends Activity {
                 String line;
                 while ((line = reader.readLine()) != null) body.append(line);
                 reader.close();
-
                 JSONObject info = new JSONObject(body.toString());
                 long latestCode = info.optLong("versionCode", 0);
                 String latestName = info.optString("versionName", "new version");
                 String apkUrl = info.optString("apkUrl", "");
                 PackageInfo installed = getPackageManager().getPackageInfo(getPackageName(), 0);
-                long installedCode = android.os.Build.VERSION.SDK_INT >= 28 ? installed.getLongVersionCode() : installed.versionCode;
+                long installedCode = Build.VERSION.SDK_INT >= 28 ? installed.getLongVersionCode() : installed.versionCode;
                 runOnUiThread(() -> {
-                    // Once Android reports the installed version as current, remove any stale update prompt.
                     if (latestCode <= installedCode) {
                         if (updateDialog != null && updateDialog.isShowing()) updateDialog.dismiss();
                         updateDialog = null;
@@ -146,18 +169,14 @@ public class MainActivity extends Activity {
                     if (updateDialog != null && updateDialog.isShowing()) return;
                     updateDialog = new AlertDialog.Builder(MainActivity.this)
                         .setTitle("Canberra Explorer update")
-                        .setMessage("Version " + latestName + " is available. Download and install it to update the app.")
-                        .setPositiveButton("Download update", (dialog, which) -> {
-                            try {
-                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(apkUrl)));
-                            } catch (Exception ignored) { }
-                        })
+                        .setMessage("Version " + latestName + " is available. Download it now? The app will ask Android to install it when the download finishes.")
+                        .setPositiveButton("Update now", (dialog, which) -> downloadUpdate(apkUrl, latestName))
                         .setNegativeButton("Later", null)
                         .create();
                     updateDialog.show();
                 });
             } catch (Exception ignored) {
-                // Keep the app usable when the update service is unavailable.
+                // Keep the app usable if the update service is unavailable.
             } finally {
                 if (connection != null) connection.disconnect();
                 updateCheckRunning = false;
@@ -165,17 +184,71 @@ public class MainActivity extends Activity {
         }).start();
     }
 
+    private void downloadUpdate(String apkUrl, String versionName) {
+        try {
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(apkUrl));
+            request.setTitle("Canberra Explorer " + versionName);
+            request.setDescription("Downloading app update");
+            request.setMimeType("application/vnd.android.package-archive");
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "Canberra-Explorer-update.apk");
+            long id = downloadManager.enqueue(request);
+            getPreferences(MODE_PRIVATE).edit().putLong(PENDING_DOWNLOAD, id).apply();
+            Toast.makeText(this, "Update downloading. Android will ask you to install it when ready.", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Toast.makeText(this, "Could not start the update download.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void installDownloadedApk(long downloadId) {
+        if (Build.VERSION.SDK_INT >= 26 && !getPackageManager().canRequestPackageInstalls()) {
+            Intent permission = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:" + getPackageName()));
+            startActivityForResult(permission, INSTALL_PERMISSION_REQUEST);
+            getPreferences(MODE_PRIVATE).edit().putLong(PENDING_DOWNLOAD, downloadId).apply();
+            return;
+        }
+        Uri apkUri = downloadManager.getUriForDownloadedFile(downloadId);
+        if (apkUri == null) {
+            Toast.makeText(this, "The update download could not be opened. Please try again.", Toast.LENGTH_LONG).show();
+            return;
+        }
+        Intent install = new Intent(Intent.ACTION_VIEW);
+        install.setDataAndType(apkUri, "application/vnd.android.package-archive");
+        install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+        try {
+            startActivity(install);
+        } catch (Exception e) {
+            Toast.makeText(this, "Android could not open the installer.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == INSTALL_PERMISSION_REQUEST && Build.VERSION.SDK_INT >= 26 && getPackageManager().canRequestPackageInstalls()) {
+            long pending = getPreferences(MODE_PRIVATE).getLong(PENDING_DOWNLOAD, -1);
+            if (pending >= 0) {
+                getPreferences(MODE_PRIVATE).edit().remove(PENDING_DOWNLOAD).apply();
+                installDownloadedApk(pending);
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (downloadReceiver != null) {
+            try { unregisterReceiver(downloadReceiver); } catch (Exception ignored) { }
+        }
+        if (webView != null) webView.destroy();
+        super.onDestroy();
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_REQUEST && geoCallback != null) {
             boolean granted = false;
-            for (int result : grantResults) {
-                if (result == PackageManager.PERMISSION_GRANTED) {
-                    granted = true;
-                    break;
-                }
-            }
+            for (int result : grantResults) if (result == PackageManager.PERMISSION_GRANTED) { granted = true; break; }
             geoCallback.invoke(geoOrigin, granted, false);
             geoCallback = null;
             geoOrigin = null;
@@ -190,10 +263,7 @@ public class MainActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        if (webView != null && webView.canGoBack()) {
-            webView.goBack();
-        } else {
-            super.onBackPressed();
-        }
+        if (webView != null && webView.canGoBack()) webView.goBack();
+        else super.onBackPressed();
     }
 }
