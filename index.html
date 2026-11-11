@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#101510"><title>CBR Urbex — Canberra Explorer</title>
+<meta name="theme-color" content="#101510"><title>Canberra Explorer</title>
 <style>
 :root{color-scheme:dark;--bg:#0b100d;--panel:#151d18;--line:#29372e;--green:#9cff57;--muted:#a7b5aa;--white:#f4f8f3}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--white);font:15px system-ui,-apple-system,Segoe UI,sans-serif}
@@ -22,9 +22,9 @@ footer{padding:22px 16px;text-align:center;color:#78877b;font-size:11px}
 #mapShell{position:relative;margin:10px 0 16px;border:1px solid var(--line);border-radius:15px;overflow:hidden;background:#e8e6df}#map{height:430px;width:100%;background:#e8e6df}.mapbar{position:absolute;z-index:800;top:12px;left:12px;right:12px;display:flex;gap:7px;flex-wrap:wrap;pointer-events:none}.mapbar button{pointer-events:auto;background:#fff;color:#202124;border:1px solid #dadce0;border-radius:22px;padding:9px 13px;box-shadow:0 2px 7px #0003;font-size:12px;font-weight:700}.mapbar button:active{background:#e8f0fe}.mapnote{font-size:11px;color:var(--muted);margin:-7px 0 14px}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fff;color:#202124;border-radius:10px}.leaflet-popup-content a{color:#1967d2;font-weight:700}.leaflet-container{font:13px Roboto,Arial,sans-serif}.leaflet-control-zoom a{color:#202124!important}.leaflet-control-attribution{font-size:10px!important}#mapShell.fullscreen{position:fixed;inset:0;z-index:9999;margin:0;border:0;border-radius:0}#mapShell.fullscreen #map{height:100%;height:100dvh}#mapShell.fullscreen .mapbar{top:max(12px,env(safe-area-inset-top));left:12px}#mapShell.fullscreen #closeMap{display:inline-block}#closeMap{display:none}
 </style><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#101510"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="icon" href="./icon.svg" type="image/svg+xml"></head>
 <body>
-<header><div class="brand">CBR / URBEX</div><h1>Canberra Explorer</h1><p>Abandoned places, local history &amp; field notes</p></header>
+<header><div class="brand">CANBERRA EXPLORER</div><h1>Canberra Explorer</h1><p>Abandoned places, local history &amp; field notes</p></header>
 <main>
-<div style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px"><button id="installApp" class="secondary" hidden>⬇ Install CBR Urbex</button><span style="font-size:12px;color:var(--muted);align-self:center">Android: browser menu ⋮ → Install app or Add to Home screen</span></div><div class="notice"><strong>Field safety:</strong> Entries are research leads, not permission to enter. Some sites may be private, occupied, demolished, hazardous or protected. Check current ownership, access rules and safety before visiting. Do not trespass or disturb sites.</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px"><button id="installApp" class="secondary" hidden>⬇ Install Canberra Explorer</button><span style="font-size:12px;color:var(--muted);align-self:center">Android: browser menu ⋮ → Install app or Add to Home screen</span></div><div class="notice"><strong>Field safety:</strong> Entries are research leads, not permission to enter. Some sites may be private, occupied, demolished, hazardous or protected. Check current ownership, access rules and safety before visiting. Do not trespass or disturb sites.</div>
 <h2 style="font-size:18px;margin:18px 0 8px">Canberra map</h2><div id="mapShell"><div class="mapbar"><button onclick="locateMe()">◎ My location</button><button onclick="fitAllPins()">Show all pins</button><button onclick="toggleMapFullscreen()">⛶ Full screen</button><button id="closeMap" onclick="toggleMapFullscreen()">✕ Close</button></div><div id="map" aria-label="Interactive road map of Canberra with place pins"></div></div><p class="mapnote">Google Maps-style road map with roads, suburb labels, zoom, drag and pinch controls. Map imagery needs internet. Tap a pin for details; use My location to centre the map on your phone (permission required). Imported locations are unverified and do not imply permission to enter.</p>
 <p id="updateStatus" class="mapnote" aria-live="polite">Checking for the latest map updates…</p>
 <div class="searchrow"><input id="search" placeholder="Search places or notes…" aria-label="Search places"><button onclick="toggleAdd()">＋ Add</button></div>
@@ -38,7 +38,7 @@ footer{padding:22px 16px;text-align:center;color:#78877b;font-size:11px}
 <div class="tabs"><button class="active" data-tab="all" onclick="setTab('all',this)">All leads</button><button data-tab="saved" onclick="setTab('saved',this)">★ Saved</button><button data-tab="mine" onclick="setTab('mine',this)">My additions</button></div>
 <div id="count" style="font-size:12px;color:var(--muted);margin:0 0 10px"></div>
 <div id="places" class="grid"></div>
-</main><footer>CBR URBEX · Offline-friendly starter app · Your saved items stay in this browser on this device</footer>
+</main><footer>CANBERRA EXPLORER · Offline-friendly app · Your saved items stay in this browser on this device</footer>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js'"></script>
 <script>
 const seed=[
