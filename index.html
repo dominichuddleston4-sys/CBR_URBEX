@@ -1,1 +1,61 @@
-
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101510"><title>CBR Urbex — Canberra Explorer</title>
+<style>
+:root{color-scheme:dark;--bg:#0b100d;--panel:#151d18;--line:#29372e;--green:#9cff57;--muted:#a7b5aa;--white:#f4f8f3}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--white);font:15px system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:22px 18px 16px;background:linear-gradient(135deg,#17241a,#0b100d);border-bottom:1px solid var(--line)}
+.brand{color:var(--green);font-weight:900;letter-spacing:2px;font-size:12px}h1{margin:5px 0;font-size:27px}header p{margin:0;color:var(--muted);font-size:13px}
+main{max-width:850px;margin:auto;padding:16px}.notice{background:#1b241d;border:1px solid #3c503e;border-radius:12px;padding:12px;color:#d7e5d8;font-size:12px;line-height:1.5;margin-bottom:14px}
+.searchrow{display:flex;gap:8px;margin-bottom:12px}input,textarea,select{width:100%;background:#0e1510;color:var(--white);border:1px solid var(--line);border-radius:10px;padding:12px;font:inherit;min-width:0}
+button,.btn{border:0;border-radius:10px;padding:11px 14px;background:var(--green);color:#10170e;font-weight:800;font:inherit;cursor:pointer;text-decoration:none;display:inline-block}
+button.secondary,.btn.secondary{background:#26342a;color:var(--white);border:1px solid var(--line)}
+.tabs{display:flex;gap:7px;overflow:auto;margin:10px 0 14px}.tabs button{white-space:nowrap}.tabs button.active{background:var(--green);color:#10170e}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}.place{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:14px}
+.place h3{margin:0 0 6px;font-size:16px}.tag{font-size:10px;letter-spacing:.7px;color:var(--green);font-weight:800;text-transform:uppercase}.place p{color:var(--muted);font-size:12px;line-height:1.5;margin:8px 0 12px}
+.actions{display:flex;gap:7px;flex-wrap:wrap}.actions button,.actions a{font-size:12px;padding:8px 10px}
+#addPanel{display:none;background:var(--panel);border:1px solid var(--line);padding:14px;border-radius:13px;margin:12px 0}#addPanel label{display:block;color:var(--muted);font-size:12px;margin:10px 0 5px}
+footer{padding:22px 16px;text-align:center;color:#78877b;font-size:11px}
+.empty{color:var(--muted);padding:25px;text-align:center;border:1px dashed var(--line);border-radius:12px}
+</style></head>
+<body>
+<header><div class="brand">CBR / URBEX</div><h1>Canberra Explorer</h1><p>Abandoned places, local history &amp; field notes</p></header>
+<main>
+<div class="notice"><strong>Field safety:</strong> Entries are research leads, not permission to enter. Some sites may be private, occupied, demolished, hazardous or protected. Check current ownership, access rules and safety before visiting. Do not trespass or disturb sites.</div>
+<div class="searchrow"><input id="search" placeholder="Search places or notes…" aria-label="Search places"><button onclick="toggleAdd()">＋ Add</button></div>
+<div id="addPanel">
+<h3 style="margin:0">Add a place / research lead</h3>
+<label>Place name</label><input id="newName" placeholder="Name">
+<label>Area or suburb</label><input id="newArea" placeholder="Area">
+<label>Notes (include source and verification status)</label><textarea id="newNotes" rows="3" placeholder="What did you find? Add source URL if available."></textarea>
+<div class="actions" style="margin-top:10px"><button onclick="addPlace()">Save on this device</button><button class="secondary" onclick="toggleAdd()">Cancel</button></div>
+</div>
+<div class="tabs"><button class="active" data-tab="all" onclick="setTab('all',this)">All leads</button><button data-tab="saved" onclick="setTab('saved',this)">★ Saved</button><button data-tab="mine" onclick="setTab('mine',this)">My additions</button></div>
+<div id="count" style="font-size:12px;color:var(--muted);margin:0 0 10px"></div>
+<div id="places" class="grid"></div>
+</main><footer>CBR URBEX · Offline-friendly starter app · Your saved items stay in this browser on this device</footer>
+<script>
+const seed=[
+{name:"Kinlyside",area:"Canberra region",notes:"Previously listed research lead. Exact site and current status need independent verification.",status:"Unverified lead"},
+{name:"Tooth Street",area:"Canberra region",notes:"Previously listed research lead. Confirm the exact property and current access status from reliable sources.",status:"Unverified lead"},
+{name:"SAE Automotive",area:"Canberra region",notes:"Previously listed research lead. Name and site details require verification.",status:"Unverified lead"},
+{name:"Climb High Tree Services",area:"Canberra region",notes:"Previously listed research lead. Confirm whether this refers to an abandoned site and check ownership.",status:"Unverified lead"},
+{name:"Woolshed Creek",area:"Canberra region",notes:"Previously listed location lead. Verify the specific feature and whether public access is permitted.",status:"Unverified lead"},
+{name:"Dunlop Farm",area:"Dunlop / north-west Canberra",notes:"Previously listed research lead. Check heritage records, land ownership and current site status.",status:"Unverified lead"},
+{name:"Carers ACT",area:"Canberra region",notes:"Previously listed research lead. Exact location and relevance need verification.",status:"Unverified lead"},
+{name:"Naval Transmitting Station",area:"Canberra region",notes:"Historic-site research lead. Check heritage information and access restrictions before planning a visit.",status:"Research lead"},
+{name:"Hawker Courts",area:"Hawker",notes:"Previously listed research lead. Confirm the exact place and current condition.",status:"Unverified lead"},
+{name:"Big Splash",area:"Canberra region",notes:"Former leisure-site research lead. Verify current ownership, redevelopment and access status.",status:"Research lead"}
+];
+let custom=JSON.parse(localStorage.getItem("cbr_custom")||"[]"),saved=JSON.parse(localStorage.getItem("cbr_saved")||"[]"),tab="all";
+const all=()=>[...seed,...custom];
+function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function render(){let q=document.getElementById("search").value.toLowerCase();let items=all().filter(p=>(tab==="all"||(tab==="saved"&&saved.includes(p.name))||(tab==="mine"&&p.custom))&&[p.name,p.area,p.notes,p.status].join(" ").toLowerCase().includes(q));document.getElementById("count").textContent=items.length+" research leads";document.getElementById("places").innerHTML=items.length?items.map(p=>'<article class="place"><div class="tag">'+esc(p.status||"Personal note")+'</div><h3>'+esc(p.name)+'</h3><div style="font-size:12px;color:#c2d0c4">'+esc(p.area)+'</div><p>'+esc(p.notes)+'</p><div class="actions"><button class="secondary" onclick="toggleSaved('+JSON.stringify(p.name).replace(/"/g,'&quot;')+')">'+(saved.includes(p.name)?"★ Saved":"☆ Save")+'</button><a class="btn secondary" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(p.name+" "+p.area+" Canberra ACT")+'">Search map ↗</a></div></article>').join(""):'<div class="empty">No matching places. Try another search or add a research lead.</div>'}
+function setTab(t,b){tab=t;document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");render()}
+function toggleSaved(n){saved=saved.includes(n)?saved.filter(x=>x!==n):[...saved,n];localStorage.setItem("cbr_saved",JSON.stringify(saved));render()}
+function toggleAdd(){let p=document.getElementById("addPanel");p.style.display=p.style.display==="block"?"none":"block"}
+function addPlace(){let name=document.getElementById("newName").value.trim(),area=document.getElementById("newArea").value.trim(),notes=document.getElementById("newNotes").value.trim();if(!name){alert("Please enter a place name.");return}custom.push({name,area:area||"Canberra / ACT",notes:notes||"No notes added yet. Verify details and access.",status:"My addition",custom:true});localStorage.setItem("cbr_custom",JSON.stringify(custom));document.getElementById("newName").value="";document.getElementById("newArea").value="";document.getElementById("newNotes").value="";toggleAdd();tab="mine";document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("active",x.dataset.tab==="mine"));render()}
+document.getElementById("search").addEventListener("input",render);render();
+</script></body></html>
