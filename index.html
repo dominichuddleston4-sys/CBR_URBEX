@@ -160,7 +160,11 @@ let userMarker=null,userAccuracy=null;
 let baseLayers={};
 function initMap(){
  const host=document.getElementById("map");host.innerHTML="";
- map=L.map(host,{zoomControl:true,preferCanvas:true,scrollWheelZoom:true}).setView([-35.28,149.13],10);
+ let lastView=null;
+ if(!appSettings.startAtCanberra){try{lastView=JSON.parse(localStorage.getItem("ce_map_view")||"null");}catch(e){}}
+ const validLast=lastView&&Number.isFinite(Number(lastView.lat))&&Number.isFinite(Number(lastView.lng))&&Number.isFinite(Number(lastView.zoom));
+ map=L.map(host,{zoomControl:true,preferCanvas:true,scrollWheelZoom:true}).setView(validLast?[Number(lastView.lat),Number(lastView.lng)]:[-35.28,149.13],validLast?Number(lastView.zoom):10);
+ map.on("moveend",()=>{const c=map.getCenter();localStorage.setItem("ce_map_view",JSON.stringify({lat:c.lat,lng:c.lng,zoom:map.getZoom()}));});
  baseLayers={
   street:L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}),
   voyager:L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{maxZoom:20,attribution:'&copy; OpenStreetMap contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'}),
@@ -210,6 +214,7 @@ function saveSettings(){
  appSettings.showPins=document.getElementById("showPins").checked;
  appSettings.startAtCanberra=document.getElementById("startAtCanberra").checked;
  localStorage.setItem("ce_settings",JSON.stringify(appSettings));
+ if(appSettings.startAtCanberra&&map)map.setView([-35.28,149.13],10);
  setMapStyle(appSettings.mapStyle);renderMap();
 }
 function exportMyData(){
