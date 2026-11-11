@@ -19,11 +19,11 @@ button.secondary,.btn.secondary{background:#26342a;color:var(--white);border:1px
 #addPanel{display:none;background:var(--panel);border:1px solid var(--line);padding:14px;border-radius:13px;margin:12px 0}#addPanel label{display:block;color:var(--muted);font-size:12px;margin:10px 0 5px}
 footer{padding:22px 16px;text-align:center;color:#78877b;font-size:11px}
 .empty{color:var(--muted);padding:25px;text-align:center;border:1px dashed var(--line);border-radius:12px}
-</style></head>
+</style><link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#101510"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="icon" href="./icon.svg" type="image/svg+xml"></head>
 <body>
 <header><div class="brand">CBR / URBEX</div><h1>Canberra Explorer</h1><p>Abandoned places, local history &amp; field notes</p></header>
 <main>
-<div class="notice"><strong>Field safety:</strong> Entries are research leads, not permission to enter. Some sites may be private, occupied, demolished, hazardous or protected. Check current ownership, access rules and safety before visiting. Do not trespass or disturb sites.</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px"><button id="installApp" class="secondary" hidden>⬇ Install CBR Urbex</button><span style="font-size:12px;color:var(--muted);align-self:center">Android: browser menu ⋮ → Install app or Add to Home screen</span></div><div class="notice"><strong>Field safety:</strong> Entries are research leads, not permission to enter. Some sites may be private, occupied, demolished, hazardous or protected. Check current ownership, access rules and safety before visiting. Do not trespass or disturb sites.</div>
 <div class="searchrow"><input id="search" placeholder="Search places or notes…" aria-label="Search places"><button onclick="toggleAdd()">＋ Add</button></div>
 <div id="addPanel">
 <h3 style="margin:0">Add a place / research lead</h3>
@@ -57,5 +57,5 @@ function setTab(t,b){tab=t;document.querySelectorAll(".tabs button").forEach(x=>
 function toggleSaved(n){saved=saved.includes(n)?saved.filter(x=>x!==n):[...saved,n];localStorage.setItem("cbr_saved",JSON.stringify(saved));render()}
 function toggleAdd(){let p=document.getElementById("addPanel");p.style.display=p.style.display==="block"?"none":"block"}
 function addPlace(){let name=document.getElementById("newName").value.trim(),area=document.getElementById("newArea").value.trim(),notes=document.getElementById("newNotes").value.trim();if(!name){alert("Please enter a place name.");return}custom.push({name,area:area||"Canberra / ACT",notes:notes||"No notes added yet. Verify details and access.",status:"My addition",custom:true});localStorage.setItem("cbr_custom",JSON.stringify(custom));document.getElementById("newName").value="";document.getElementById("newArea").value="";document.getElementById("newNotes").value="";toggleAdd();tab="mine";document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("active",x.dataset.tab==="mine"));render()}
-document.getElementById("search").addEventListener("input",render);render();
+document.getElementById("search").addEventListener("input",render);render();let installPrompt=null;const installButton=document.getElementById("installApp");window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();installPrompt=e;installButton.hidden=false;});installButton.addEventListener("click",async()=>{if(!installPrompt)return;installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;installButton.hidden=true;});if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}
 </script></body></html>
