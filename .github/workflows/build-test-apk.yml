@@ -1,8 +1,9 @@
-name: Build Canberra Explorer test APK
+name: Build and publish Canberra Explorer APK
 
 on:
   workflow_dispatch:
   push:
+    branches: [main]
     paths:
       - 'app/**'
       - 'build.gradle'
@@ -15,10 +16,10 @@ on:
       - '.github/workflows/build-test-apk.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  build:
+  build-and-publish:
     runs-on: ubuntu-latest
     steps:
       - name: Check out source
@@ -35,13 +36,72 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Build debug APK
-        run: gradle --no-daemon assembleDebug
+      - name: Prepare permanent signing key
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "::error::Missing ANDROID_KEYSTORE_BASE64 repository secret."
+            exit 1
+          fi
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/canberra-explorer-release.jks"
+          test -s "$RUNNER_TEMP/canberra-explorer-release.jks"
+          echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/canberra-explorer-release.jks" >> "$GITHUB_ENV"
 
-      - name: Upload test APK
-        uses: actions/upload-artifact@v4
+      - name: Build signed release APK
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          APP_VERSION_CODE: ${{ github.run_number }}
+          APP_VERSION_NAME: 1.${{ github.run_number }}
+        run: |
+          gradle --no-daemon assembleRelease
+          mkdir -p release
+          cp app/build/outputs/apk/release/app-release.apk release/app-release.apk
+          echo "VERSION_CODE=$APP_VERSION_CODE" >> "$GITHUB_ENV"
+          echo "VERSION_NAME=$APP_VERSION_NAME" >> "$GITHUB_ENV"
+
+      - name: Publish APK as the latest GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: Canberra-Explorer-test-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
-          retention-days: 14
+          tag_name: v${{ env.VERSION_NAME }}
+          name: Canberra Explorer ${{ env.VERSION_NAME }}
+          target_commitish: ${{ github.sha }}
+          files: release/app-release.apk
+          fail_on_unmatched_files: true
+          make_latest: true
+
+      - name: Publish update information to GitHub Pages
+        uses: actions/github-script@v7
+        env:
+          VERSION_CODE: ${{ env.VERSION_CODE }}
+          VERSION_NAME: ${{ env.VERSION_NAME }}
+        with:
+          script: |
+            const path = 'version.json';
+            const content = JSON.stringify({
+              versionCode: Number(process.env.VERSION_CODE),
+              versionName: process.env.VERSION_NAME,
+              apkUrl: 'https://github.com/dominichuddleston4-sys/CBR_URBEX/releases/latest/download/app-release.apk'
+            }, null, 2) + '\\n';
+            let sha;
+            try {
+              const current = await github.rest.repos.getContent({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                path
+              });
+              sha = current.data.sha;
+            } catch (error) {
+              if (error.status !== 404) throw error;
+            }
+            await github.rest.repos.createOrUpdateFileContents({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              path,
+              message: 'Publish Canberra Explorer APK update information',
+              content: Buffer.from(content).toString('base64'),
+              ...(sha ? { sha } : {}),
+              branch: 'main'
+            });
