@@ -10,23 +10,23 @@ android {
         applicationId 'au.com.canberraexplorer.app'
         minSdk 23
         targetSdk 35
-        versionCode providers.gradleProperty('appVersionCode').getOrElse('2').toInteger()
-        versionName providers.gradleProperty('appVersionName').getOrElse('0.2.0')
+        versionCode = (project.findProperty('appVersionCode') ?: '2').toString().toInteger()
+        versionName = (project.findProperty('appVersionName') ?: '0.2.0').toString()
     }
 
     signingConfigs {
         release {
-            storeFile file(System.getenv('ANDROID_KEYSTORE_PATH') ?: 'missing-keystore.jks')
-            storePassword System.getenv('ANDROID_KEYSTORE_PASSWORD') ?: ''
-            keyAlias System.getenv('ANDROID_KEY_ALIAS') ?: ''
-            keyPassword System.getenv('ANDROID_KEY_PASSWORD') ?: ''
+            storeFile = file(System.getenv('ANDROID_KEYSTORE_PATH') ?: 'missing-keystore.jks')
+            storePassword = System.getenv('ANDROID_KEYSTORE_PASSWORD') ?: ''
+            keyAlias = System.getenv('ANDROID_KEY_ALIAS') ?: ''
+            keyPassword = System.getenv('ANDROID_KEY_PASSWORD') ?: ''
         }
     }
 
     buildTypes {
         release {
-            signingConfig signingConfigs.release
-            minifyEnabled false
+            signingConfig = signingConfigs.release
+            minifyEnabled = false
         }
     }
 }
