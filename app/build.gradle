@@ -1,0 +1,16 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'au.com.canberraexplorer.app'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'au.com.canberraexplorer.app'
+        minSdk 23
+        targetSdk 35
+        versionCode 1
+        versionName '0.1-test'
+    }
+}
