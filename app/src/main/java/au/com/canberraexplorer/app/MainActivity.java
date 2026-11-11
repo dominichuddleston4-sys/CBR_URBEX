@@ -40,6 +40,8 @@ public class MainActivity extends Activity {
         webView.setBackgroundColor(Color.rgb(10, 24, 17));
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
+        // Keep target=_blank Google Maps links inside this WebView so the URL handler can open Maps externally.
+        settings.setSupportMultipleWindows(false);
         settings.setDomStorageEnabled(true);
         settings.setDatabaseEnabled(true);
         settings.setGeolocationEnabled(true);

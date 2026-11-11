@@ -160,6 +160,7 @@ function setMapStyle(style){
 }
 function focusPlace(name){
  const p=all().find(x=>x.name===name);if(!p)return;
+ if(!map){const q=encodeURIComponent(name+" "+(p.area||"Canberra ACT"));window.open("https://www.google.com/maps/search/?api=1&query="+q,"_blank");return;}
  const hasCoords=p.lat!==null&&p.lat!==undefined&&p.lat!==""&&p.lon!==null&&p.lon!==undefined&&p.lon!==""&&Number.isFinite(Number(p.lat))&&Number.isFinite(Number(p.lon))&&Math.abs(Number(p.lat))<=90&&Math.abs(Number(p.lon))<=180;
  if(hasCoords){if(!appSettings.showPins){appSettings.showPins=true;document.getElementById("showPins").checked=true;localStorage.setItem("ce_settings",JSON.stringify(appSettings));renderMap();}map.setView([Number(p.lat),Number(p.lon)],16);const marker=markers.find(m=>m._placeName===name);if(marker)marker.openPopup();}
  else{const q=encodeURIComponent(name+" "+(p.area||"Canberra ACT"));window.open("https://www.google.com/maps/search/?api=1&query="+q,"_blank","noopener");}
