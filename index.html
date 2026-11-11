@@ -20,6 +20,7 @@ button.secondary,.btn.secondary{background:#26342a;color:var(--white);border:1px
 footer{padding:22px 16px;text-align:center;color:#78877b;font-size:11px}
 .empty{color:var(--muted);padding:25px;text-align:center;border:1px dashed var(--line);border-radius:12px}
 #mapShell{position:relative;margin:10px 0 16px;border:1px solid var(--line);border-radius:15px;overflow:hidden;background:#e8e6df}#map{height:430px;width:100%;background:#e8e6df}.mapbar{position:absolute;z-index:800;top:12px;left:12px;right:12px;display:flex;gap:7px;flex-wrap:wrap;pointer-events:none}.mapbar button{pointer-events:auto;background:#fff;color:#202124;border:1px solid #dadce0;border-radius:22px;padding:9px 13px;box-shadow:0 2px 7px #0003;font-size:12px;font-weight:700}.mapbar button:active{background:#e8f0fe}.mapnote{font-size:11px;color:var(--muted);margin:-7px 0 14px}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fff;color:#202124;border-radius:10px}.leaflet-popup-content a{color:#1967d2;font-weight:700}.leaflet-container{font:13px Roboto,Arial,sans-serif}.leaflet-control-zoom a{color:#202124!important}.leaflet-control-attribution{font-size:10px!important}#mapShell.fullscreen{position:fixed;inset:0;z-index:9999;margin:0;border:0;border-radius:0}#mapShell.fullscreen #map{height:100%;height:100dvh}#mapShell.fullscreen .mapbar{top:max(12px,env(safe-area-inset-top));left:12px}#mapShell.fullscreen #closeMap{display:inline-block}#closeMap{display:none}#settingsPanel{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:15px;margin:12px 0 18px}#settingsPanel[hidden]{display:none}.setting-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid var(--line)}.setting-row:last-child{border-bottom:0}.setting-row label{font-size:13px;color:var(--white)}.setting-row small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.setting-row select{max-width:180px}#settingsPanel h3{margin:0 0 6px}#settingsPanel .actions{margin-top:12px}
+#updateBanner{display:none;background:#1d2b1d;border:1px solid var(--green);border-radius:12px;padding:13px;margin:12px 0;color:var(--white)}#updateBanner strong{color:var(--green)}#updateBanner p{font-size:12px;color:var(--muted);margin:5px 0 10px}#updateBanner .actions{display:flex;gap:8px;flex-wrap:wrap}
 </style><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"><link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#101510"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="icon" href="./icon.svg" type="image/svg+xml"></head>
 <body>
 <header><div class="brand">CANBERRA EXPLORER</div><h1>Canberra Explorer</h1><p>Abandoned places, local history &amp; field notes</p></header>
@@ -34,6 +35,7 @@ footer{padding:22px 16px;text-align:center;color:#78877b;font-size:11px}
 <div class="actions"><button class="secondary" onclick="fitAllPins()">Show all pins</button><button class="secondary" onclick="exportMyData()">Export my additions</button><button class="secondary" onclick="clearMyData()">Clear my saved data</button></div>
 <p class="mapnote" style="margin:10px 0 0">Your saved places and settings are stored in this browser on this device. Export your additions before clearing browser data.</p>
 </section>
+<section id="updateBanner" role="status" aria-live="polite"><strong>Update available · Canberra Explorer 1.0.1</strong><p>A new version is ready. Update now to refresh the app. Your saved places and settings stay on this device.</p><div class="actions"><button id="applyUpdate">Update now</button><button class="secondary" id="laterUpdate">Later</button></div></section>
 <p id="updateStatus" class="mapnote" aria-live="polite">Checking for the latest map updates…</p>
 <div class="searchrow"><input id="search" placeholder="Search places or notes…" aria-label="Search places"><button onclick="toggleAdd()">＋ Add</button></div>
 <div id="addPanel">
@@ -216,6 +218,18 @@ const updateStatus=document.getElementById("updateStatus");
 fetch("./places.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error("Map data unavailable");return r.json()}).then(data=>{if(!Array.isArray(data))throw new Error("Invalid map data");let added=0;data.forEach(p=>{if(p&&p.name&&!seed.some(old=>String(old.name).toLowerCase()===String(p.name).toLowerCase())){seed.push(p);added++;}});updateStatus.textContent=added?`Map updated: ${added} new research lead(s) loaded.`:"Map data is up to date.";render();renderMap();}).catch(()=>{updateStatus.textContent="Showing saved map data. Connect to the internet to check for updates.";});
 let installPrompt=null;const installButton=document.getElementById("installApp");window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();installPrompt=e;installButton.hidden=false;});installButton.addEventListener("click",async()=>{if(!installPrompt)return;installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;installButton.hidden=true;});if("serviceWorker" in navigator){
   let refreshing=false;
+  const banner=document.getElementById("updateBanner");
+  const apply=document.getElementById("applyUpdate");
+  const later=document.getElementById("laterUpdate");
+  let waitingWorker=null;
+  function showUpdate(worker){
+    waitingWorker=worker;
+    banner.style.display="block";
+  }
+  apply.addEventListener("click",()=>{
+    if(waitingWorker)waitingWorker.postMessage({type:"SKIP_WAITING"});
+  });
+  later.addEventListener("click",()=>{banner.style.display="none";});
   navigator.serviceWorker.addEventListener("controllerchange",()=>{
     if(refreshing)return;
     refreshing=true;
@@ -223,6 +237,14 @@ let installPrompt=null;const installButton=document.getElementById("installApp")
   });
   window.addEventListener("load",()=>{
     navigator.serviceWorker.register("./sw.js").then(reg=>{
+      if(reg.waiting&&navigator.serviceWorker.controller)showUpdate(reg.waiting);
+      reg.addEventListener("updatefound",()=>{
+        const installing=reg.installing;
+        if(!installing)return;
+        installing.addEventListener("statechange",()=>{
+          if(installing.state==="installed"&&navigator.serviceWorker.controller)showUpdate(reg.waiting||installing);
+        });
+      });
       reg.update().catch(()=>{});
       document.addEventListener("visibilitychange",()=>{
         if(document.visibilityState==="visible")reg.update().catch(()=>{});
