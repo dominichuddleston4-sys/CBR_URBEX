@@ -10,8 +10,8 @@ android {
         applicationId 'au.com.canberraexplorer.app'
         minSdk 23
         targetSdk 35
-        versionCode (project.findProperty('appVersionCode') ?: '2').toString().toInteger()
-        versionName (project.findProperty('appVersionName') ?: '0.2.0').toString()
+        versionCode providers.gradleProperty('appVersionCode').getOrElse('2').toInteger()
+        versionName providers.gradleProperty('appVersionName').getOrElse('0.2.0')
     }
 
     signingConfigs {
