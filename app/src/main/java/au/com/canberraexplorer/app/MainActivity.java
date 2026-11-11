@@ -3,6 +3,9 @@ package au.com.canberraexplorer.app;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.content.Intent;
+import android.net.Uri;
+import android.webkit.WebResourceRequest;
 import android.os.Bundle;
 import android.webkit.GeolocationPermissions;
 import android.webkit.WebChromeClient;
@@ -35,7 +38,36 @@ public class MainActivity extends Activity {
         settings.setUseWideViewPort(true);
         settings.setMediaPlaybackRequiresUserGesture(true);
 
-        webView.setWebViewClient(new WebViewClient());
+        webView.setWebViewClient(new WebViewClient() {
+            private boolean openGoogleMaps(String url) {
+                Uri uri = Uri.parse(url);
+                String host = uri.getHost();
+                if (host == null || !(host.equals("www.google.com") || host.equals("google.com") || host.equals("maps.google.com") || host.equals("maps.app.goo.gl"))) {
+                    return false;
+                }
+                if (!uri.getPath().startsWith("/maps") && !host.equals("maps.app.goo.gl")) return false;
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    try {
+                        Intent browser = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(browser);
+                    } catch (Exception ignored) { }
+                }
+                return true;
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                return openGoogleMaps(request.getUrl().toString());
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                return openGoogleMaps(url);
+            }
+        });
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
