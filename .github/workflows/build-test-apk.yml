@@ -84,7 +84,7 @@ jobs:
               versionCode: Number(process.env.VERSION_CODE),
               versionName: process.env.VERSION_NAME,
               apkUrl: 'https://github.com/dominichuddleston4-sys/CBR_URBEX/releases/latest/download/app-release.apk'
-            }, null, 2) + '\\n';
+            }, null, 2) + '\n';
             let sha;
             try {
               const current = await github.rest.repos.getContent({
