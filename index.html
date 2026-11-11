@@ -19,13 +19,21 @@ button.secondary,.btn.secondary{background:#26342a;color:var(--white);border:1px
 #addPanel{display:none;background:var(--panel);border:1px solid var(--line);padding:14px;border-radius:13px;margin:12px 0}#addPanel label{display:block;color:var(--muted);font-size:12px;margin:10px 0 5px}
 footer{padding:22px 16px;text-align:center;color:#78877b;font-size:11px}
 .empty{color:var(--muted);padding:25px;text-align:center;border:1px dashed var(--line);border-radius:12px}
-#mapShell{position:relative;margin:10px 0 16px;border:1px solid var(--line);border-radius:15px;overflow:hidden;background:#e8e6df}#map{height:430px;width:100%;background:#e8e6df}.mapbar{position:absolute;z-index:800;top:12px;left:12px;right:12px;display:flex;gap:7px;flex-wrap:wrap;pointer-events:none}.mapbar button{pointer-events:auto;background:#fff;color:#202124;border:1px solid #dadce0;border-radius:22px;padding:9px 13px;box-shadow:0 2px 7px #0003;font-size:12px;font-weight:700}.mapbar button:active{background:#e8f0fe}.mapnote{font-size:11px;color:var(--muted);margin:-7px 0 14px}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fff;color:#202124;border-radius:10px}.leaflet-popup-content a{color:#1967d2;font-weight:700}.leaflet-container{font:13px Roboto,Arial,sans-serif}.leaflet-control-zoom a{color:#202124!important}.leaflet-control-attribution{font-size:10px!important}#mapShell.fullscreen{position:fixed;inset:0;z-index:9999;margin:0;border:0;border-radius:0}#mapShell.fullscreen #map{height:100%;height:100dvh}#mapShell.fullscreen .mapbar{top:max(12px,env(safe-area-inset-top));left:12px}#mapShell.fullscreen #closeMap{display:inline-block}#closeMap{display:none}
-</style><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#101510"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="icon" href="./icon.svg" type="image/svg+xml"></head>
+#mapShell{position:relative;margin:10px 0 16px;border:1px solid var(--line);border-radius:15px;overflow:hidden;background:#e8e6df}#map{height:430px;width:100%;background:#e8e6df}.mapbar{position:absolute;z-index:800;top:12px;left:12px;right:12px;display:flex;gap:7px;flex-wrap:wrap;pointer-events:none}.mapbar button{pointer-events:auto;background:#fff;color:#202124;border:1px solid #dadce0;border-radius:22px;padding:9px 13px;box-shadow:0 2px 7px #0003;font-size:12px;font-weight:700}.mapbar button:active{background:#e8f0fe}.mapnote{font-size:11px;color:var(--muted);margin:-7px 0 14px}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fff;color:#202124;border-radius:10px}.leaflet-popup-content a{color:#1967d2;font-weight:700}.leaflet-container{font:13px Roboto,Arial,sans-serif}.leaflet-control-zoom a{color:#202124!important}.leaflet-control-attribution{font-size:10px!important}#mapShell.fullscreen{position:fixed;inset:0;z-index:9999;margin:0;border:0;border-radius:0}#mapShell.fullscreen #map{height:100%;height:100dvh}#mapShell.fullscreen .mapbar{top:max(12px,env(safe-area-inset-top));left:12px}#mapShell.fullscreen #closeMap{display:inline-block}#closeMap{display:none}#settingsPanel{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:15px;margin:12px 0 18px}#settingsPanel[hidden]{display:none}.setting-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid var(--line)}.setting-row:last-child{border-bottom:0}.setting-row label{font-size:13px;color:var(--white)}.setting-row small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.setting-row select{max-width:180px}#settingsPanel h3{margin:0 0 6px}#settingsPanel .actions{margin-top:12px}
+</style><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"><link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#101510"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="icon" href="./icon.svg" type="image/svg+xml"></head>
 <body>
 <header><div class="brand">CANBERRA EXPLORER</div><h1>Canberra Explorer</h1><p>Abandoned places, local history &amp; field notes</p></header>
 <main>
-<div style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px"><button id="installApp" class="secondary" hidden>⬇ Install Canberra Explorer</button><span style="font-size:12px;color:var(--muted);align-self:center">Android: browser menu ⋮ → Install app or Add to Home screen</span></div><div class="notice"><strong>Field safety:</strong> Entries are research leads, not permission to enter. Some sites may be private, occupied, demolished, hazardous or protected. Check current ownership, access rules and safety before visiting. Do not trespass or disturb sites.</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px"><button id="installApp" class="secondary" hidden>⬇ Install Canberra Explorer</button><button id="settingsToggle" class="secondary" onclick="toggleSettings()">⚙ Settings</button><span style="font-size:12px;color:var(--muted);align-self:center">Android: browser menu ⋮ → Install app or Add to Home screen</span></div><div class="notice"><strong>Field safety:</strong> Entries are research leads, not permission to enter. Some sites may be private, occupied, demolished, hazardous or protected. Check current ownership, access rules and safety before visiting. Do not trespass or disturb sites.</div>
 <h2 style="font-size:18px;margin:18px 0 8px">Canberra map</h2><div id="mapShell"><div class="mapbar"><button onclick="locateMe()">◎ My location</button><button onclick="fitAllPins()">Show all pins</button><button onclick="toggleMapFullscreen()">⛶ Full screen</button><button id="closeMap" onclick="toggleMapFullscreen()">✕ Close</button></div><div id="map" aria-label="Interactive road map of Canberra with place pins"></div></div><p class="mapnote">Real street map with roads, suburb labels, parks and waterways. Switch between OpenStreetMap streets, a detailed street style and satellite imagery using the layer button. Map tiles need internet. Tap a pin for details; use My location to centre the map on your phone (permission required). Imported locations are unverified and do not imply permission to enter.</p>
+<section id="settingsPanel" hidden aria-label="App settings">
+<h3>Settings</h3><p class="mapnote" style="margin:0 0 8px">Change how Canberra Explorer looks and manages information on this device.</p>
+<div class="setting-row"><div><label for="mapStyle">Map appearance</label><small>Choose street, detailed or satellite imagery</small></div><select id="mapStyle" onchange="saveSettings()"><option value="street">Street map</option><option value="voyager">Detailed map</option><option value="satellite">Satellite</option></select></div>
+<div class="setting-row"><div><label for="showPins">Show location pins</label><small>Show or hide all saved map markers</small></div><input id="showPins" type="checkbox" checked onchange="saveSettings()" style="width:22px;height:22px"></div>
+<div class="setting-row"><div><label for="startAtCanberra">Start map at Canberra</label><small>Return to Canberra when opening the map</small></div><input id="startAtCanberra" type="checkbox" checked onchange="saveSettings()" style="width:22px;height:22px"></div>
+<div class="actions"><button class="secondary" onclick="fitAllPins()">Show all pins</button><button class="secondary" onclick="exportMyData()">Export my additions</button><button class="secondary" onclick="clearMyData()">Clear my saved data</button></div>
+<p class="mapnote" style="margin:10px 0 0">Your saved places and settings are stored in this browser on this device. Export your additions before clearing browser data.</p>
+</section>
 <p id="updateStatus" class="mapnote" aria-live="polite">Checking for the latest map updates…</p>
 <div class="searchrow"><input id="search" placeholder="Search places or notes…" aria-label="Search places"><button onclick="toggleAdd()">＋ Add</button></div>
 <div id="addPanel">
@@ -39,7 +47,7 @@ footer{padding:22px 16px;text-align:center;color:#78877b;font-size:11px}
 <div id="count" style="font-size:12px;color:var(--muted);margin:0 0 10px"></div>
 <div id="places" class="grid"></div>
 </main><footer>CANBERRA EXPLORER · Offline-friendly app · Your saved items stay in this browser on this device</footer>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js'"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" onerror="this.onerror=null;this.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'"></script>
 <script>
 const seed=[
 {name:"Kinlyside",area:"Canberra region",notes:"Previously listed research lead. Exact site and current status need independent verification.",status:"Unverified lead"},
@@ -100,71 +108,139 @@ const seed=[
 {name:"Firearm Shop",area:"Canberra / ACT — exact location not confirmed",notes:"Listed in the Zuniz Australian Capital Territory directory. This app does not have a verified coordinate for this entry. Confirm the exact site, current status, ownership and lawful access before visiting. Source: https://zuniz.com/explore/australia/australian-capital-territory/canberra",status:"Zuniz listing — unverified"},
 {name:"V.R. Workshop",area:"Canberra / ACT — exact location not confirmed",notes:"Listed in the Zuniz Australian Capital Territory directory. This app does not have a verified coordinate for this entry. Confirm the exact site, current status, ownership and lawful access before visiting. Source: https://zuniz.com/explore/australia/australian-capital-territory/canberra",status:"Zuniz listing — unverified"},
 {name:"A bunch of abandoned buildings",area:"Canberra / ACT — exact location not confirmed",notes:"Listed in the Zuniz Australian Capital Territory directory. This app does not have a verified coordinate for this entry. Confirm the exact site, current status, ownership and lawful access before visiting. Source: https://zuniz.com/explore/australia/australian-capital-territory/canberra",status:"Zuniz listing — unverified"},
-{"name":"KINLYSIDE","area":"Canberra / ACT (KML import)","lat":-35.1737013659986,"lon":149.0781446407513,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
-{"name":"Tooth St","area":"Canberra / ACT (KML import)","lat":-35.20941828624531,"lon":149.1356969449583,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
+{"name":"Kinlyside","area":"Canberra / ACT (KML import)","lat":-35.1737013659986,"lon":149.0781446407513,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
+{"name":"Tooth Street","area":"Canberra / ACT (KML import)","lat":-35.20941828624531,"lon":149.1356969449583,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
 {"name":"SAE Automotive","area":"Canberra / ACT (KML import)","lat":-35.216839967375,"lon":149.13778116683,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
 {"name":"Climb High Tree Services","area":"Canberra / ACT (KML import)","lat":-35.21748368916457,"lon":149.1798947964394,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
 {"name":"Woolshed Creek","area":"Canberra / ACT (KML import)","lat":-35.24242934460995,"lon":149.2004293993998,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
-{"name":"DUNLOP FARM","area":"Canberra / ACT (KML import)","lat":-35.19571934018392,"lon":149.0130072572703,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
+{"name":"Dunlop Farm","area":"Canberra / ACT (KML import)","lat":-35.19571934018392,"lon":149.0130072572703,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
 {"name":"Carers ACT","area":"Canberra / ACT (KML import)","lat":-35.22334257114586,"lon":149.0113313258937,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
 {"name":"Naval Transmitting Station","area":"Canberra / ACT (KML import)","lat":-35.22162783634855,"lon":149.0890822631803,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
-{"name":"HAWKER COURTS","area":"Canberra / ACT (KML import)","lat":-35.24423951056357,"lon":149.0395014379285,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
-{"name":"BIG SPLASH","area":"Canberra / ACT (KML import)","lat":-35.25097200128463,"lon":149.0699045514336,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
-{"name":"house","area":"Canberra / ACT (KML import)","lat":-35.26044387515989,"lon":149.1290733712075,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
-{"name":"Christopher Robin Childrens Garden","area":"Canberra / ACT (KML import)","lat":-35.27384215125014,"lon":149.1260499286207,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
-{"name":"BANK","area":"Canberra / ACT (KML import)","lat":-35.28069663059112,"lon":149.1314110536197,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
+{"name":"Hawker Courts","area":"Canberra / ACT (KML import)","lat":-35.24423951056357,"lon":149.0395014379285,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
+{"name":"Big Splash","area":"Canberra / ACT (KML import)","lat":-35.25097200128463,"lon":149.0699045514336,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
+{"name":"Unidentified house (KML label: house)","area":"Canberra / ACT (KML import)","lat":-35.26044387515989,"lon":149.1290733712075,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
+{"name":"Christopher Robin Children’s Garden","area":"Canberra / ACT (KML import)","lat":-35.27384215125014,"lon":149.1260499286207,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
+{"name":"Unidentified bank (KML label: BANK)","area":"Canberra / ACT (KML import)","lat":-35.28069663059112,"lon":149.1314110536197,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
 {"name":"Duntroon House","area":"Canberra / ACT (KML import)","lat":-35.29963018303297,"lon":149.1640114100475,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
 {"name":"Slattery Auctions and Valuations Canberra","area":"Canberra / ACT (KML import)","lat":-35.33036057761682,"lon":149.1683631797147,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
 {"name":"Newcastle House","area":"Canberra / ACT (KML import)","lat":-35.31504249331617,"lon":149.1545834099978,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
-{"name":"CAPITOL CHILLED FOODS","area":"Canberra / ACT (KML import)","lat":-35.32061156339282,"lon":149.1489848612694,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
+{"name":"Capitol Chilled Foods","area":"Canberra / ACT (KML import)","lat":-35.32061156339282,"lon":149.1489848612694,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
 {"name":"Grease Monkey","area":"Canberra / ACT (KML import)","lat":-35.31458231611938,"lon":149.1420824429583,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
-{"name":"former embassy","area":"Canberra / ACT (KML import)","lat":-35.31796292379982,"lon":149.1270691391274,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
-{"name":"DOC HOUSE","area":"Canberra / ACT (KML import)","lat":-35.31484643157543,"lon":149.1211002651747,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
-{"name":"Aimee","area":"Canberra / ACT (KML import)","lat":-35.31296007972847,"lon":149.1081615005222,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
-{"name":"Embassy Of Former Yugoslavia","area":"Canberra / ACT (KML import)","lat":-35.33993483160444,"lon":149.1295988030065,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
+{"name":"Former embassy (identity unverified)","area":"Canberra / ACT (KML import)","lat":-35.31796292379982,"lon":149.1270691391274,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
+{"name":"Doc House","area":"Canberra / ACT (KML import)","lat":-35.31484643157543,"lon":149.1211002651747,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
+{"name":"Unidentified location (KML label: Aimee)","area":"Canberra / ACT (KML import)","lat":-35.31296007972847,"lon":149.1081615005222,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
+{"name":"Former Embassy of Yugoslavia","area":"Canberra / ACT (KML import)","lat":-35.33993483160444,"lon":149.1295988030065,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
 {"name":"Lunetta Trattoria","area":"Canberra / ACT (KML import)","lat":-35.32857425518202,"lon":149.1169258547462,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
 {"name":"Callam Offices","area":"Canberra / ACT (KML import)","lat":-35.34305850053741,"lon":149.0894864153998,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
 {"name":"Raw Potential","area":"Canberra / ACT (KML import)","lat":-35.34534379532239,"lon":149.0833844366855,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
 {"name":"Kambah Woolshed","area":"Canberra / ACT (KML import)","lat":-35.38825727036174,"lon":149.061415337419,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
 {"name":"Mt Stromlo Observatory Visitor Centre","area":"Canberra / ACT (KML import)","lat":-35.31851581244766,"lon":149.0097911524828,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
-{"name":"Mugga Ln","area":"Canberra / ACT (KML import)","lat":-35.36079560852374,"lon":149.1305593724622,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
-{"name":"stone home","area":"Canberra / ACT (KML import)","lat":-35.37737579014959,"lon":149.134894757851,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
-{"name":"the red one","area":"Canberra / ACT (KML import)","lat":-35.3527101,"lon":149.2266549,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
-{"name":"junkie house","area":"Canberra / ACT (KML import)","lat":-35.2354334,"lon":149.1549683,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},];
+{"name":"Mugga Lane","area":"Canberra / ACT (KML import)","lat":-35.36079560852374,"lon":149.1305593724622,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
+{"name":"Unidentified stone building (KML label: stone home)","area":"Canberra / ACT (KML import)","lat":-35.37737579014959,"lon":149.134894757851,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
+{"name":"Unidentified red building (KML label: the red one)","area":"Canberra / ACT (KML import)","lat":-35.3527101,"lon":149.2266549,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
+{"name":"Unidentified house (original KML label was non-descriptive)","area":"Canberra / ACT (KML import)","lat":-35.2354334,"lon":149.1549683,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},];
 let custom=JSON.parse(localStorage.getItem("cbr_custom")||"[]"),saved=JSON.parse(localStorage.getItem("cbr_saved")||"[]"),tab="all";
+let appSettings={mapStyle:"street",showPins:true,startAtCanberra:true};
+try{appSettings={...appSettings,...JSON.parse(localStorage.getItem("ce_settings")||"{}")};}catch(e){}
 let map=null,markers=[];
 const all=()=>[...seed,...custom];
 function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function renderMap(){if(!map||!window.L)return;markers.forEach(m=>map.removeLayer(m));markers=[];[...seed,...custom].filter(p=>Number.isFinite(Number(p.lat))&&Number.isFinite(Number(p.lon))).forEach(p=>{const lat=Number(p.lat),lon=Number(p.lon);const m=L.circleMarker([lat,lon],{radius:8,color:"#ffffff",weight:2,fillColor:"#188038",fillOpacity:1}).addTo(map).bindPopup("<b>"+esc(p.name)+"</b><br>"+esc(p.area||"Canberra / ACT")+"<br><small>"+esc(p.status||"Research lead")+" · verify site and access</small><br><a target=\"_blank\" rel=\"noopener\" href=\"https://www.google.com/maps/dir/?api=1&destination="+lat+","+lon+"\">Directions in Google Maps ↗</a>");markers.push(m)});}
-function fitAllPins(){if(!map)return;const pts=markers.map(m=>m.getLatLng());if(pts.length)map.fitBounds(L.latLngBounds(pts).pad(.12),{maxZoom:13});else map.setView([-35.28,149.13],11);}
-let userMarker=null,userAccuracy=null;
-function locateMe(){if(!map)return;if(!navigator.geolocation){alert("Location is not available in this browser.");return}map.locate({setView:true,maxZoom:16,enableHighAccuracy:true});}
-function toggleMapFullscreen(){const shell=document.getElementById("mapShell");shell.classList.toggle("fullscreen");setTimeout(()=>{if(map)map.invalidateSize();},180);}
-function initMap(){
- const host=document.getElementById("map");
- host.innerHTML="";
- host.style.height="430px";
- const frame=document.createElement("iframe");
- frame.title="Live map of Canberra";
- frame.src="https://www.google.com/maps?q=Canberra%2C%20ACT%2C%20Australia&z=11&output=embed";
- frame.loading="eager";
- frame.referrerPolicy="no-referrer-when-downgrade";
- frame.allowFullscreen=true;
- frame.style.cssText="display:block;width:100%;height:100%;min-height:430px;border:0;background:#e8e6df";
- host.appendChild(frame);
- const status=document.getElementById("updateStatus");
- if(status)status.textContent="Google Maps view loaded. Use the map controls to zoom and explore Canberra.";
+function renderMap(){
+ if(!map||!window.L)return;
+ markers.forEach(m=>map.removeLayer(m));markers=[];
+ if(!appSettings.showPins)return;
+ [...seed,...custom].filter(p=>p.lat!==null&&p.lat!==undefined&&p.lat!==""&&p.lon!==null&&p.lon!==undefined&&p.lon!==""&&Number.isFinite(Number(p.lat))&&Number.isFinite(Number(p.lon))&&Math.abs(Number(p.lat))<=90&&Math.abs(Number(p.lon))<=180).forEach(p=>{
+  const lat=Number(p.lat),lon=Number(p.lon);
+  const marker=L.circleMarker([lat,lon],{radius:8,color:"#fff",weight:2,fillColor:"#16833b",fillOpacity:1}).addTo(map);
+  marker.bindPopup("<b>"+esc(p.name)+"</b><br>"+esc(p.area||"Canberra / ACT")+"<br><small>"+esc(p.status||"Research lead")+" · location and access not independently verified</small><br><a target=\"_blank\" rel=\"noopener\" href=\"https://www.google.com/maps/dir/?api=1&destination="+lat+","+lon+"\">Directions ↗</a>");
+  markers.push(marker);
+ });
 }
-function fitAllPins(){const frame=document.querySelector("#map iframe");if(frame)frame.src="https://www.google.com/maps?q=Canberra%2C%20ACT%2C%20Australia&z=11&output=embed";}
-function locateMe(){const frame=document.querySelector("#map iframe");if(frame)frame.src="https://www.google.com/maps?q=My%20Location&z=14&output=embed";}
-function toggleMapFullscreen(){const shell=document.getElementById("mapShell");shell.classList.toggle("fullscreen");}
-
+let userMarker=null,userAccuracy=null;
+let baseLayers={};
+function initMap(){
+ const host=document.getElementById("map");host.innerHTML="";
+ map=L.map(host,{zoomControl:true,preferCanvas:true,scrollWheelZoom:true}).setView([-35.28,149.13],10);
+ baseLayers={
+  street:L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}),
+  voyager:L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{maxZoom:20,attribution:'&copy; OpenStreetMap contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'}),
+  satellite:L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:'Tiles &copy; Esri'})
+ };
+ const chosen=baseLayers[appSettings.mapStyle]||baseLayers.street;chosen.addTo(map);
+ L.control.layers({"Street map":baseLayers.street,"Detailed map":baseLayers.voyager,"Satellite":baseLayers.satellite},{},{collapsed:true}).addTo(map);
+ map.on("locationfound",e=>{
+  if(userMarker)map.removeLayer(userMarker);if(userAccuracy)map.removeLayer(userAccuracy);
+  userAccuracy=L.circle(e.latlng,{radius:e.accuracy,color:"#2878d0",weight:1,fillOpacity:.08}).addTo(map);
+  userMarker=L.marker(e.latlng).addTo(map).bindPopup("Your current location").openPopup();
+  document.getElementById("updateStatus").textContent="Your location is shown on the map.";
+ });
+ map.on("locationerror",()=>{document.getElementById("updateStatus").textContent="Could not access your location. Check your browser location permission.";});
+ map.on("tileerror",()=>{document.getElementById("updateStatus").textContent="Some map tiles did not load. Try another map style or check your internet connection.";});
+ renderMap();
+ document.getElementById("updateStatus").textContent="Interactive map ready. "+markers.length+" coordinate pin(s) loaded.";
+ setTimeout(()=>map.invalidateSize(),250);
+}
+function setMapStyle(style){
+ if(!map||!baseLayers[style])return;
+ Object.values(baseLayers).forEach(layer=>{if(map.hasLayer(layer))map.removeLayer(layer);});
+ baseLayers[style].addTo(map);
+}
+function fitAllPins(){
+ if(!map)return;
+ const pts=markers.map(m=>m.getLatLng());
+ if(pts.length)map.fitBounds(L.latLngBounds(pts).pad(.12),{maxZoom:13});
+ else map.setView([-35.28,149.13],11);
+}
+function locateMe(){
+ if(!map)return;
+ if(!navigator.geolocation){alert("Location is not available in this browser.");return}
+ document.getElementById("updateStatus").textContent="Requesting your location…";
+ map.locate({setView:true,maxZoom:16,enableHighAccuracy:true});
+}
+function toggleMapFullscreen(){
+ const shell=document.getElementById("mapShell");shell.classList.toggle("fullscreen");
+ setTimeout(()=>{if(map)map.invalidateSize();},220);
+}
+function toggleSettings(){
+ const panel=document.getElementById("settingsPanel");panel.hidden=!panel.hidden;
+ document.getElementById("settingsToggle").textContent=panel.hidden?"⚙ Settings":"✕ Close settings";
+}
+function saveSettings(){
+ appSettings.mapStyle=document.getElementById("mapStyle").value;
+ appSettings.showPins=document.getElementById("showPins").checked;
+ appSettings.startAtCanberra=document.getElementById("startAtCanberra").checked;
+ localStorage.setItem("ce_settings",JSON.stringify(appSettings));
+ setMapStyle(appSettings.mapStyle);renderMap();
+}
+function exportMyData(){
+ const data={app:"Canberra Explorer",exportedAt:new Date().toISOString(),customPlaces:custom,savedPlaces:saved,settings:appSettings};
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="canberra-explorer-backup.json";a.click();URL.revokeObjectURL(url);
+}
+function clearMyData(){
+ if(!confirm("Clear your saved places and personal additions from this device? This cannot be undone unless you exported a backup."))return;
+ localStorage.removeItem("cbr_custom");localStorage.removeItem("cbr_saved");
+ custom=[];saved=[];renderMap();render();document.getElementById("updateStatus").textContent="Your saved places and personal additions were cleared from this device.";
+}
 function render(){let q=document.getElementById("search").value.toLowerCase();let items=all().filter(p=>(tab==="all"||(tab==="saved"&&saved.includes(p.name))||(tab==="mine"&&p.custom))&&[p.name,p.area,p.notes,p.status].join(" ").toLowerCase().includes(q));document.getElementById("count").textContent=items.length+" research leads";document.getElementById("places").innerHTML=items.length?items.map(p=>'<article class="place"><div class="tag">'+esc(p.status||"Personal note")+'</div><h3>'+esc(p.name)+'</h3><div style="font-size:12px;color:#c2d0c4">'+esc(p.area)+'</div><p>'+esc(p.notes)+'</p><div class="actions"><button class="secondary" onclick="toggleSaved('+JSON.stringify(p.name).replace(/"/g,'&quot;')+')">'+(saved.includes(p.name)?"★ Saved":"☆ Save")+'</button><a class="btn secondary" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(p.name+" "+p.area+" Canberra ACT")+'">Search map ↗</a></div></article>').join(""):'<div class="empty">No matching places. Try another search or add a research lead.</div>'}
 function setTab(t,b){tab=t;document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");render()}
 function toggleSaved(n){saved=saved.includes(n)?saved.filter(x=>x!==n):[...saved,n];localStorage.setItem("cbr_saved",JSON.stringify(saved));render()}
 function toggleAdd(){let p=document.getElementById("addPanel");p.style.display=p.style.display==="block"?"none":"block"}
 function addPlace(){let name=document.getElementById("newName").value.trim(),area=document.getElementById("newArea").value.trim(),notes=document.getElementById("newNotes").value.trim(),lat=document.getElementById("newLat").value.trim(),lon=document.getElementById("newLon").value.trim();if(!name){alert("Please enter a place name.");return}custom.push({name,area:area||"Canberra / ACT",notes:notes||"No notes added yet. Verify details and access.",status:"My addition",custom:true,lat:lat===""?null:Number(lat),lon:lon===""?null:Number(lon)});localStorage.setItem("cbr_custom",JSON.stringify(custom));renderMap();document.getElementById("newName").value="";document.getElementById("newArea").value="";document.getElementById("newNotes").value="";document.getElementById("newLat").value="";document.getElementById("newLon").value="";toggleAdd();tab="mine";document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("active",x.dataset.tab==="mine"));render()}
-document.getElementById("search").addEventListener("input",render);render();function waitForLeaflet(){if(window.L){initMap();return}if(!window.__leafletWaits)window.__leafletWaits=0;if(window.__leafletWaits++<40){setTimeout(waitForLeaflet,250)}else{document.getElementById("map").innerHTML="<div style=\"padding:20px;color:#202124\">Map library failed to load. Please check your connection and refresh. You can still use the place list below.</div>"}}waitForLeaflet();
+document.getElementById("search").addEventListener("input",render);
+document.getElementById("mapStyle").value=appSettings.mapStyle;
+document.getElementById("showPins").checked=!!appSettings.showPins;
+document.getElementById("startAtCanberra").checked=!!appSettings.startAtCanberra;
+render();
+function waitForLeaflet(){
+ if(window.L){initMap();return}
+ if(!window.__leafletWaits)window.__leafletWaits=0;
+ if(window.__leafletWaits++<40){setTimeout(waitForLeaflet,250);return}
+ const host=document.getElementById("map");
+ host.innerHTML='<iframe title="OpenStreetMap Canberra fallback" src="https://www.openstreetmap.org/export/embed.html?bbox=148.95%2C-35.48%2C149.28%2C-35.16&layer=mapnik&marker=-35.28%2C149.13" style="width:100%;height:430px;border:0" loading="eager"></iframe>';
+ document.getElementById("updateStatus").textContent="Basic map fallback is showing. Location pins need the interactive map library; check your connection and reload.";
+}
+waitForLeaflet();
 const updateStatus=document.getElementById("updateStatus");
 fetch("./places.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error("Map data unavailable");return r.json()}).then(data=>{if(!Array.isArray(data))throw new Error("Invalid map data");let added=0;data.forEach(p=>{if(p&&p.name&&!seed.some(old=>String(old.name).toLowerCase()===String(p.name).toLowerCase())){seed.push(p);added++;}});updateStatus.textContent=added?`Map updated: ${added} new research lead(s) loaded.`:"Map data is up to date.";render();renderMap();}).catch(()=>{updateStatus.textContent="Showing saved map data. Connect to the internet to check for updates.";});
 let installPrompt=null;const installButton=document.getElementById("installApp");window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();installPrompt=e;installButton.hidden=false;});installButton.addEventListener("click",async()=>{if(!installPrompt)return;installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;installButton.hidden=true;});if("serviceWorker" in navigator){
