@@ -140,7 +140,25 @@ function fitAllPins(){if(!map)return;const pts=markers.map(m=>m.getLatLng());if(
 let userMarker=null,userAccuracy=null;
 function locateMe(){if(!map)return;if(!navigator.geolocation){alert("Location is not available in this browser.");return}map.locate({setView:true,maxZoom:16,enableHighAccuracy:true});}
 function toggleMapFullscreen(){const shell=document.getElementById("mapShell");shell.classList.toggle("fullscreen");setTimeout(()=>{if(map)map.invalidateSize();},180);}
-function initMap(){if(!window.L){document.getElementById("map").innerHTML="<div style=\"padding:20px;color:#202124\">The map engine could not load. Check your internet connection, then refresh.</div>";return}map=L.map("map",{zoomControl:true,preferCanvas:true}).setView([-35.28,149.13],11);const roadTiles=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap contributors</a>",crossOrigin:true});const voyagerTiles=L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{subdomains:"abcd",maxZoom:20,attribution:"&copy; OpenStreetMap contributors &copy; CARTO"});const satelliteTiles=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"Tiles &copy; Esri, Maxar, Earthstar Geographics, and the GIS User Community"});roadTiles.addTo(map);L.control.layers({"OpenStreetMap streets":roadTiles,"Detailed street map":voyagerTiles,"Satellite imagery":satelliteTiles},null,{collapsed:true,position:"topright"}).addTo(map);let tileErrors=0;roadTiles.on("tileerror",()=>{tileErrors++;if(tileErrors>=3&&!map.hasLayer(voyagerTiles)){map.removeLayer(roadTiles);voyagerTiles.addTo(map);}});roadTiles.on("tileload",()=>{tileErrors=0;});map.on("locationfound",e=>{if(userMarker)map.removeLayer(userMarker);if(userAccuracy)map.removeLayer(userAccuracy);userMarker=L.circleMarker(e.latlng,{radius:9,color:"#fff",weight:3,fillColor:"#4285f4",fillOpacity:1}).addTo(map).bindPopup("Your current location").openPopup();userAccuracy=L.circle(e.latlng,{radius:e.accuracy,color:"#4285f4",weight:1,fillOpacity:.08}).addTo(map)});map.on("locationerror",()=>alert("Could not get your location. Check that location permission is allowed for this app."));map.on("click",e=>{if(document.getElementById("addPanel").style.display==="block"){document.getElementById("newLat").value=e.latlng.lat.toFixed(6);document.getElementById("newLon").value=e.latlng.lng.toFixed(6)}});renderMap();fitAllPins();setTimeout(()=>map.invalidateSize(),250);}
+function initMap(){
+ const host=document.getElementById("map");
+ host.innerHTML="";
+ host.style.height="430px";
+ const frame=document.createElement("iframe");
+ frame.title="Live map of Canberra";
+ frame.src="https://www.google.com/maps?q=Canberra%2C%20ACT%2C%20Australia&z=11&output=embed";
+ frame.loading="eager";
+ frame.referrerPolicy="no-referrer-when-downgrade";
+ frame.allowFullscreen=true;
+ frame.style.cssText="display:block;width:100%;height:100%;min-height:430px;border:0;background:#e8e6df";
+ host.appendChild(frame);
+ const status=document.getElementById("updateStatus");
+ if(status)status.textContent="Google Maps view loaded. Use the map controls to zoom and explore Canberra.";
+}
+function fitAllPins(){const frame=document.querySelector("#map iframe");if(frame)frame.src="https://www.google.com/maps?q=Canberra%2C%20ACT%2C%20Australia&z=11&output=embed";}
+function locateMe(){const frame=document.querySelector("#map iframe");if(frame)frame.src="https://www.google.com/maps?q=My%20Location&z=14&output=embed";}
+function toggleMapFullscreen(){const shell=document.getElementById("mapShell");shell.classList.toggle("fullscreen");}
+
 function render(){let q=document.getElementById("search").value.toLowerCase();let items=all().filter(p=>(tab==="all"||(tab==="saved"&&saved.includes(p.name))||(tab==="mine"&&p.custom))&&[p.name,p.area,p.notes,p.status].join(" ").toLowerCase().includes(q));document.getElementById("count").textContent=items.length+" research leads";document.getElementById("places").innerHTML=items.length?items.map(p=>'<article class="place"><div class="tag">'+esc(p.status||"Personal note")+'</div><h3>'+esc(p.name)+'</h3><div style="font-size:12px;color:#c2d0c4">'+esc(p.area)+'</div><p>'+esc(p.notes)+'</p><div class="actions"><button class="secondary" onclick="toggleSaved('+JSON.stringify(p.name).replace(/"/g,'&quot;')+')">'+(saved.includes(p.name)?"★ Saved":"☆ Save")+'</button><a class="btn secondary" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(p.name+" "+p.area+" Canberra ACT")+'">Search map ↗</a></div></article>').join(""):'<div class="empty">No matching places. Try another search or add a research lead.</div>'}
 function setTab(t,b){tab=t;document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");render()}
 function toggleSaved(n){saved=saved.includes(n)?saved.filter(x=>x!==n):[...saved,n];localStorage.setItem("cbr_saved",JSON.stringify(saved));render()}
