@@ -32,7 +32,7 @@ footer{padding:22px 16px;text-align:center;color:#78877b;font-size:11px}
 <div class="setting-row"><div><label for="mapStyle">Map appearance</label><small>Choose street, detailed or satellite imagery</small></div><select id="mapStyle" onchange="saveSettings()"><option value="street">Street map</option><option value="voyager">Detailed map</option><option value="satellite">Satellite</option></select></div>
 <div class="setting-row"><div><label for="showPins">Show location pins</label><small>Show or hide all saved map markers</small></div><input id="showPins" type="checkbox" checked onchange="saveSettings()" style="width:22px;height:22px"></div>
 <div class="setting-row"><div><label for="startAtCanberra">Start map at Canberra</label><small>Return to Canberra when opening the map</small></div><input id="startAtCanberra" type="checkbox" checked onchange="saveSettings()" style="width:22px;height:22px"></div>
-<div class="actions"><button class="secondary" onclick="fitAllPins()">Show all pins</button><button class="secondary" onclick="exportMyData()">Export my additions</button><button class="secondary" onclick="clearMyData()">Clear my saved data</button></div>
+<div class="actions"><button class="secondary" onclick="fitAllPins()">Show all pins</button><button class="secondary" onclick="exportMyData()">Export backup</button><button class="secondary" onclick="document.getElementById('backupFile').click()">Restore backup</button><button class="secondary" onclick="clearMyData()">Clear my saved data</button></div><input id="backupFile" type="file" accept="application/json,.json" hidden onchange="importMyData(event)">
 <p class="mapnote" style="margin:10px 0 0">Your saved places and settings are stored in this browser on this device. Export your additions before clearing browser data.</p>
 </section>
 <section id="updateBanner" role="status" aria-live="polite" style="display:block"><strong id="apkVersionLabel">Checking Android app version…</strong><p id="apkVersionDescription">Checking for the latest published Canberra Explorer APK.</p><div class="actions"><a id="downloadApk" class="btn" href="https://github.com/dominichuddleston4-sys/CBR_URBEX/releases/latest/download/app-release.apk" hidden>Download latest Android APK</a></div></section>
@@ -121,7 +121,7 @@ function renderMap(){
   const lat=Number(p.lat),lon=Number(p.lon);
   const marker=L.circleMarker([lat,lon],{radius:8,color:"#fff",weight:2,fillColor:"#16833b",fillOpacity:1}).addTo(map);
   marker.bindPopup("<b>"+esc(p.name)+"</b><br>"+esc(p.area||"Canberra / ACT")+"<br><small>"+esc(p.status||"Research lead")+" · location and access not independently verified</small><br><a target=\"_blank\" rel=\"noopener\" href=\"https://www.google.com/maps/dir/?api=1&destination="+lat+","+lon+"\">Directions ↗</a>");
-  markers.push(marker);
+  marker._placeName=p.name;markers.push(marker);
  });
 }
 let userMarker=null,userAccuracy=null;
@@ -133,6 +133,7 @@ function initMap(){
  const validLast=lastView&&Number.isFinite(Number(lastView.lat))&&Number.isFinite(Number(lastView.lng))&&Number.isFinite(Number(lastView.zoom));
  map=L.map(host,{zoomControl:true,preferCanvas:true,scrollWheelZoom:true}).setView(validLast?[Number(lastView.lat),Number(lastView.lng)]:[-35.28,149.13],validLast?Number(lastView.zoom):10);
  map.on("moveend",()=>{const c=map.getCenter();localStorage.setItem("ce_map_view",JSON.stringify({lat:c.lat,lng:c.lng,zoom:map.getZoom()}));});
+ map.on("baselayerchange",e=>{const key=Object.keys(baseLayers).find(k=>baseLayers[k]===e.layer);if(key){appSettings.mapStyle=key;localStorage.setItem("ce_settings",JSON.stringify(appSettings));document.getElementById("mapStyle").value=key;}});
  baseLayers={
   street:L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}),
   voyager:L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{maxZoom:20,attribution:'&copy; OpenStreetMap contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'}),
@@ -156,6 +157,12 @@ function setMapStyle(style){
  if(!map||!baseLayers[style])return;
  Object.values(baseLayers).forEach(layer=>{if(map.hasLayer(layer))map.removeLayer(layer);});
  baseLayers[style].addTo(map);
+}
+function focusPlace(name){
+ const p=all().find(x=>x.name===name);if(!p)return;
+ const hasCoords=p.lat!==null&&p.lat!==undefined&&p.lat!==""&&p.lon!==null&&p.lon!==undefined&&p.lon!==""&&Number.isFinite(Number(p.lat))&&Number.isFinite(Number(p.lon))&&Math.abs(Number(p.lat))<=90&&Math.abs(Number(p.lon))<=180;
+ if(hasCoords){if(!appSettings.showPins){appSettings.showPins=true;document.getElementById("showPins").checked=true;localStorage.setItem("ce_settings",JSON.stringify(appSettings));renderMap();}map.setView([Number(p.lat),Number(p.lon)],16);const marker=markers.find(m=>m._placeName===name);if(marker)marker.openPopup();}
+ else{const q=encodeURIComponent(name+" "+(p.area||"Canberra ACT"));window.open("https://www.google.com/maps/search/?api=1&query="+q,"_blank","noopener");}
 }
 function fitAllPins(){
  if(!map)return;
@@ -190,16 +197,40 @@ function exportMyData(){
  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
  const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="canberra-explorer-backup.json";a.click();URL.revokeObjectURL(url);
 }
+async function importMyData(event){
+ const file=event.target.files&&event.target.files[0];if(!file)return;
+ try{
+  const data=JSON.parse(await file.text());
+  if(!data||data.app!=="Canberra Explorer"||!Array.isArray(data.customPlaces)||!Array.isArray(data.savedPlaces))throw new Error("This is not a Canberra Explorer backup.");
+  if(data.customPlaces.length>1000)throw new Error("The backup contains too many entries.");
+  const restored=data.customPlaces.filter(p=>p&&typeof p.name==="string"&&p.name.trim()).map(p=>{
+   const hasLat=p.lat!==null&&p.lat!==undefined&&p.lat!=="";
+   const hasLon=p.lon!==null&&p.lon!==undefined&&p.lon!=="";
+   if(hasLat!==hasLon)throw new Error("A saved place has incomplete coordinates.");
+   if(hasLat&&(!Number.isFinite(Number(p.lat))||!Number.isFinite(Number(p.lon))||Math.abs(Number(p.lat))>90||Math.abs(Number(p.lon))>180))throw new Error("A saved place has invalid coordinates.");
+   return {...p,name:p.name.trim(),custom:true,lat:hasLat?Number(p.lat):null,lon:hasLon?Number(p.lon):null};
+  });
+  if(!confirm("Restore "+restored.length+" personal place(s) and saved items? This replaces the personal additions currently on this device."))return;
+  custom=restored;saved=data.savedPlaces.filter(x=>typeof x==="string");
+  if(data.settings&&typeof data.settings==="object"){
+   const s=data.settings;appSettings={mapStyle:["street","voyager","satellite"].includes(s.mapStyle)?s.mapStyle:"street",showPins:s.showPins!==false,startAtCanberra:s.startAtCanberra!==false};
+   localStorage.setItem("ce_settings",JSON.stringify(appSettings));
+   document.getElementById("mapStyle").value=appSettings.mapStyle;document.getElementById("showPins").checked=appSettings.showPins;document.getElementById("startAtCanberra").checked=appSettings.startAtCanberra;
+  }
+  localStorage.setItem("cbr_custom",JSON.stringify(custom));localStorage.setItem("cbr_saved",JSON.stringify(saved));
+  setMapStyle(appSettings.mapStyle);renderMap();render();document.getElementById("updateStatus").textContent="Backup restored successfully.";
+ }catch(err){alert("Could not restore backup: "+err.message);}finally{event.target.value="";}
+}
 function clearMyData(){
  if(!confirm("Clear your saved places and personal additions from this device? This cannot be undone unless you exported a backup."))return;
  localStorage.removeItem("cbr_custom");localStorage.removeItem("cbr_saved");
  custom=[];saved=[];renderMap();render();document.getElementById("updateStatus").textContent="Your saved places and personal additions were cleared from this device.";
 }
-function render(){let q=document.getElementById("search").value.toLowerCase();let items=all().filter(p=>(tab==="all"||(tab==="saved"&&saved.includes(p.name))||(tab==="mine"&&p.custom))&&[p.name,p.area,p.notes,p.status].join(" ").toLowerCase().includes(q));document.getElementById("count").textContent=items.length+" research leads";document.getElementById("places").innerHTML=items.length?items.map(p=>'<article class="place"><div class="tag">'+esc(p.status||"Personal note")+'</div><h3>'+esc(p.name)+'</h3><div style="font-size:12px;color:#c2d0c4">'+esc(p.area)+'</div><p>'+esc(p.notes)+'</p><div class="actions"><button class="secondary" onclick="toggleSaved('+JSON.stringify(p.name).replace(/"/g,'&quot;')+')">'+(saved.includes(p.name)?"★ Saved":"☆ Save")+'</button><a class="btn secondary" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(p.name+" "+p.area+" Canberra ACT")+'">Search map ↗</a><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(p.lat!==null&&p.lat!==undefined&&p.lat!==""&&p.lon!==null&&p.lon!==undefined&&p.lon!==""?p.lat+","+p.lon:p.name+" "+p.area+" Canberra ACT")+'&travelmode=driving">Get directions ↗</a></div></article>').join(""):'<div class="empty">No matching places. Try another search or add a research lead.</div>'}
+function render(){let q=document.getElementById("search").value.toLowerCase();let items=all().filter(p=>(tab==="all"||(tab==="saved"&&saved.includes(p.name))||(tab==="mine"&&p.custom))&&[p.name,p.area,p.notes,p.status].join(" ").toLowerCase().includes(q));document.getElementById("count").textContent=items.length+" research leads";document.getElementById("places").innerHTML=items.length?items.map(p=>'<article class="place"><div class="tag">'+esc(p.status||"Personal note")+'</div><h3>'+esc(p.name)+'</h3><div style="font-size:12px;color:#c2d0c4">'+esc(p.area)+'</div><p>'+esc(p.notes)+'</p><div class="actions"><button class="secondary" onclick="toggleSaved('+JSON.stringify(p.name).replace(/"/g,'&quot;')+')">'+(saved.includes(p.name)?"★ Saved":"☆ Save")+'</button><button class="secondary" onclick="focusPlace('+JSON.stringify(p.name).replace(/"/g,'&quot;')+')">Show on map</button><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(p.lat!==null&&p.lat!==undefined&&p.lat!==""&&p.lon!==null&&p.lon!==undefined&&p.lon!==""?p.lat+","+p.lon:p.name+" "+p.area+" Canberra ACT")+'&travelmode=driving">Get directions ↗</a></div></article>').join(""):'<div class="empty">No matching places. Try another search or add a research lead.</div>'}
 function setTab(t,b){tab=t;document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");render()}
 function toggleSaved(n){saved=saved.includes(n)?saved.filter(x=>x!==n):[...saved,n];localStorage.setItem("cbr_saved",JSON.stringify(saved));render()}
 function toggleAdd(){let p=document.getElementById("addPanel");p.style.display=p.style.display==="block"?"none":"block"}
-function addPlace(){let name=document.getElementById("newName").value.trim(),area=document.getElementById("newArea").value.trim(),notes=document.getElementById("newNotes").value.trim(),lat=document.getElementById("newLat").value.trim(),lon=document.getElementById("newLon").value.trim();if(!name){alert("Please enter a place name.");return}custom.push({name,area:area||"Canberra / ACT",notes:notes||"No notes added yet. Verify details and access.",status:"My addition",custom:true,lat:lat===""?null:Number(lat),lon:lon===""?null:Number(lon)});localStorage.setItem("cbr_custom",JSON.stringify(custom));renderMap();document.getElementById("newName").value="";document.getElementById("newArea").value="";document.getElementById("newNotes").value="";document.getElementById("newLat").value="";document.getElementById("newLon").value="";toggleAdd();tab="mine";document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("active",x.dataset.tab==="mine"));render()}
+function addPlace(){let name=document.getElementById("newName").value.trim(),area=document.getElementById("newArea").value.trim(),notes=document.getElementById("newNotes").value.trim(),lat=document.getElementById("newLat").value.trim(),lon=document.getElementById("newLon").value.trim();if(!name){alert("Please enter a place name.");return}if((lat==="")!==(lon==="")){alert("Enter both latitude and longitude, or leave both blank.");return}if(lat!==""&&(!Number.isFinite(Number(lat))||!Number.isFinite(Number(lon))||Math.abs(Number(lat))>90||Math.abs(Number(lon))>180)){alert("Those coordinates are not valid. Check latitude and longitude.");return}custom.push({name,area:area||"Canberra / ACT",notes:notes||"No notes added yet. Verify details and access.",status:"My addition",custom:true,lat:lat===""?null:Number(lat),lon:lon===""?null:Number(lon)});localStorage.setItem("cbr_custom",JSON.stringify(custom));renderMap();document.getElementById("newName").value="";document.getElementById("newArea").value="";document.getElementById("newNotes").value="";document.getElementById("newLat").value="";document.getElementById("newLon").value="";toggleAdd();tab="mine";document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("active",x.dataset.tab==="mine"));render()}
 document.getElementById("search").addEventListener("input",render);
 document.getElementById("mapStyle").value=appSettings.mapStyle;
 document.getElementById("showPins").checked=!!appSettings.showPins;

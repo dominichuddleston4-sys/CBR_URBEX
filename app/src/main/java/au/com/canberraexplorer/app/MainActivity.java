@@ -119,11 +119,11 @@ public class MainActivity extends Activity {
                 reader.close();
 
                 JSONObject info = new JSONObject(body.toString());
-                int latestCode = info.optInt("versionCode", 0);
+                long latestCode = info.optLong("versionCode", 0);
                 String latestName = info.optString("versionName", "new version");
                 String apkUrl = info.optString("apkUrl", "");
                 PackageInfo installed = getPackageManager().getPackageInfo(getPackageName(), 0);
-                int installedCode = installed.versionCode;
+                long installedCode = android.os.Build.VERSION.SDK_INT >= 28 ? installed.getLongVersionCode() : installed.versionCode;
                 if (latestCode > installedCode && apkUrl.startsWith("https://")) {
                     runOnUiThread(() -> new AlertDialog.Builder(MainActivity.this)
                         .setTitle("Canberra Explorer update")
