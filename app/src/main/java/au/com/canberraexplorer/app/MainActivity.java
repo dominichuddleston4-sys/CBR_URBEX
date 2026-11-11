@@ -29,6 +29,8 @@ public class MainActivity extends Activity {
     private WebView webView;
     private GeolocationPermissions.Callback geoCallback;
     private String geoOrigin;
+    private AlertDialog updateDialog;
+    private volatile boolean updateCheckRunning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,10 +104,17 @@ public class MainActivity extends Activity {
         } else {
             webView.restoreState(savedInstanceState);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         checkForApkUpdate();
     }
 
     private void checkForApkUpdate() {
+        if (updateCheckRunning) return;
+        updateCheckRunning = true;
         new Thread(() -> {
             HttpURLConnection connection = null;
             try {
@@ -126,22 +135,32 @@ public class MainActivity extends Activity {
                 String apkUrl = info.optString("apkUrl", "");
                 PackageInfo installed = getPackageManager().getPackageInfo(getPackageName(), 0);
                 long installedCode = android.os.Build.VERSION.SDK_INT >= 28 ? installed.getLongVersionCode() : installed.versionCode;
-                if (latestCode > installedCode && apkUrl.startsWith("https://")) {
-                    runOnUiThread(() -> new AlertDialog.Builder(MainActivity.this)
+                runOnUiThread(() -> {
+                    // Once Android reports the installed version as current, remove any stale update prompt.
+                    if (latestCode <= installedCode) {
+                        if (updateDialog != null && updateDialog.isShowing()) updateDialog.dismiss();
+                        updateDialog = null;
+                        return;
+                    }
+                    if (!apkUrl.startsWith("https://") || isFinishing() || isDestroyed()) return;
+                    if (updateDialog != null && updateDialog.isShowing()) return;
+                    updateDialog = new AlertDialog.Builder(MainActivity.this)
                         .setTitle("Canberra Explorer update")
-                        .setMessage("Version " + latestName + " is available. Download the update and install it to get the latest app.")
+                        .setMessage("Version " + latestName + " is available. Download and install it to update the app.")
                         .setPositiveButton("Download update", (dialog, which) -> {
                             try {
                                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(apkUrl)));
                             } catch (Exception ignored) { }
                         })
                         .setNegativeButton("Later", null)
-                        .show());
-                }
+                        .create();
+                    updateDialog.show();
+                });
             } catch (Exception ignored) {
                 // Keep the app usable when the update service is unavailable.
             } finally {
                 if (connection != null) connection.disconnect();
+                updateCheckRunning = false;
             }
         }).start();
     }
