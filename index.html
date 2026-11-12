@@ -21,6 +21,15 @@ footer{padding:22px 16px;text-align:center;color:#78877b;font-size:11px}
 .empty{color:var(--muted);padding:25px;text-align:center;border:1px dashed var(--line);border-radius:12px}
 #mapShell{position:relative;margin:10px 0 16px;border:1px solid var(--line);border-radius:15px;overflow:hidden;background:#e8e6df}#map{height:430px;width:100%;background:#e8e6df}.mapbar{position:absolute;z-index:800;top:12px;left:12px;right:12px;display:flex;gap:7px;flex-wrap:wrap;pointer-events:none}.mapbar button{pointer-events:auto;background:#fff;color:#202124;border:1px solid #dadce0;border-radius:22px;padding:9px 13px;box-shadow:0 2px 7px #0003;font-size:12px;font-weight:700}.mapbar button:active{background:#e8f0fe}.mapnote{font-size:11px;color:var(--muted);margin:-7px 0 14px}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fff;color:#202124;border-radius:10px}.leaflet-popup-content a{color:#1967d2;font-weight:700}.leaflet-container{font:13px Roboto,Arial,sans-serif}.leaflet-control-zoom a{color:#202124!important}.leaflet-control-attribution{font-size:10px!important}#mapShell.fullscreen{position:fixed;inset:0;z-index:9999;margin:0;border:0;border-radius:0}#mapShell.fullscreen #map{height:100%;height:100dvh}#mapShell.fullscreen .mapbar{top:max(12px,env(safe-area-inset-top));left:12px}#mapShell.fullscreen #closeMap{display:inline-block}#closeMap{display:none}#settingsPanel{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:15px;margin:12px 0 18px}#settingsPanel[hidden]{display:none}.setting-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid var(--line)}.setting-row:last-child{border-bottom:0}.setting-row label{font-size:13px;color:var(--white)}.setting-row small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.setting-row select{max-width:180px}#settingsPanel h3{margin:0 0 6px}#settingsPanel .actions{margin-top:12px}
 #updateBanner{display:none;background:#1d2b1d;border:1px solid var(--green);border-radius:12px;padding:13px;margin:12px 0;color:var(--white)}#updateBanner strong{color:var(--green)}#updateBanner p{font-size:12px;color:var(--muted);margin:5px 0 10px}#updateBanner .actions{display:flex;gap:8px;flex-wrap:wrap}
+.photo-modal{display:none;position:fixed;inset:0;z-index:10000;background:#000b;padding:16px;overflow:auto}
+.photo-dialog{max-width:760px;margin:5vh auto;background:#111a14;border:1px solid #526653;border-radius:16px;padding:16px;color:var(--white)}
+.photo-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.photo-head h2{margin:0;font-size:20px}
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:12px 0}
+.photo-item{background:#1b261e;border:1px solid var(--line);border-radius:12px;padding:9px;min-width:0}
+.photo-item img{width:100%;height:150px;object-fit:cover;border-radius:8px;background:#0b100d}
+.photo-item p{font-size:12px;color:#dce7dd;margin:7px 0}.photo-item small{font-size:10px;color:var(--muted)}
+.photo-upload{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}.photo-upload label{display:block;font-size:12px;color:var(--muted);margin:8px 0 5px}
+.photo-upload input,.photo-upload textarea{margin-bottom:6px}.photo-status{font-size:12px;color:var(--green);margin:8px 0}
 </style><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"><link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#101510"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link rel="icon" href="./icon.svg" type="image/svg+xml"></head>
 <body>
 <header><div class="brand">CANBERRA EXPLORER</div><h1>Canberra Explorer</h1><p>Abandoned places, local history &amp; field notes</p></header>
@@ -47,7 +56,24 @@ footer{padding:22px 16px;text-align:center;color:#78877b;font-size:11px}
 <div class="tabs"><button class="active" data-tab="all" onclick="setTab('all',this)">All leads</button><button data-tab="saved" onclick="setTab('saved',this)">★ Saved</button><button data-tab="mine" onclick="setTab('mine',this)">My additions</button></div>
 <div id="count" style="font-size:12px;color:var(--muted);margin:0 0 10px"></div>
 <div id="places" class="grid"></div>
-</main><footer>CANBERRA EXPLORER · Offline-friendly app · Your saved items stay in this browser on this device</footer>
+</main>
+<div id="photoModal" class="photo-modal" role="dialog" aria-modal="true" aria-label="Location photo gallery">
+ <div class="photo-dialog">
+  <div class="photo-head"><h2 id="photoTitle">Location photos</h2><button class="secondary" onclick="closeGallery()">Close</button></div>
+  <p class="mapnote">Shared photos for this location. New uploads are held for review before everyone can see them.</p>
+  <div id="photoStatus" class="photo-status" aria-live="polite">Loading gallery…</div>
+  <div id="photoGrid" class="photo-grid"></div>
+  <div class="photo-upload">
+   <h3 style="margin:0 0 6px">Add a photo</h3>
+   <label for="photoFile">Choose a JPG, PNG or WebP image (max 10 MB)</label>
+   <input id="photoFile" type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
+   <label for="photoCaption">Caption (optional)</label>
+   <textarea id="photoCaption" rows="2" maxlength="300" placeholder="Add a short note"></textarea>
+   <button onclick="uploadSelectedPhoto()">Upload photo</button>
+  </div>
+ </div>
+</div>
+<footer>CANBERRA EXPLORER · Offline-friendly app · Your saved items stay in this browser on this device</footer>
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" onerror="this.onerror=null;this.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'"></script>
 <script>
 const seed=[
@@ -227,7 +253,76 @@ function clearMyData(){
  localStorage.removeItem("cbr_custom");localStorage.removeItem("cbr_saved");
  custom=[];saved=[];renderMap();render();document.getElementById("updateStatus").textContent="Your saved places and personal additions were cleared from this device.";
 }
-function render(){let q=document.getElementById("search").value.toLowerCase();let items=all().filter(p=>(tab==="all"||(tab==="saved"&&saved.includes(p.name))||(tab==="mine"&&p.custom))&&[p.name,p.area,p.notes,p.status].join(" ").toLowerCase().includes(q));document.getElementById("count").textContent=items.length+" research leads";document.getElementById("places").innerHTML=items.length?items.map(p=>'<article class="place"><div class="tag">'+esc(p.status||"Personal note")+'</div><h3>'+esc(p.name)+'</h3><div style="font-size:12px;color:#c2d0c4">'+esc(p.area)+'</div><p>'+esc(p.notes)+'</p><div class="actions"><button class="secondary" onclick="toggleSaved('+JSON.stringify(p.name).replace(/"/g,'&quot;')+')">'+(saved.includes(p.name)?"★ Saved":"☆ Save")+'</button><button class="secondary" onclick="focusPlace('+JSON.stringify(p.name).replace(/"/g,'&quot;')+')">Show on map</button><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(p.lat!==null&&p.lat!==undefined&&p.lat!==""&&p.lon!==null&&p.lon!==undefined&&p.lon!==""?p.lat+","+p.lon:p.name+" "+p.area+" Canberra ACT")+'&travelmode=driving">Get directions ↗</a></div></article>').join(""):'<div class="empty">No matching places. Try another search or add a research lead.</div>'}
+
+let photoCallbackCounter=0;
+const photoCallbacks={};
+let currentPhotoLocationId="";
+let currentPhotoLocationName="";
+window.onNativePhotoResult=function(id,result){
+ const callback=photoCallbacks[id];if(callback){delete photoCallbacks[id];callback(result||{});}
+};
+function callPhotoBridge(method,args){
+ return new Promise(resolve=>{
+  if(!window.CanberraPhotos||typeof CanberraPhotos[method]!=="function"){resolve({success:false,error:"Photo galleries are available in the installed Android app."});return;}
+  const id="photo-"+(++photoCallbackCounter);
+  photoCallbacks[id]=resolve;
+  try{CanberraPhotos[method](...args,id);}catch(e){delete photoCallbacks[id];resolve({success:false,error:"Could not contact the photo service."});}
+ });
+}
+function photoLocationId(name){return String(name||"location").toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,80)||"location";}
+async function openGallery(name){
+ currentPhotoLocationName=name;currentPhotoLocationId=photoLocationId(name);
+ document.getElementById("photoTitle").textContent=name+" · Photos";
+ document.getElementById("photoModal").style.display="block";
+ document.getElementById("photoStatus").textContent="Loading shared photos…";
+ document.getElementById("photoGrid").innerHTML="";
+ const result=await callPhotoBridge("getLocationPhotos",[currentPhotoLocationId]);
+ renderPhotoGallery(result);
+}
+function closeGallery(){document.getElementById("photoModal").style.display="none";document.getElementById("photoFile").value="";document.getElementById("photoCaption").value="";}
+function renderPhotoGallery(result){
+ const status=document.getElementById("photoStatus"),grid=document.getElementById("photoGrid");
+ if(result.error){status.textContent=result.error;grid.innerHTML="";return;}
+ const photos=Array.isArray(result.photos)?result.photos:[];
+ status.textContent=photos.length?photos.length+" photo(s) in this gallery. Pending uploads are visible only to you and moderators.":"No shared photos yet. Be the first to add one.";
+ grid.innerHTML=photos.map(p=>{
+  const pending=p.status==="pending";
+  const id=esc(p.id);
+  const controls=pending&&result.moderator
+   ?'<div class="actions"><button onclick="moderatePhoto('+JSON.stringify(p.id).replace(/"/g,'&quot;')+',\'approve\')">Approve</button><button class="secondary" onclick="moderatePhoto('+JSON.stringify(p.id).replace(/"/g,'&quot;')+',\'delete\')">Remove</button></div>'
+   :(!pending?'<div class="actions"><button class="secondary" onclick="reportPhoto('+JSON.stringify(p.id).replace(/"/g,'&quot;')+')">Report</button></div>':'');
+  return '<article class="photo-item"><img src="'+esc(p.url)+'" alt="Photo uploaded by '+esc(p.uploaderName)+'" loading="lazy"><small>'+(pending?"Pending review · ":"")+ 'Uploaded by '+esc(p.uploaderName)+'</small><p>'+esc(p.caption||"")+'</p>'+controls+'</article>';
+ }).join("");
+}
+async function uploadSelectedPhoto(){
+ const file=document.getElementById("photoFile").files[0];
+ const status=document.getElementById("photoStatus");
+ if(!file){status.textContent="Choose a photo first.";return;}
+ if(file.size>10*1024*1024){status.textContent="That image is larger than 10 MB.";return;}
+ if(!["image/jpeg","image/png","image/webp"].includes(file.type)){status.textContent="Use a JPG, PNG or WebP image.";return;}
+ status.textContent="Uploading photo…";
+ const reader=new FileReader();
+ reader.onerror=()=>{status.textContent="Could not read that image.";};
+ reader.onload=async()=>{
+  const base64=String(reader.result).split(",")[1]||"";
+  const result=await callPhotoBridge("uploadLocationPhoto",[currentPhotoLocationId,base64,file.type,document.getElementById("photoCaption").value.trim()]);
+  if(result.success){document.getElementById("photoFile").value="";document.getElementById("photoCaption").value="";status.textContent="Uploaded. Your photo is pending review and will appear publicly once approved.";const refreshed=await callPhotoBridge("getLocationPhotos",[currentPhotoLocationId]);renderPhotoGallery(refreshed);}
+  else status.textContent=result.error||"Upload failed.";
+ };
+ reader.readAsDataURL(file);
+}
+async function reportPhoto(photoId){
+ const reason=prompt("Why are you reporting this photo?");if(reason===null)return;
+ const result=await callPhotoBridge("reportLocationPhoto",[currentPhotoLocationId,photoId,reason]);
+ alert(result.success?"Report submitted for review.":(result.error||"Could not submit report."));
+}
+async function moderatePhoto(photoId,action){
+ if(!confirm(action==="approve"?"Approve this photo for everyone to see?":"Permanently remove this photo?"))return;
+ const result=await callPhotoBridge("moderateLocationPhoto",[currentPhotoLocationId,photoId,action]);
+ if(!result.success){alert(result.error||"Moderation action failed.");return;}
+ const refreshed=await callPhotoBridge("getLocationPhotos",[currentPhotoLocationId]);renderPhotoGallery(refreshed);
+}
+\nfunction render(){let q=document.getElementById("search").value.toLowerCase();let items=all().filter(p=>(tab==="all"||(tab==="saved"&&saved.includes(p.name))||(tab==="mine"&&p.custom))&&[p.name,p.area,p.notes,p.status].join(" ").toLowerCase().includes(q));document.getElementById("count").textContent=items.length+" research leads";document.getElementById("places").innerHTML=items.length?items.map(p=>'<article class="place"><div class="tag">'+esc(p.status||"Personal note")+'</div><h3>'+esc(p.name)+'</h3><div style="font-size:12px;color:#c2d0c4">'+esc(p.area)+'</div><p>'+esc(p.notes)+'</p><div class="actions"><button class="secondary" onclick="toggleSaved('+JSON.stringify(p.name).replace(/"/g,'&quot;')+')">'+(saved.includes(p.name)?"★ Saved":"☆ Save")+'</button><button class="secondary" onclick="focusPlace('+JSON.stringify(p.name).replace(/"/g,'&quot;')+')">Show on map</button><button class="secondary" onclick="openGallery('+JSON.stringify(p.name).replace(/"/g,'&quot;')+')">Photos</button><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(p.lat!==null&&p.lat!==undefined&&p.lat!==""&&p.lon!==null&&p.lon!==undefined&&p.lon!==""?p.lat+","+p.lon:p.name+" "+p.area+" Canberra ACT")+'&travelmode=driving">Get directions ↗</a></div></article>').join(""):'<div class="empty">No matching places. Try another search or add a research lead.</div>'}
 function setTab(t,b){tab=t;document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");render()}
 function toggleSaved(n){saved=saved.includes(n)?saved.filter(x=>x!==n):[...saved,n];localStorage.setItem("cbr_saved",JSON.stringify(saved));render()}
 function toggleAdd(){let p=document.getElementById("addPanel");p.style.display=p.style.display==="block"?"none":"block"}
