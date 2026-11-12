@@ -25,7 +25,7 @@ footer{padding:22px 16px;text-align:center;color:#78877b;font-size:11px}
 <body>
 <header><div class="brand">CANBERRA EXPLORER</div><h1>Canberra Explorer</h1><p>Abandoned places, local history &amp; field notes</p></header>
 <main>
-<div style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px"><button id="installApp" class="secondary" hidden>⬇ Install Canberra Explorer</button><button id="settingsToggle" class="secondary" onclick="toggleSettings()">⚙ Settings</button><span style="font-size:12px;color:var(--muted);align-self:center">Android: browser menu ⋮ → Install app or Add to Home screen</span></div><div class="notice"><strong>Field safety:</strong> Entries are research leads, not permission to enter. Some sites may be private, occupied, demolished, hazardous or protected. Check current ownership, access rules and safety before visiting. Do not trespass or disturb sites.</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px"><button id="installApp" class="secondary" hidden>⬇ Install Canberra Explorer</button><button id="settingsToggle" class="secondary" onclick="toggleSettings()">⚙ Settings</button><button class="secondary" onclick="openOfflineMap()">⬇ Offline map</button><span style="font-size:12px;color:var(--muted);align-self:center">Android: browser menu ⋮ → Install app or Add to Home screen</span></div><div class="notice"><strong>Field safety:</strong> Entries are research leads, not permission to enter. Some sites may be private, occupied, demolished, hazardous or protected. Check current ownership, access rules and safety before visiting. Do not trespass or disturb sites.</div>
 <h2 style="font-size:18px;margin:18px 0 8px">Canberra map</h2><div id="mapShell"><div class="mapbar"><button onclick="locateMe()">◎ My location</button><button onclick="fitAllPins()">Show all pins</button><button onclick="toggleMapFullscreen()">⛶ Full screen</button><button id="closeMap" onclick="toggleMapFullscreen()">✕ Close</button></div><div id="map" aria-label="Interactive road map of Canberra with place pins"></div></div><p class="mapnote">Real street map with roads, suburb labels, parks and waterways. Switch between OpenStreetMap streets, a detailed street style and satellite imagery using the layer button. Map tiles need internet. Tap a pin for details; use My location to centre the map on your phone (permission required). Some directory leads have no confirmed coordinates and therefore appear only in the list. Imported locations are unverified and do not imply permission to enter.</p>
 <section id="settingsPanel" hidden aria-label="App settings">
 <h3>Settings</h3><p class="mapnote" style="margin:0 0 8px">Change how Canberra Explorer looks and manages information on this device.</p>
@@ -180,6 +180,7 @@ function toggleMapFullscreen(){
  const shell=document.getElementById("mapShell");shell.classList.toggle("fullscreen");
  setTimeout(()=>{if(map)map.invalidateSize();},220);
 }
+function openOfflineMap(){if(window.CanberraNative&&typeof CanberraNative.openOfflineMap==="function"){CanberraNative.openOfflineMap();}else{alert("Offline area downloads are available in the installed Android app.");}}
 function toggleSettings(){
  const panel=document.getElementById("settingsPanel");panel.hidden=!panel.hidden;
  document.getElementById("settingsToggle").textContent=panel.hidden?"⚙ Settings":"✕ Close settings";
