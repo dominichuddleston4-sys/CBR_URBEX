@@ -180,6 +180,14 @@ public class MainActivity extends Activity {
                 if (placesGeoJson != null && placesGeoJson.length() <= 2000000) intent.putExtra("places_geojson", placesGeoJson);
                 runOnUiThread(() -> startActivity(intent));
             }
+            @JavascriptInterface public void signOut() {
+                runOnUiThread(() -> {
+                    if (firebaseAuth != null) firebaseAuth.signOut();
+                    if (googleSignInClient != null) googleSignInClient.signOut();
+                    showSignInScreen();
+                    Toast.makeText(MainActivity.this, "You have been signed out.", Toast.LENGTH_SHORT).show();
+                });
+            }
             @JavascriptInterface public boolean isAdminAccount() {
                 FirebaseUser user = firebaseAuth == null ? null : firebaseAuth.getCurrentUser();
                 return user != null && user.isEmailVerified()
