@@ -100,3 +100,14 @@ For each new release, add a dated section containing:
 **Accuracy rule:** A successful build or public APK upload does not prove that the APK installs,
 that every feature works, or that automatic updates work. Mark each separately as verified,
 failed, or not tested.
+
+## 2.0 development work — 12 November 2026
+
+- Created implementation tracking issue: https://github.com/dominichuddleston4-sys/CBR_URBEX/issues/1
+- Added technical architecture notes at [docs/CANBERRA_EXPLORER_2_0_TECHNICAL_PLAN.md](docs/CANBERRA_EXPLORER_2_0_TECHNICAL_PLAN.md).
+- Added Android launcher icon vector resources (adaptive icon for Android 8.0+ and legacy vector fallback) and wired the icon into AndroidManifest.xml.
+- **Build status:** signed APK workflow is running for the icon change; do not install or announce a new release until it completes successfully and the release asset is verified.
+- **Device verification:** pending; the owner must check the icon on their Android home screen after installing a verified APK.
+- **Offline ACT map:** not implemented. MapLibre Native Android's offline-region APIs are a candidate, but this requires moving the map from the current Leaflet WebView to a native renderer or a deliberate hybrid architecture, plus a tile source with verified offline-use rights.
+- **Offline routing:** not implemented. Valhalla is a candidate requiring a native Android proof-of-concept and ACT routing data. Do not rely on GraphHopper's older offline Android integration without verifying support.
+- **Shared photo galleries:** not implemented; Firebase database/storage rules and moderation are still required.
