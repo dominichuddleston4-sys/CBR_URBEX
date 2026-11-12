@@ -30,7 +30,7 @@ on:
       - '.github/workflows/build-test-apk.yml'
 
 concurrency:
-  group: canberra-explorer-release
+  group: canberra-explorer-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
