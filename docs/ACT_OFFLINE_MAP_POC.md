@@ -1,6 +1,10 @@
 # ACT offline map — implementation spike
 
-Status: **design spike only; no offline map is shipped by this branch.** The user has approved the free, self-generated OpenStreetMap data approach for the ACT.
+Status: **native renderer smoke-test code added; no ACT offline data is shipped and the existing app map is unchanged.** The user has approved the free, self-generated OpenStreetMap data approach for the ACT.
+
+## Renderer prototype status
+
+A separate `OfflineMapPrototypeActivity` and the pinned MapLibre Native Android `13.7.1` dependency have been added on the `feature/native-map-renderer-spike` branch. The activity loads MapLibre's public demo style centred on Canberra and visibly labels itself as internet-required. It is an isolated renderer smoke test only: it is not connected to the app's normal navigation, does not download ACT data, and cannot work offline. No Android build or device test has yet been run for this commit. The normal WebView map and sign-in flow are intentionally untouched.
 
 ## Goal
 
