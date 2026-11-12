@@ -195,41 +195,60 @@ public class MainActivity extends Activity {
             }
             @JavascriptInterface public void loadAdminUsers(String callbackId) {
                 if (!isAdminAccount() || !validCallback(callbackId)) return;
-                firestore.collection("appUsers")
-                    .orderBy("lastSeen", com.google.firebase.firestore.Query.Direction.DESCENDING)
-                    .limit(100).get().addOnSuccessListener(snapshot -> {
-                        JSONArray users = new JSONArray();
-                        for (DocumentSnapshot doc : snapshot.getDocuments()) {
+                FirebaseUser adminUser = firebaseAuth.getCurrentUser();
+                if (adminUser == null) {
+                    sendAdminError(callbackId, "Administrator session expired. Sign in again.");
+                    return;
+                }
+                // Refresh the ID token so Firestore receives the latest verified-email claim.
+                adminUser.getIdToken(true).addOnSuccessListener(tokenResult ->
+                    firestore.collection("appUsers")
+                        .orderBy("lastSeen", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                        .limit(100).get().addOnSuccessListener(snapshot -> {
+                            JSONArray users = new JSONArray();
+                            for (DocumentSnapshot doc : snapshot.getDocuments()) {
+                                try {
+                                    JSONObject item = new JSONObject();
+                                    item.put("uid", doc.getId());
+                                    item.put("email", doc.getString("email") == null ? "" : doc.getString("email"));
+                                    item.put("displayName", doc.getString("displayName") == null ? "" : doc.getString("displayName"));
+                                    item.put("blocked", Boolean.TRUE.equals(doc.getBoolean("blocked")));
+                                    item.put("forceSignOut", Boolean.TRUE.equals(doc.getBoolean("forceSignOut")));
+                                    com.google.firebase.Timestamp seen = doc.getTimestamp("lastSeen");
+                                    item.put("lastSeen", seen == null ? 0 : seen.toDate().getTime());
+                                    users.put(item);
+                                } catch (Exception ignored) { }
+                            }
                             try {
-                                JSONObject item = new JSONObject();
-                                item.put("uid", doc.getId());
-                                item.put("email", doc.getString("email") == null ? "" : doc.getString("email"));
-                                item.put("displayName", doc.getString("displayName") == null ? "" : doc.getString("displayName"));
-                                item.put("blocked", Boolean.TRUE.equals(doc.getBoolean("blocked")));
-                                item.put("forceSignOut", Boolean.TRUE.equals(doc.getBoolean("forceSignOut")));
-                                com.google.firebase.Timestamp seen = doc.getTimestamp("lastSeen");
-                                item.put("lastSeen", seen == null ? 0 : seen.toDate().getTime());
-                                users.put(item);
-                            } catch (Exception ignored) { }
-                        }
-                        try {
-                            JSONObject result = new JSONObject();
-                            result.put("ok", true);
-                            result.put("users", users);
-                            sendAdminCallback(callbackId, result.toString());
-                        } catch (Exception ignored) { sendAdminError(callbackId, "Could not format user list."); }
-                    }).addOnFailureListener(error ->
-                        sendAdminError(callbackId, "Could not load users. Check that Firestore is enabled and its rules are published."));
+                                JSONObject result = new JSONObject();
+                                result.put("ok", true);
+                                result.put("users", users);
+                                sendAdminCallback(callbackId, result.toString());
+                            } catch (Exception ignored) { sendAdminError(callbackId, "Could not format user list."); }
+                        }).addOnFailureListener(error ->
+                            sendAdminError(callbackId, "Firestore read failed (" + error.getCode() + "). Publish firestore.rules in Firebase Console and confirm Firestore Database exists."))
+                ).addOnFailureListener(error ->
+                    sendAdminError(callbackId, "Could not refresh administrator sign-in (" + error.getMessage() + "). Sign out and back in."));
+
             }
             @JavascriptInterface public void setAdminUserFlag(String uid, String field, boolean value, String callbackId) {
                 if (!isAdminAccount() || !validCallback(callbackId) || uid == null
                     || !uid.matches("[A-Za-z0-9_-]{1,128}")
                     || !("blocked".equals(field) || "forceSignOut".equals(field))) return;
+                FirebaseUser adminUser = firebaseAuth.getCurrentUser();
+                if (adminUser == null) {
+                    sendAdminError(callbackId, "Administrator session expired. Sign in again.");
+                    return;
+                }
                 Map<String,Object> change = new HashMap<>();
                 change.put(field, value);
-                firestore.collection("appUsers").document(uid).update(change)
-                    .addOnSuccessListener(unused -> sendAdminCallback(callbackId, "{\"ok\":true}"))
-                    .addOnFailureListener(error -> sendAdminError(callbackId, "Could not update this account. Check Firestore rules."));
+                adminUser.getIdToken(true).addOnSuccessListener(tokenResult ->
+                    firestore.collection("appUsers").document(uid).update(change)
+                        .addOnSuccessListener(unused -> sendAdminCallback(callbackId, "{\"ok\":true}"))
+                        .addOnFailureListener(error -> sendAdminError(callbackId, "Firestore update failed (" + error.getCode() + "). Check that firestore.rules is published."))
+                ).addOnFailureListener(error ->
+                    sendAdminError(callbackId, "Could not refresh administrator sign-in. Sign out and back in."));
+
             }
             private boolean validCallback(String value) {
                 return value != null && value.matches("[A-Za-z0-9_]{1,50}");
