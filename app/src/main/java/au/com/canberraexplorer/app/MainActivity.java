@@ -208,7 +208,7 @@ public class MainActivity extends Activity {
                 com.google.firebase.firestore.CollectionReference photos = firestore.collection("locations").document(locationId).collection("photos");
                 com.google.firebase.firestore.Query query = admin
                     ? photos.orderBy("createdAt", com.google.firebase.firestore.Query.Direction.DESCENDING).limit(30)
-                    : photos.whereEqualTo("status", "approved").orderBy("createdAt", com.google.firebase.firestore.Query.Direction.DESCENDING).limit(30);
+                    : photos.whereEqualTo("status", "approved").limit(30);
                 query.get().addOnSuccessListener(snapshot -> {
                     JSONArray items = new JSONArray();
                     for (DocumentSnapshot doc : snapshot.getDocuments()) {
