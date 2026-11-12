@@ -24,13 +24,13 @@ service cloud.firestore {
             "uploaderUid", "uploaderName", "storagePath", "contentType",
             "sizeBytes", "status", "createdAt", "caption"
           ])
+          && photoId.matches("^[a-zA-Z0-9-]{1,100}$")
+          && locationId.matches("^[a-z0-9-]{1,80}$")
           && request.resource.data.uploaderUid == request.auth.uid
           && request.resource.data.uploaderName is string
           && request.resource.data.uploaderName.size() <= 80
           && request.resource.data.storagePath is string
-          && request.resource.data.storagePath.matches(
-            "^locationPhotos/" + locationId + "/" + request.auth.uid + "/" + photoId + "$"
-          )
+          && request.resource.data.storagePath == "locationPhotos/" + locationId + "/" + request.auth.uid + "/" + photoId
           && request.resource.data.contentType in [
             "image/jpeg", "image/png", "image/webp"
           ]
