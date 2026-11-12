@@ -142,7 +142,7 @@ public class OfflineMapActivity extends Activity {
                     .header("User-Agent", "CanberraExplorer/2.0 (Android)")
                     .build()))
             .build();
-        HttpRequestUtil.setOkHttpClient(client);
+        new HttpRequestUtil().setOkHttpClient(client);
     }
 
     private void addPlacePins(Style style, String geoJson) {
