@@ -111,3 +111,8 @@ failed, or not tested.
 - **Offline ACT map:** not implemented. MapLibre Native Android's offline-region APIs are a candidate, but this requires moving the map from the current Leaflet WebView to a native renderer or a deliberate hybrid architecture, plus a tile source with verified offline-use rights.
 - **Offline routing:** not implemented. Valhalla is a candidate requiring a native Android proof-of-concept and ACT routing data. Do not rely on GraphHopper's older offline Android integration without verifying support.
 - **Shared photo galleries:** not implemented; Firebase database/storage rules and moderation are still required.
+
+
+## 2.0 testing
+
+The release-gate checklist is maintained in [docs/CANBERRA_EXPLORER_2_0_TEST_PLAN.md](docs/CANBERRA_EXPLORER_2_0_TEST_PLAN.md). The checklist records implemented, tested, blocked and not-implemented items separately. 2.0 must not be released until all mandatory tests pass.
