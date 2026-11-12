@@ -24,6 +24,11 @@ import android.webkit.WebSettings;
 import android.webkit.JavascriptInterface;
 import android.view.View;
 import android.graphics.Color;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import android.widget.Toast;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -57,6 +62,8 @@ import java.net.URL;
 public class MainActivity extends Activity {
     private static final int LOCATION_REQUEST = 42;
     private static final int GOOGLE_SIGN_IN_REQUEST = 44;
+    private static final int PHOTO_PICKER_REQUEST = 45;
+    private String pendingPhotoLocationId, pendingPhotoCaption, pendingPhotoCallback;
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore firestore;
     private GoogleSignInClient googleSignInClient;
@@ -161,6 +168,8 @@ public class MainActivity extends Activity {
                     && "dominichuddleston4-sys.github.io".equalsIgnoreCase(host)
                     && uri.getPath() != null
                     && uri.getPath().startsWith("/CBR_URBEX")) return false;
+                if ("https".equalsIgnoreCase(scheme)
+                    && "deploy-preview-7--cbrurbex.netlify.app".equalsIgnoreCase(host)) return false;
                 try { startActivity(new Intent(Intent.ACTION_VIEW, uri)); }
                 catch (Exception ignored) { }
                 return true;
@@ -179,6 +188,66 @@ public class MainActivity extends Activity {
                 Intent intent = new Intent(MainActivity.this, OfflineMapActivity.class);
                 if (placesGeoJson != null && placesGeoJson.length() <= 2000000) intent.putExtra("places_geojson", placesGeoJson);
                 runOnUiThread(() -> startActivity(intent));
+            }
+
+            @JavascriptInterface public void openPhotoPicker(String locationId, String caption, String callbackId) {
+                if (!validCallback(callbackId) || !validLocationId(locationId)) return;
+                if (firebaseAuth == null || firebaseAuth.getCurrentUser() == null) {
+                    sendPhotoCallback(callbackId, false, "Please sign in before uploading photos."); return;
+                }
+                pendingPhotoLocationId = locationId;
+                pendingPhotoCaption = caption == null ? "" : caption.substring(0, Math.min(300, caption.length()));
+                pendingPhotoCallback = callbackId;
+                Intent picker = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                picker.addCategory(Intent.CATEGORY_OPENABLE);
+                picker.setType("image/*");
+                picker.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+                runOnUiThread(() -> startActivityForResult(picker, PHOTO_PICKER_REQUEST));
+            }
+            @JavascriptInterface public void loadLocationPhotos(String locationId, String callbackId) {
+                if (!validCallback(callbackId) || !validLocationId(locationId) || firebaseAuth.getCurrentUser() == null) return;
+                boolean admin = isAdminAccount();
+                com.google.firebase.firestore.CollectionReference photos = firestore.collection("locations").document(locationId).collection("photos");
+                com.google.firebase.firestore.Query query = admin
+                    ? photos.orderBy("createdAt", com.google.firebase.firestore.Query.Direction.DESCENDING).limit(30)
+                    : photos.whereEqualTo("status", "approved").limit(30);
+                query.get().addOnSuccessListener(snapshot -> {
+                    JSONArray items = new JSONArray();
+                    for (DocumentSnapshot doc : snapshot.getDocuments()) {
+                        try {
+                            JSONObject item = new JSONObject();
+                            item.put("id", doc.getId());
+                            item.put("uploaderName", doc.getString("uploaderName") == null ? "Explorer" : doc.getString("uploaderName"));
+                            item.put("caption", doc.getString("caption") == null ? "" : doc.getString("caption"));
+                            item.put("status", doc.getString("status") == null ? "" : doc.getString("status"));
+                            item.put("imageBase64", doc.getString("imageBase64") == null ? "" : doc.getString("imageBase64"));
+                            item.put("own", firebaseAuth.getCurrentUser().getUid().equals(doc.getString("uploaderUid")));
+                            items.put(item);
+                        } catch (Exception ignored) { }
+                    }
+                    try { JSONObject result = new JSONObject(); result.put("ok", true); result.put("photos", items); sendPhotoCallback(callbackId, result.toString()); }
+                    catch (Exception e) { sendPhotoCallback(callbackId, false, "Could not prepare gallery."); }
+                }).addOnFailureListener(error -> sendPhotoCallback(callbackId, false, "Could not load gallery: " + error.getMessage()));
+            }
+            @JavascriptInterface public void reportLocationPhoto(String locationId, String photoId, String reason, String callbackId) {
+                if (!validCallback(callbackId) || !validLocationId(locationId) || photoId == null || !photoId.matches("[A-Za-z0-9-]{1,100}") || firebaseAuth.getCurrentUser() == null) return;
+                Map<String,Object> report = new HashMap<>();
+                report.put("photoId", photoId); report.put("reporterUid", firebaseAuth.getCurrentUser().getUid());
+                report.put("reason", reason == null ? "Reported by user" : reason.substring(0, Math.min(500, reason.length())));
+                report.put("createdAt", FieldValue.serverTimestamp()); report.put("status", "open");
+                firestore.collection("locations").document(locationId).collection("photoReports").add(report)
+                    .addOnSuccessListener(ref -> sendPhotoCallback(callbackId, true, "Report submitted for review."))
+                    .addOnFailureListener(error -> sendPhotoCallback(callbackId, false, "Could not submit report: " + error.getMessage()));
+            }
+            @JavascriptInterface public void moderateLocationPhoto(String locationId, String photoId, boolean approve, String callbackId) {
+                if (!isAdminAccount() || !validCallback(callbackId) || !validLocationId(locationId) || photoId == null || !photoId.matches("[A-Za-z0-9-]{1,100}")) return;
+                Map<String,Object> change = new HashMap<>();
+                change.put("status", approve ? "approved" : "removed");
+                change.put("reviewedAt", FieldValue.serverTimestamp());
+                change.put("reviewedBy", firebaseAuth.getCurrentUser().getUid());
+                firestore.collection("locations").document(locationId).collection("photos").document(photoId).update(change)
+                    .addOnSuccessListener(unused -> sendPhotoCallback(callbackId, true, approve ? "Photo approved." : "Photo removed from the gallery."))
+                    .addOnFailureListener(error -> sendPhotoCallback(callbackId, false, "Moderation failed: " + error.getMessage()));
             }
             @JavascriptInterface public void signOut() {
                 runOnUiThread(() -> {
@@ -250,6 +319,16 @@ public class MainActivity extends Activity {
                     sendAdminError(callbackId, "Could not refresh administrator sign-in. Sign out and back in."));
 
             }
+
+            private boolean validLocationId(String value) { return value != null && value.matches("[a-z0-9-]{1,80}"); }
+            private void sendPhotoCallback(String callbackId, boolean ok, String message) {
+                try { JSONObject result = new JSONObject(); result.put("ok", ok); result.put("message", message == null ? "" : message); sendPhotoCallback(callbackId, result.toString()); }
+                catch (Exception ignored) { }
+            }
+            private void sendPhotoCallback(String callbackId, String json) {
+                if (!validCallback(callbackId)) return;
+                runOnUiThread(() -> { if (webView != null) webView.evaluateJavascript("window['" + callbackId + "'](" + JSONObject.quote(json) + ")", null); });
+            }
             private boolean validCallback(String value) {
                 return value != null && value.matches("[A-Za-z0-9_]{1,50}");
             }
@@ -282,13 +361,24 @@ public class MainActivity extends Activity {
             }
         });
         setContentView(webView);
-        webView.loadUrl("https://dominichuddleston4-sys.github.io/CBR_URBEX/");
+        webView.loadUrl(getString(R.string.app_web_url));
     }
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PHOTO_PICKER_REQUEST) {
+            String callback = pendingPhotoCallback, locationId = pendingPhotoLocationId, caption = pendingPhotoCaption;
+            pendingPhotoCallback = null; pendingPhotoLocationId = null; pendingPhotoCaption = null;
+            if (resultCode != RESULT_OK || data == null || data.getData() == null) {
+                if (callback != null) sendPhotoResult(callback, false, "Photo selection cancelled.");
+                return;
+            }
+            if (callback != null && locationId != null) uploadLocationPhoto(data.getData(), locationId, caption, callback);
+            return;
+        }
         if (requestCode == GOOGLE_SIGN_IN_REQUEST) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
@@ -314,6 +404,48 @@ public class MainActivity extends Activity {
                 installDownloadedApk(pending);
             }
         }
+    }
+
+
+    private void sendPhotoResult(String callbackId, boolean ok, String message) {
+        try { JSONObject result = new JSONObject(); result.put("ok", ok); result.put("message", message == null ? "" : message);
+            if (webView != null) webView.evaluateJavascript("window['" + callbackId + "'](" + JSONObject.quote(result.toString()) + ")", null);
+        } catch (Exception ignored) { }
+    }
+
+    private void uploadLocationPhoto(Uri uri, String locationId, String caption, String callbackId) {
+        new Thread(() -> {
+            try {
+                Bitmap bitmap = null;
+                for (int sample = 1; sample <= 16 && bitmap == null; sample *= 2) {
+                    BitmapFactory.Options options = new BitmapFactory.Options(); options.inSampleSize = sample;
+                    try (InputStream input = getContentResolver().openInputStream(uri)) { bitmap = BitmapFactory.decodeStream(input, null, options); }
+                }
+                if (bitmap == null) throw new Exception("That image could not be opened.");
+                float scale = Math.min(1f, 1280f / Math.max(bitmap.getWidth(), bitmap.getHeight()));
+                if (scale < 1f) { Bitmap resized = Bitmap.createScaledBitmap(bitmap, Math.max(1, Math.round(bitmap.getWidth()*scale)), Math.max(1, Math.round(bitmap.getHeight()*scale)), true); if (resized != bitmap) bitmap.recycle(); bitmap = resized; }
+                byte[] bytes = null;
+                for (int quality = 82; quality >= 42; quality -= 10) {
+                    ByteArrayOutputStream output = new ByteArrayOutputStream(); bitmap.compress(Bitmap.CompressFormat.JPEG, quality, output); bytes = output.toByteArray();
+                    if (bytes.length <= 500000) break;
+                }
+                bitmap.recycle();
+                if (bytes == null || bytes.length > 500000) throw new Exception("Image is too large after compression. Try a smaller photo.");
+                FirebaseUser user = firebaseAuth.getCurrentUser(); if (user == null) throw new Exception("Please sign in again.");
+                String photoId = java.util.UUID.randomUUID().toString().replace("-", "");
+                Map<String,Object> photo = new HashMap<>();
+                photo.put("uploaderUid", user.getUid());
+                String display = user.getDisplayName() == null || user.getDisplayName().trim().isEmpty() ? "Explorer" : user.getDisplayName();
+                photo.put("uploaderName", display.substring(0, Math.min(80, display.length())));
+                photo.put("imageBase64", Base64.encodeToString(bytes, Base64.NO_WRAP));
+                photo.put("contentType", "image/jpeg"); photo.put("sizeBytes", bytes.length);
+                photo.put("status", "pending"); photo.put("createdAt", FieldValue.serverTimestamp());
+                photo.put("caption", caption == null ? "" : caption.substring(0, Math.min(300, caption.length())));
+                firestore.collection("locations").document(locationId).collection("photos").document(photoId).set(photo)
+                    .addOnSuccessListener(unused -> runOnUiThread(() -> sendPhotoResult(callbackId, true, "Photo uploaded for admin review. It will appear for everyone after approval.")))
+                    .addOnFailureListener(error -> runOnUiThread(() -> sendPhotoResult(callbackId, false, "Photo upload failed: " + error.getMessage())));
+            } catch (Exception error) { runOnUiThread(() -> sendPhotoResult(callbackId, false, error.getMessage() == null ? "Could not upload this photo." : error.getMessage())); }
+        }).start();
     }
 
     private void registerDownloadReceiver() {

@@ -13,6 +13,7 @@ android {
         targetSdk 35
         versionCode = (project.findProperty('appVersionCode') ?: '2').toString().toInteger()
         versionName = (project.findProperty('appVersionName') ?: '0.2.0').toString()
+        resValue 'string', 'app_web_url', (project.findProperty('appWebUrl') ?: 'https://dominichuddleston4-sys.github.io/CBR_URBEX/').toString()
     }
 
     signingConfigs {

@@ -3,7 +3,7 @@ name: Build and publish Canberra Explorer APK
 on:
   workflow_dispatch:
   push:
-    branches: [main, feature/2.0-completion]
+    branches: [main, feature/2.0-completion, feature/2.0.5-photo-galleries]
     paths:
       - 'app/**'
       - 'build.gradle'
@@ -12,6 +12,7 @@ on:
       - 'index.html'
       - 'manifest.json'
       - 'sw.js'
+      - 'firestore.rules'
       - 'places.json'
       - 'icon.svg'
       - '.github/workflows/build-test-apk.yml'
@@ -73,9 +74,10 @@ jobs:
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
           APP_VERSION_CODE: ${{ github.run_number }}
-          APP_VERSION_NAME: 1.${{ github.run_number }}
+          APP_VERSION_NAME: ${{ github.ref == 'refs/heads/main' && '2.0½' || (github.ref == 'refs/heads/feature/2.0.5-photo-galleries' && '2.0½-test' || format('1.{0}', github.run_number)) }}
+          APP_WEB_URL: ${{ github.ref == 'refs/heads/feature/2.0.5-photo-galleries' && 'https://deploy-preview-7--cbrurbex.netlify.app/' || 'https://dominichuddleston4-sys.github.io/CBR_URBEX/' }}
         run: |
-          gradle --no-daemon --stacktrace --info -PappVersionCode="$APP_VERSION_CODE" -PappVersionName="$APP_VERSION_NAME" assembleRelease
+          gradle --no-daemon --stacktrace --info -PappVersionCode="$APP_VERSION_CODE" -PappVersionName="$APP_VERSION_NAME" -PappWebUrl="$APP_WEB_URL" assembleRelease
           mkdir -p release
           cp app/build/outputs/apk/release/app-release.apk release/app-release.apk
           echo "VERSION_CODE=$APP_VERSION_CODE" >> "$GITHUB_ENV"
