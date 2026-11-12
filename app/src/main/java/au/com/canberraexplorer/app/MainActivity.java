@@ -38,10 +38,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.android.gms.tasks.Task;
 
 import org.json.JSONObject;
+import org.json.JSONArray;
+import java.util.HashMap;
+import java.util.Map;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -51,6 +58,7 @@ public class MainActivity extends Activity {
     private static final int LOCATION_REQUEST = 42;
     private static final int GOOGLE_SIGN_IN_REQUEST = 44;
     private FirebaseAuth firebaseAuth;
+    private FirebaseFirestore firestore;
     private GoogleSignInClient googleSignInClient;
     private static final int INSTALL_PERMISSION_REQUEST = 43;
     private static final String UPDATE_INFO_URL = "https://dominichuddleston4-sys.github.io/CBR_URBEX/version.json";
@@ -73,6 +81,7 @@ public class MainActivity extends Activity {
         registerDownloadReceiver();
 
         firebaseAuth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
         GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
@@ -80,7 +89,7 @@ public class MainActivity extends Activity {
         googleSignInClient = GoogleSignIn.getClient(this, signInOptions);
 
         if (firebaseAuth.getCurrentUser() == null) showSignInScreen();
-        else loadMap();
+        else { loadMap(); registerCurrentUserAndCheckAccess(); }
     }
 
     private void showSignInScreen() {
@@ -171,6 +180,66 @@ public class MainActivity extends Activity {
                 if (placesGeoJson != null && placesGeoJson.length() <= 2000000) intent.putExtra("places_geojson", placesGeoJson);
                 runOnUiThread(() -> startActivity(intent));
             }
+            @JavascriptInterface public boolean isAdminAccount() {
+                FirebaseUser user = firebaseAuth == null ? null : firebaseAuth.getCurrentUser();
+                return user != null && user.isEmailVerified()
+                    && "dominichuddleston299@gmail.com".equalsIgnoreCase(user.getEmail());
+            }
+            @JavascriptInterface public void loadAdminUsers(String callbackId) {
+                if (!isAdminAccount() || !validCallback(callbackId)) return;
+                firestore.collection("appUsers")
+                    .orderBy("lastSeen", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                    .limit(100).get().addOnSuccessListener(snapshot -> {
+                        JSONArray users = new JSONArray();
+                        for (DocumentSnapshot doc : snapshot.getDocuments()) {
+                            try {
+                                JSONObject item = new JSONObject();
+                                item.put("uid", doc.getId());
+                                item.put("email", doc.getString("email") == null ? "" : doc.getString("email"));
+                                item.put("displayName", doc.getString("displayName") == null ? "" : doc.getString("displayName"));
+                                item.put("blocked", Boolean.TRUE.equals(doc.getBoolean("blocked")));
+                                item.put("forceSignOut", Boolean.TRUE.equals(doc.getBoolean("forceSignOut")));
+                                com.google.firebase.Timestamp seen = doc.getTimestamp("lastSeen");
+                                item.put("lastSeen", seen == null ? 0 : seen.toDate().getTime());
+                                users.put(item);
+                            } catch (Exception ignored) { }
+                        }
+                        try {
+                            JSONObject result = new JSONObject();
+                            result.put("ok", true);
+                            result.put("users", users);
+                            sendAdminCallback(callbackId, result.toString());
+                        } catch (Exception ignored) { sendAdminError(callbackId, "Could not format user list."); }
+                    }).addOnFailureListener(error ->
+                        sendAdminError(callbackId, "Could not load users. Check that Firestore is enabled and its rules are published."));
+            }
+            @JavascriptInterface public void setAdminUserFlag(String uid, String field, boolean value, String callbackId) {
+                if (!isAdminAccount() || !validCallback(callbackId) || uid == null
+                    || !uid.matches("[A-Za-z0-9_-]{1,128}")
+                    || !("blocked".equals(field) || "forceSignOut".equals(field))) return;
+                Map<String,Object> change = new HashMap<>();
+                change.put(field, value);
+                firestore.collection("appUsers").document(uid).update(change)
+                    .addOnSuccessListener(unused -> sendAdminCallback(callbackId, "{\"ok\":true}"))
+                    .addOnFailureListener(error -> sendAdminError(callbackId, "Could not update this account. Check Firestore rules."));
+            }
+            private boolean validCallback(String value) {
+                return value != null && value.matches("[A-Za-z0-9_]{1,50}");
+            }
+            private void sendAdminCallback(String callbackId, String json) {
+                runOnUiThread(() -> {
+                    if (webView != null) webView.evaluateJavascript(
+                        "window['" + callbackId + "'](" + JSONObject.quote(json) + ")", null);
+                });
+            }
+            private void sendAdminError(String callbackId, String message) {
+                try {
+                    JSONObject result = new JSONObject();
+                    result.put("ok", false);
+                    result.put("error", message);
+                    sendAdminCallback(callbackId, result.toString());
+                } catch (Exception ignored) { }
+            }
         }, "CanberraNative");
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
@@ -199,7 +268,7 @@ public class MainActivity extends Activity {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
                 firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, authTask -> {
-                    if (authTask.isSuccessful()) { loadMap(); checkForApkUpdate(); }
+                    if (authTask.isSuccessful()) { loadMap(); registerCurrentUserAndCheckAccess(); checkForApkUpdate(); }
                     else {
                         Toast.makeText(this, "Google sign-in failed. Please try again.", Toast.LENGTH_LONG).show();
                         showSignInScreen();
@@ -238,7 +307,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (firebaseAuth != null && firebaseAuth.getCurrentUser() != null) checkForApkUpdate();
+        if (firebaseAuth != null && firebaseAuth.getCurrentUser() != null) { registerCurrentUserAndCheckAccess(); checkForApkUpdate(); }
         long pending = getPreferences(MODE_PRIVATE).getLong(PENDING_DOWNLOAD, -1);
         if (pending >= 0) {
             DownloadManager.Query query = new DownloadManager.Query().setFilterById(pending);
@@ -252,6 +321,46 @@ public class MainActivity extends Activity {
                 }
             } catch (Exception ignored) { }
         }
+    }
+
+    private void registerCurrentUserAndCheckAccess() {
+        FirebaseUser user = firebaseAuth == null ? null : firebaseAuth.getCurrentUser();
+        if (user == null || firestore == null) return;
+        String uid = user.getUid();
+        firestore.collection("appUsers").document(uid).get().addOnSuccessListener(doc -> {
+            FirebaseUser current = firebaseAuth.getCurrentUser();
+            if (current == null || !uid.equals(current.getUid())) return;
+            boolean blocked = Boolean.TRUE.equals(doc.getBoolean("blocked"));
+            boolean forceSignOut = Boolean.TRUE.equals(doc.getBoolean("forceSignOut"));
+            if (blocked || forceSignOut) {
+                if (forceSignOut && !blocked) {
+                    firestore.collection("appUsers").document(uid)
+                        .update("forceSignOut", false);
+                }
+                firebaseAuth.signOut();
+                googleSignInClient.signOut();
+                runOnUiThread(() -> {
+                    Toast.makeText(this, blocked
+                        ? "This account is blocked from Canberra Explorer."
+                        : "Your Canberra Explorer session was signed out by the administrator.",
+                        Toast.LENGTH_LONG).show();
+                    showSignInScreen();
+                });
+                return;
+            }
+            Map<String,Object> profile = new HashMap<>();
+            profile.put("lastSeen", FieldValue.serverTimestamp());
+            profile.put("displayName", user.getDisplayName() == null ? "" : user.getDisplayName());
+            if (!doc.exists()) {
+                profile.put("uid", uid);
+                profile.put("email", user.getEmail() == null ? "" : user.getEmail());
+                profile.put("blocked", false);
+                profile.put("forceSignOut", false);
+                firestore.collection("appUsers").document(uid).set(profile);
+            } else {
+                firestore.collection("appUsers").document(uid).update(profile);
+            }
+        });
     }
 
     private void checkForApkUpdate() {

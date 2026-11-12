@@ -1,24 +1,53 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    function signedIn() {
-      return request.auth != null;
-    }
+    function signedIn() { return request.auth != null; }
     function moderator() {
       return signedIn() && request.auth.token.moderator == true;
     }
+    function appAdmin() {
+      return signedIn()
+        && request.auth.token.email_verified == true
+        && request.auth.token.email == "dominichuddleston299@gmail.com";
+    }
 
-    // Location metadata remains readable to signed-in app users.
+    match /appUsers/{uid} {
+      allow get: if signedIn() && (request.auth.uid == uid || appAdmin());
+      allow list: if appAdmin();
+      allow create: if signedIn()
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly([
+          "uid", "email", "displayName", "lastSeen", "blocked", "forceSignOut"
+        ])
+        && request.resource.data.uid == uid
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.blocked == false
+        && request.resource.data.forceSignOut == false
+        && request.resource.data.lastSeen == request.time;
+      allow update: if (
+          signedIn()
+          && request.auth.uid == uid
+          && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly(["lastSeen", "displayName", "forceSignOut"])
+          && request.resource.data.lastSeen == request.time
+          && (!("forceSignOut" in request.resource.data.diff(resource.data).affectedKeys())
+              || (resource.data.forceSignOut == true
+                  && request.resource.data.forceSignOut == false))
+        ) || (
+          appAdmin()
+          && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly(["blocked", "forceSignOut"])
+        );
+      allow delete: if appAdmin();
+    }
+
     match /locations/{locationId} {
       allow read: if signedIn();
-
-      // Shared location-photo metadata.
       match /photos/{photoId} {
         allow read: if signedIn()
           && (resource.data.status == "approved"
               || resource.data.uploaderUid == request.auth.uid
               || moderator());
-
         allow create: if signedIn()
           && request.resource.data.keys().hasOnly([
             "uploaderUid", "uploaderName", "storagePath", "contentType",
@@ -31,9 +60,7 @@ service cloud.firestore {
           && request.resource.data.uploaderName.size() <= 80
           && request.resource.data.storagePath is string
           && request.resource.data.storagePath == "locationPhotos/" + locationId + "/" + request.auth.uid + "/" + photoId
-          && request.resource.data.contentType in [
-            "image/jpeg", "image/png", "image/webp"
-          ]
+          && request.resource.data.contentType in ["image/jpeg", "image/png", "image/webp"]
           && request.resource.data.sizeBytes is int
           && request.resource.data.sizeBytes > 0
           && request.resource.data.sizeBytes <= 10485760
@@ -41,16 +68,12 @@ service cloud.firestore {
           && request.resource.data.createdAt == request.time
           && request.resource.data.caption is string
           && request.resource.data.caption.size() <= 300;
-
-        // Uploaders cannot approve, alter or remove published records.
-        // Moderation is reserved for accounts with a trusted custom claim.
         allow update: if moderator();
         allow delete: if moderator()
           || (signedIn()
               && resource.data.uploaderUid == request.auth.uid
               && resource.data.status == "pending");
       }
-
       match /photoReports/{reportId} {
         allow create: if signedIn()
           && request.resource.data.keys().hasOnly([
