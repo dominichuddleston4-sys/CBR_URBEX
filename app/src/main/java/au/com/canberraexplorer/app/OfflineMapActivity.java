@@ -84,14 +84,6 @@ public class OfflineMapActivity extends Activity {
         mapView = new MapView(this);
         root.addView(mapView, new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f));
-        mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(map -> {
-            String placesGeoJson = getIntent().getStringExtra("places_geojson");
-            map.setStyle(new Style.Builder().fromUri(STYLE_URL), style -> addPlacePins(style, placesGeoJson));
-            map.setCameraPosition(new CameraPosition.Builder()
-                .target(new LatLng(-35.28, 149.13)).zoom(10.0).build());
-        });
-
         LinearLayout controls = new LinearLayout(this);
         controls.setOrientation(LinearLayout.VERTICAL);
         controls.setPadding(12, 8, 12, 12);
@@ -128,6 +120,13 @@ public class OfflineMapActivity extends Activity {
         close.setOnClickListener(v -> finish());
         controls.addView(close);
         setContentView(root);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(map -> {
+            String placesGeoJson = getIntent().getStringExtra("places_geojson");
+            map.setStyle(new Style.Builder().fromUri(STYLE_URL), style -> addPlacePins(style, placesGeoJson));
+            map.setCameraPosition(new CameraPosition.Builder()
+                .target(new LatLng(-35.28, 149.13)).zoom(10.0).build());
+        });
         refreshOfflineStatus();
     }
 
