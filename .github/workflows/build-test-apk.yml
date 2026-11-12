@@ -16,6 +16,10 @@ on:
       - 'icon.svg'
       - '.github/workflows/build-test-apk.yml'
 
+concurrency:
+  group: canberra-explorer-release
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
