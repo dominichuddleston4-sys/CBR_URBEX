@@ -276,30 +276,24 @@ public class MainActivity extends Activity {
                 String display = user.getDisplayName() == null || user.getDisplayName().trim().isEmpty() ? "Explorer" : user.getDisplayName().trim();
                 final String uploaderName = display.length() > 80 ? display.substring(0, 80) : display;
                 StorageMetadata metadata = new StorageMetadata.Builder().setContentType(contentType).build();
-                FirebaseStorage.getInstance().getReference().child(path).putBytes(bytes, metadata)
-                    .addOnSuccessListener(task -> {
-                        HashMap<String, Object> record = new HashMap<>();
-                        record.put("uploaderUid", user.getUid());
-                        record.put("uploaderName", uploaderName);
-                        record.put("storagePath", path);
-                        record.put("contentType", contentType);
-                        record.put("sizeBytes", bytes.length);
-                        record.put("status", "pending");
-                        record.put("createdAt", FieldValue.serverTimestamp());
-                        record.put("caption", safeCaption);
-                        FirebaseFirestore.getInstance().collection("locations").document(locationId)
-                            .collection("photos").document(photoId).set(record)
-                            .addOnSuccessListener(done -> {
-                                JSONObject result = new JSONObject();
-                                try { result.put("success", true); result.put("pending", true); } catch (Exception ignored) { }
-                                sendPhotoResult(callbackId, result);
-                            })
-                            .addOnFailureListener(error -> {
-                                FirebaseStorage.getInstance().getReference().child(path).delete();
-                                sendPhotoResult(callbackId, photoError("Photo uploaded but its record could not be saved."));
-                            });
-                    })
-                    .addOnFailureListener(error -> sendPhotoResult(callbackId, photoError("Photo upload failed: " + error.getMessage())));
+                com.google.firebase.firestore.DocumentReference photoDoc = FirebaseFirestore.getInstance()
+                    .collection("locations").document(locationId).collection("photos").document(photoId);
+                HashMap<String, Object> record = new HashMap<>();
+                record.put("uploaderUid", user.getUid());
+                record.put("uploaderName", uploaderName);
+                record.put("storagePath", path);
+                record.put("contentType", contentType);
+                record.put("sizeBytes", bytes.length);
+                record.put("status", "pending");
+                record.put("createdAt", FieldValue.serverTimestamp());
+                record.put("caption", safeCaption);
+                photoDoc.set(record).addOnSuccessListener(saved -> {
+                    FirebaseStorage.getInstance().getReference().child(path).putBytes(bytes, metadata)
+                        .addOnSuccessListener(task -> sendPhotoResult(callbackId, photoSuccessPending()))
+                        .addOnFailureListener(error -> photoDoc.delete().addOnCompleteListener(cleanup ->
+                            sendPhotoResult(callbackId, photoError("Photo upload failed: " + error.getMessage()))));
+                }).addOnFailureListener(error ->
+                    sendPhotoResult(callbackId, photoError("Could not save photo details: " + error.getMessage())));
             } catch (Exception error) { sendPhotoResult(callbackId, photoError("Could not read that image.")); }
         }
 
@@ -348,7 +342,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    private JSONObject photoSuccess() {
+    private JSONObject photoSuccessPending() {\n        JSONObject result = photoSuccess();\n        try { result.put("pending", true); } catch (Exception ignored) { }\n        return result;\n    }\n\n    private JSONObject photoSuccess() {
         JSONObject result = new JSONObject();
         try { result.put("success", true); } catch (Exception ignored) { }
         return result;
