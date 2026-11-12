@@ -25,7 +25,7 @@ Official API references:
 - https://maplibre.org/maplibre-native/android/api/-map-libre%20-native%20-android/org.maplibre.android.offline/index.html
 - https://maplibre.org/maplibre-native/android/api/-map-libre%20-native%20-android/org.maplibre.android.offline/-offline-region-status/index.html
 
-Important architecture implication: the current map is Leaflet inside a WebView. MapLibre Native is an Android map renderer, so a robust implementation should introduce a native map screen or a deliberate migration. Do not assume MapLibre's native offline API can be called by the existing browser Leaflet map.
+Architecture note: the original Leaflet map remains in the WebView and continues to provide the online experience. The development branch now opens a separate native MapLibre screen from the Offline map button. Place coordinates are passed from the existing web map into the native screen so the offline view retains the user's saved location pins. The native offline API is not being called from Leaflet.
 
 ### Tile/data licensing and hosting notes
 
@@ -69,15 +69,9 @@ Adaptive and round launcher icons plus API 23-25 vector fallbacks are committed 
 
 ## Shared photo galleries
 
-The current app uses Firebase Authentication, but sign-in alone does not protect a future gallery. Before enabling uploads:
-- Add a Firestore location-photo metadata collection and Firebase Storage object paths scoped by location.
-- Require authenticated uploader identity in security rules.
-- Restrict MIME types and file sizes.
-- Store uploader UID and display attribution safely.
-- Add reporting and moderation/removal flow.
-- Test cross-account visibility and unauthorised reads/writes using Firebase rules tests.
+The development branch includes a native Firebase bridge and per-location gallery UI. Uploads create pending Firestore metadata first, then store the image in a location/uploader-scoped Storage path. The rules restrict file types and size, bind metadata to the exact object path, and allow public signed-in reads only after approval. Pending records and files are visible only to their uploader and trusted moderators. The UI shows uploader attribution, supports reports, and exposes moderator-only approve/remove actions.
 
-The native Android bridge and per-location gallery UI are implemented on the development branch. Firestore and Storage rules are committed for review, including pending-photo visibility checks; they are not deployed or emulator-tested. Do not describe the gallery as live until Firebase deployment, moderator-claim setup and cross-account tests pass.
+Firestore and Storage rules are committed for review but are not deployed or emulator-tested. Cross-service Storage rules require the Firebase Storage service account to be granted Firestore read permission. The Firebase project owner must review and deploy the rules, configure the moderator custom claim through a trusted admin process, and pass cross-account upload/read/report/moderation tests before the gallery is considered live.
 
 ## Current implementation status
 
