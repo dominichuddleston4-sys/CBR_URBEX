@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "282611690988",
+    "project_id": "canberra-explorer",
+    "storage_bucket": "canberra-explorer.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:282611690988:android:57e0ed697b9a8baa1524c9",
+        "android_client_info": {
+          "package_name": "au.com.canberraexplorer.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "282611690988-dspjmgrj3lrns66q6p9tnr0q1fgrjs00.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "au.com.canberraexplorer.app",
+            "certificate_hash": "8f891c01b37b660bacd372444b45da506f0ec90d"
+          }
+        },
+        {
+          "client_id": "282611690988-te5aq24r9j9tbpjlab173fnt4d8g904e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyRTAf3cTCni7Q7umZIta71nDighD_e4c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "282611690988-te5aq24r9j9tbpjlab173fnt4d8g904e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
