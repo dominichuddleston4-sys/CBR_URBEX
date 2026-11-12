@@ -22,6 +22,7 @@ footer{padding:22px 16px;text-align:center;color:#78877b;font-size:11px}
 #mapShell{position:relative;margin:10px 0 16px;border:1px solid var(--line);border-radius:15px;overflow:hidden;background:#e8e6df}#map{height:430px;width:100%;background:#e8e6df}.mapbar{position:absolute;z-index:800;top:12px;left:12px;right:12px;display:flex;gap:7px;flex-wrap:wrap;pointer-events:none}.mapbar button{pointer-events:auto;background:#fff;color:#202124;border:1px solid #dadce0;border-radius:22px;padding:9px 13px;box-shadow:0 2px 7px #0003;font-size:12px;font-weight:700}.mapbar button:active{background:#e8f0fe}.mapnote{font-size:11px;color:var(--muted);margin:-7px 0 14px}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fff;color:#202124;border-radius:10px}.leaflet-popup-content a{color:#1967d2;font-weight:700}.leaflet-container{font:13px Roboto,Arial,sans-serif}.leaflet-control-zoom a{color:#202124!important}.leaflet-control-attribution{font-size:10px!important}#mapShell.fullscreen{position:fixed;inset:0;z-index:9999;margin:0;border:0;border-radius:0}#mapShell.fullscreen #map{height:100%;height:100dvh}#mapShell.fullscreen .mapbar{top:max(12px,env(safe-area-inset-top));left:12px}#mapShell.fullscreen #closeMap{display:inline-block}#closeMap{display:none}#settingsPanel{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:15px;margin:12px 0 18px}#settingsPanel[hidden]{display:none}.setting-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid var(--line)}.setting-row:last-child{border-bottom:0}.setting-row label{font-size:13px;color:var(--white)}.setting-row small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.setting-row select{max-width:180px}#settingsPanel h3{margin:0 0 6px}#settingsPanel .actions{margin-top:12px}
 #updateBanner{display:none;background:#1d2b1d;border:1px solid var(--green);border-radius:12px;padding:13px;margin:12px 0;color:var(--white)}#updateBanner strong{color:var(--green)}#updateBanner p{font-size:12px;color:var(--muted);margin:5px 0 10px}#updateBanner .actions{display:flex;gap:8px;flex-wrap:wrap}
 .photo-modal{display:none;position:fixed;inset:0;z-index:10000;background:#000b;padding:16px;overflow:auto}
+.gallery-locations{display:grid;gap:8px;margin-top:12px}.gallery-location{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;width:100%;padding:12px;border:1px solid #526653;border-radius:10px;background:#1d2b1d;color:#fff}.gallery-location small{color:#b8c8ba}
 .photo-dialog{max-width:760px;margin:5vh auto;background:#111a14;border:1px solid #526653;border-radius:16px;padding:16px;color:var(--white)}
 .photo-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.photo-head h2{margin:0;font-size:20px}
 .photo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:12px 0}
@@ -34,7 +35,7 @@ footer{padding:22px 16px;text-align:center;color:#78877b;font-size:11px}
 <body>
 <header><div class="brand">CANBERRA EXPLORER</div><h1>Canberra Explorer</h1><p>Abandoned places, local history &amp; field notes</p></header>
 <main>
-<div style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px"><button id="installApp" class="secondary" hidden>⬇ Install Canberra Explorer</button><button id="settingsToggle" class="secondary" onclick="toggleSettings()">⚙ Settings</button><button class="secondary" onclick="openOfflineMap()">⬇ Offline map</button><span style="font-size:12px;color:var(--muted);align-self:center">Android: browser menu ⋮ → Install app or Add to Home screen</span></div><div class="notice"><strong>Field safety:</strong> Entries are research leads, not permission to enter. Some sites may be private, occupied, demolished, hazardous or protected. Check current ownership, access rules and safety before visiting. Do not trespass or disturb sites.</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px"><button id="installApp" class="secondary" hidden>⬇ Install Canberra Explorer</button><button id="settingsToggle" class="secondary" onclick="toggleSettings()">⚙ Settings</button><button class="secondary" onclick="openOfflineMap()">⬇ Offline map</button><button class="secondary" onclick="openGalleryBrowser()">▧ Photo Gallery</button><span style="font-size:12px;color:var(--muted);align-self:center">Android: browser menu ⋮ → Install app or Add to Home screen</span></div><div class="notice"><strong>Field safety:</strong> Entries are research leads, not permission to enter. Some sites may be private, occupied, demolished, hazardous or protected. Check current ownership, access rules and safety before visiting. Do not trespass or disturb sites.</div>
 <h2 style="font-size:18px;margin:18px 0 8px">Canberra map</h2><div id="mapShell"><div class="mapbar"><button onclick="locateMe()">◎ My location</button><button onclick="fitAllPins()">Show all pins</button><button onclick="toggleMapFullscreen()">⛶ Full screen</button><button id="closeMap" onclick="toggleMapFullscreen()">✕ Close</button></div><div id="map" aria-label="Interactive road map of Canberra with place pins"></div></div><p class="mapnote">Real street map with roads, suburb labels, parks and waterways. Switch between OpenStreetMap streets, a detailed street style and satellite imagery using the layer button. Map tiles need internet. Tap a pin for details; use My location to centre the map on your phone (permission required). Some directory leads have no confirmed coordinates and therefore appear only in the list. Imported locations are unverified and do not imply permission to enter.</p>
 <section id="settingsPanel" hidden aria-label="App settings">
 <h3>Settings</h3><p class="mapnote" style="margin:0 0 8px">Change how Canberra Explorer looks and manages information on this device.</p>
@@ -57,6 +58,14 @@ footer{padding:22px 16px;text-align:center;color:#78877b;font-size:11px}
 <div id="count" style="font-size:12px;color:var(--muted);margin:0 0 10px"></div>
 <div id="places" class="grid"></div>
 </main>
+<div id="galleryBrowser" class="photo-modal" role="dialog" aria-modal="true" aria-label="Browse location photo galleries">
+ <div class="photo-dialog">
+  <div class="photo-head"><h2>Photo Gallery</h2><button class="secondary" onclick="closeGalleryBrowser()">Close</button></div>
+  <p class="mapnote">Choose a Canberra Explorer location to view its shared photos.</p>
+  <input id="gallerySearch" type="search" placeholder="Search locations…" aria-label="Search gallery locations" oninput="renderGalleryBrowser()">
+  <div id="galleryLocations" class="gallery-locations"></div>
+ </div>
+</div>
 <div id="photoModal" class="photo-modal" role="dialog" aria-modal="true" aria-label="Location photo gallery">
  <div class="photo-dialog">
   <div class="photo-head"><h2 id="photoTitle">Location photos</h2><button class="secondary" onclick="closeGallery()">Close</button></div>
@@ -270,6 +279,18 @@ function callPhotoBridge(method,args){
  });
 }
 function photoLocationId(name){return String(name||"location").toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,80)||"location";}
+function openGalleryBrowser(){
+ document.getElementById("galleryBrowser").style.display="block";
+ document.getElementById("gallerySearch").value="";
+ renderGalleryBrowser();
+}
+function closeGalleryBrowser(){document.getElementById("galleryBrowser").style.display="none";}
+function renderGalleryBrowser(){
+ const q=document.getElementById("gallerySearch").value.trim().toLowerCase();
+ const locations=all().filter(p=>p.name.toLowerCase().includes(q)).sort((a,b)=>a.name.localeCompare(b.name));
+ const host=document.getElementById("galleryLocations");
+ host.innerHTML=locations.length?locations.map(p=>'<button class="gallery-location" onclick="closeGalleryBrowser();openGallery('+JSON.stringify(p.name).replace(/"/g,'&quot;')+')"><span>'+esc(p.name)+'</span><small>'+(p.area?esc(p.area):'Canberra / ACT')+'</small></button>').join(""):'<div class="empty">No matching locations found.</div>';
+}
 async function openGallery(name){
  currentPhotoLocationName=name;currentPhotoLocationId=photoLocationId(name);
  document.getElementById("photoTitle").textContent=name+" · Photos";
