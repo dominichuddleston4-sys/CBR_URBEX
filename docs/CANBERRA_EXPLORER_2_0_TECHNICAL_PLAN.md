@@ -27,21 +27,19 @@ Official API references:
 
 Important architecture implication: the current map is Leaflet inside a WebView. MapLibre Native is an Android map renderer, so a robust implementation should introduce a native map screen or a deliberate migration. Do not assume MapLibre's native offline API can be called by the existing browser Leaflet map.
 
-### Tile/data licensing and hosting gate
+### Tile/data licensing and hosting notes
 
-OpenStreetMap data is ODbL open data. Any derived database must preserve the applicable ODbL obligations and display OpenStreetMap attribution. A provider's online tile service must not be scraped or bulk-downloaded unless its licence explicitly permits offline packages.
+The development proof-of-concept uses OpenFreeMap Liberty with MapLibre Native. OpenFreeMap's current terms expressly allow user-requested offline downloads up to 3,000 tiles or 50 MB per download, with no more than four parallel requests and a unique app-identifying User-Agent. The downloader enforces those limits and retains map data only on the device. Five ACT sectors can be downloaded as separate packs, one at a time; this is not one unlimited ACT-wide download.
+
+OpenFreeMap terms and quick start:
+- https://openfreemap.org/tos/
+- https://openfreemap.org/quick_start/
+
+The map data is from OpenStreetMap. Display attribution through MapLibre's attribution control and retain ODbL compliance for any derived datasets. If a future release needs larger regions or higher zoom levels than the provider's per-download limits allow, contact OpenFreeMap or move to a self-hosted regional extract; do not bypass provider limits.
 
 References:
 - https://www.openstreetmap.org/copyright
 - https://download.geofabrik.de/australia-oceania/australia.html
-
-Geofabrik's Australia PBF extract is large (about 929 MB at the time checked), so the ACT dataset should be clipped from a licensed OSM extract and processed in a controlled build pipeline. Do not ship the whole Australia extract to phones.
-
-Before coding the production downloader, select either:
-1. A commercial tile provider whose written plan terms permit this app's ACT-wide offline downloads and user storage; or
-2. A self-generated, self-hosted ACT tile package from OSM data, with ODbL attribution and share-alike compliance assessed.
-
-The exact provider, zoom levels, file size, update cadence and storage estimate remain open decisions. They must be verified before a production download button is enabled.
 
 ## Offline routing direction
 
@@ -67,7 +65,7 @@ Offline directions must not imply live traffic, current road closures, safe acce
 
 ## App icon
 
-The Android launcher resources are being added under app/src/main/res. The manifest must reference the adaptive icon and the project must pass a signed APK build. Device verification is still required to confirm the icon appears on the user's Android launcher.
+Adaptive and round launcher icons plus API 23-25 vector fallbacks are committed under app/src/main/res and referenced by the manifest. A signed APK build and device verification are still required to confirm the icon appears on the user's launcher.
 
 ## Shared photo galleries
 
@@ -79,12 +77,12 @@ The current app uses Firebase Authentication, but sign-in alone does not protect
 - Add reporting and moderation/removal flow.
 - Test cross-account visibility and unauthorised reads/writes using Firebase rules tests.
 
-Initial Firestore and Storage rules plus firebase.json have now been committed for review, with a security/deployment note at docs/FIREBASE_PHOTO_GALLERY_SECURITY.md. They are not deployed or emulator-tested, and no photo UI/backend flow exists yet. Do not add a client-only upload feature and describe it as shared or secure.
+The native Android bridge and per-location gallery UI are implemented on the development branch. Firestore and Storage rules are committed for review, including pending-photo visibility checks; they are not deployed or emulator-tested. Do not describe the gallery as live until Firebase deployment, moderator-claim setup and cross-account tests pass.
 
 ## Current implementation status
 
 - Google sign-in gate: shipped in v1.47 and user-tested for sign-in and session persistence.
 - Android launcher icon: adaptive icon plus API 23-25 vector fallbacks and a dedicated round icon are wired in the development branch; signed build and launcher verification pending.
-- Offline map: native MapLibre regional downloads are implemented on the development branch; CI and on-device tests pending. Only one selected Canberra area is kept at a time; this is not full ACT-wide offline coverage.
+- Offline map: native MapLibre regional downloads for five ACT sectors are implemented on the development branch; CI and on-device airplane-mode tests pending. Multiple area packs can be saved, one download at a time, within provider limits.
 - Offline routing: not implemented; native Valhalla Android proof-of-concept required.
 - Shared photo galleries: Android native Firebase bridge and per-location gallery UI are implemented on the development branch, including attribution, pending review, reports and moderator-only approve/remove. Firestore/Storage rules remain undeployed; cross-account and moderation tests are pending.
