@@ -95,7 +95,7 @@ Status: NOT IMPLEMENTED — all tests blocked until a mobile routing engine and 
 
 ## F. Shared location photo galleries
 
-Status: NOT IMPLEMENTED — uploads must remain disabled until backend controls pass.
+Status: SECURITY RULES DRAFTED BUT NOT DEPLOYED; gallery UI and upload flow NOT IMPLEMENTED. Uploads must remain disabled until backend controls pass.
 
 - [ ] Authenticated user can upload an allowed image within configured size limits.
 - [ ] A second authorised account can see the same location gallery.
@@ -137,3 +137,4 @@ For each test, record:
 2.0 release status: **NOT READY FOR RELEASE**
 
 A release can be considered only after all mandatory sections have been implemented, tested and evidenced, with no unresolved critical/high-severity defects. The current stable release must remain available until then.
+\n## Latest implementation note — 12 November 2026\n\n- Added initial `firestore.rules`, `storage.rules` and `firebase.json` for the proposed shared photo gallery.\n- Added `docs/FIREBASE_PHOTO_GALLERY_SECURITY.md` documenting the data model, custom moderator claim and deployment gates.\n- These files are committed but **not deployed** to Firebase; no gallery UI or upload capability is enabled. Emulator tests and owner approval are still required.\n
