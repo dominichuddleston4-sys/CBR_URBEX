@@ -32,6 +32,15 @@ footer{padding:22px 16px;text-align:center;color:#78877b;font-size:11px}
 <div class="setting-row"><div><label for="mapStyle">Map appearance</label><small>Choose street, detailed or satellite imagery</small></div><select id="mapStyle" onchange="saveSettings()"><option value="street">Street map</option><option value="voyager">Detailed map</option><option value="satellite">Satellite</option></select></div>
 <div class="setting-row"><div><label for="showPins">Show location pins</label><small>Show or hide all saved map markers</small></div><input id="showPins" type="checkbox" checked onchange="saveSettings()" style="width:22px;height:22px"></div>
 <div class="setting-row"><div><label for="startAtCanberra">Start map at Canberra</label><small>Return to Canberra when opening the map</small></div><input id="startAtCanberra" type="checkbox" checked onchange="saveSettings()" style="width:22px;height:22px"></div>
+<div id="adminEntry" class="setting-row" hidden><div><label>🔒 Admin tools</label><small>Private controls for the verified administrator</small></div><button class="secondary" onclick="toggleAdminPanel()">Open admin</button></div>
+<section id="adminPanel" hidden style="margin:12px 0;padding:14px;border:1px solid #dc2330;border-radius:12px;background:#171717;color:#fff">
+<h3 style="color:#fff;margin:0 0 8px">Canberra Explorer Admin</h3>
+<p style="font-size:12px;color:#ddd">Administrator account: Dominichuddleston299@gmail.com</p>
+<div class="setting-row"><div><label style="color:#fff">Registered users</label><small>Not connected yet</small></div><strong>—</strong></div>
+<div class="setting-row"><div><label style="color:#fff">Active users</label><small>Needs secure presence tracking</small></div><strong>—</strong></div>
+<p style="font-size:12px;color:#ffb4b4;margin:12px 0">Account blocking and forced sign-out are not active yet. They require a protected Firebase admin service; this screen does not change user accounts.</p>
+<button class="secondary" disabled style="opacity:.55">User management not connected</button>
+</section>
 <div class="actions"><button class="secondary" onclick="fitAllPins()">Show all pins</button><button class="secondary" onclick="exportMyData()">Export backup</button><button class="secondary" onclick="document.getElementById('backupFile').click()">Restore backup</button><button class="secondary" onclick="clearMyData()">Clear my saved data</button></div><input id="backupFile" type="file" accept="application/json,.json" hidden onchange="importMyData(event)">
 <p class="mapnote" style="margin:10px 0 0">Your saved places and settings are stored in this browser on this device. Export your additions before clearing browser data.</p>
 </section>
@@ -182,9 +191,22 @@ function toggleMapFullscreen(){
  setTimeout(()=>{if(map)map.invalidateSize();},220);
 }
 function openOfflineMap(){if(window.CanberraNative&&typeof CanberraNative.openOfflineMap==="function"){const features=all().filter(p=>p.lat!==null&&p.lat!==undefined&&p.lat!==""&&p.lon!==null&&p.lon!==undefined&&p.lon!==""&&Number.isFinite(Number(p.lat))&&Number.isFinite(Number(p.lon))&&Math.abs(Number(p.lat))<=90&&Math.abs(Number(p.lon))<=180).map(p=>({type:"Feature",geometry:{type:"Point",coordinates:[Number(p.lon),Number(p.lat)]},properties:{name:p.name,status:p.status||"Research lead"}}));CanberraNative.openOfflineMap(JSON.stringify({type:"FeatureCollection",features}));}else{alert("Offline area downloads are available in the installed Android app.");}}
+function refreshAdminVisibility(){
+ const allowed=!!(window.CanberraNative&&typeof CanberraNative.isAdminAccount==="function"&&CanberraNative.isAdminAccount()===true);
+ const entry=document.getElementById("adminEntry");
+ const panel=document.getElementById("adminPanel");
+ if(entry)entry.hidden=!allowed;
+ if(!allowed&&panel)panel.hidden=true;
+}
+function toggleAdminPanel(){
+ refreshAdminVisibility();
+ const panel=document.getElementById("adminPanel");
+ if(panel&&!document.getElementById("adminEntry").hidden)panel.hidden=!panel.hidden;
+}
 function toggleSettings(){
  const panel=document.getElementById("settingsPanel");panel.hidden=!panel.hidden;
  document.getElementById("settingsToggle").textContent=panel.hidden?"⚙ Settings":"✕ Close settings";
+ if(!panel.hidden)refreshAdminVisibility();
 }
 function saveSettings(){
  appSettings.mapStyle=document.getElementById("mapStyle").value;
