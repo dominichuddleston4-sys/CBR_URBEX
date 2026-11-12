@@ -27,7 +27,7 @@ import org.maplibre.android.offline.OfflineRegionStatus;
 import org.maplibre.android.offline.OfflineTilePyramidRegionDefinition;
 
 import java.nio.charset.StandardCharsets;
-import java.util.function.Consumer;
+
 
 public class OfflineMapActivity extends Activity {
     private static final String STYLE_URL = "https://tiles.openfreemap.org/styles/liberty";
@@ -53,7 +53,7 @@ public class OfflineMapActivity extends Activity {
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         MapLibre.getInstance(this);
-        offlineManager = OfflineManager.getInstance(this);
+        offlineManager = OfflineManager.Companion.getInstance(this);
         offlineManager.setOfflineMapboxTileCountLimit(MAX_TILES);
 
         LinearLayout root = new LinearLayout(this);
@@ -234,7 +234,9 @@ public class OfflineMapActivity extends Activity {
         });
     }
 
-    private void deleteRegion(OfflineRegion region, Runnable onDeleted, Consumer<String> onError) {
+    private interface DeleteErrorCallback { void onError(String error); }
+
+    private void deleteRegion(OfflineRegion region, Runnable onDeleted, DeleteErrorCallback onError) {
         region.delete(new OfflineRegion.OfflineRegionDeleteCallback() {
             @Override public void onDelete() { onDeleted.run(); }
             @Override public void onError(String error) { onError.accept(error); }
