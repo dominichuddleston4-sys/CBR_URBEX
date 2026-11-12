@@ -39,6 +39,7 @@ public class OfflineMapActivity extends Activity {
     private static final String STYLE_URL = "https://tiles.openfreemap.org/styles/liberty";
     private static final long MAX_REGION_BYTES = 50L * 1024L * 1024L;
     private static final long MAX_TILES = 3000L;
+    private static final long MAX_TOTAL_TILES = 15000L;
     private MapView mapView;
     private OfflineManager offlineManager;
     private TextView status;
@@ -61,7 +62,7 @@ public class OfflineMapActivity extends Activity {
         configureMapNetwork();
         MapLibre.getInstance(this);
         offlineManager = OfflineManager.Companion.getInstance(this);
-        offlineManager.setOfflineMapboxTileCountLimit(MAX_TILES);
+        offlineManager.setOfflineMapboxTileCountLimit(MAX_TOTAL_TILES);
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
@@ -75,7 +76,7 @@ public class OfflineMapActivity extends Activity {
         root.addView(heading);
 
         TextView intro = new TextView(this);
-        intro.setText("Download one Canberra area while online, then reopen this map without internet. One area is kept at a time. Downloads are capped at 3,000 tiles and 50 MB.");
+        intro.setText("Download Canberra areas while online, then reopen this map without internet. Save multiple areas, one download at a time. Each area is capped at 3,000 tiles and 50 MB.");
         intro.setTextColor(Color.LTGRAY);
         intro.setTextSize(13);
         intro.setPadding(16, 0, 16, 10);
@@ -100,7 +101,7 @@ public class OfflineMapActivity extends Activity {
         download.setText("Download area");
         download.setOnClickListener(v -> confirmDownload());
         Button remove = new Button(this);
-        remove.setText("Delete offline area");
+        remove.setText("Delete all offline areas");
         remove.setOnClickListener(v -> deleteOfflineRegions());
         buttons.addView(download, new LinearLayout.LayoutParams(0,
             LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
@@ -164,26 +165,29 @@ public class OfflineMapActivity extends Activity {
     private void confirmDownload() {
         new AlertDialog.Builder(this)
             .setTitle("Download offline area?")
-            .setMessage("This replaces any existing offline area. Connect to Wi-Fi if possible. Only download areas you need.")
+            .setMessage("This saves the selected area alongside any areas already downloaded. Connect to Wi-Fi if possible.")
             .setNegativeButton("Cancel", null)
-            .setPositiveButton("Continue", (d, w) -> replaceAndDownload())
+            .setPositiveButton("Download", (d, w) -> downloadIfNotSaved())
             .show();
     }
 
-    private void replaceAndDownload() {
+    private void downloadIfNotSaved() {
+        int selected = regionPicker.getSelectedItemPosition();
+        String selectedName = REGIONS[selected];
         offlineManager.listOfflineRegions(new OfflineManager.ListOfflineRegionsCallback() {
             @Override public void onList(OfflineRegion[] regions) {
-                if (regions == null || regions.length == 0) {
-                    startDownload();
-                    return;
+                if (regions != null) {
+                    for (OfflineRegion region : regions) {
+                        try {
+                            String savedName = new JSONObject(new String(region.getMetadata(), StandardCharsets.UTF_8)).optString("name", "");
+                            if (selectedName.equals(savedName)) {
+                                runOnUiThread(() -> status.setText(selectedName + " is already saved offline."));
+                                return;
+                            }
+                        } catch (Exception ignored) { }
+                    }
                 }
-                final int[] remaining = {regions.length};
-                for (OfflineRegion region : regions) {
-                    deleteRegion(region, () -> {
-                        if (--remaining[0] == 0) startDownload();
-                    }, error -> runOnUiThread(() ->
-                        status.setText("Could not replace old offline area: " + error)));
-                }
+                startDownload();
             }
             @Override public void onError(String error) {
                 runOnUiThread(() -> status.setText("Could not check saved areas: " + error));
@@ -254,21 +258,17 @@ public class OfflineMapActivity extends Activity {
         offlineManager.listOfflineRegions(new OfflineManager.ListOfflineRegionsCallback() {
             @Override public void onList(OfflineRegion[] regions) {
                 if (regions == null || regions.length == 0) {
-                    status.setText("No offline area saved yet.");
+                    status.setText("No offline areas saved yet.");
                     return;
                 }
-                regions[0].getStatus(new OfflineRegion.OfflineRegionStatusCallback() {
-                    @Override public void onStatus(OfflineRegionStatus s) {
-                        String name = "Saved area";
-                        try { name = new JSONObject(new String(regions[0].getMetadata(), StandardCharsets.UTF_8)).optString("name", name); }
-                        catch (Exception ignored) { }
-                        String finalName = name;
-                        status.setText(finalName + " · " + s.getCompletedTileCount() + " tiles saved. This map can use those tiles offline.");
-                    }
-                    @Override public void onError(String error) {
-                        status.setText("An offline area exists, but its status could not be read.");
-                    }
-                });
+                java.util.ArrayList<String> names = new java.util.ArrayList<>();
+                for (OfflineRegion region : regions) {
+                    try {
+                        names.add(new JSONObject(new String(region.getMetadata(), StandardCharsets.UTF_8)).optString("name", "Saved area"));
+                    } catch (Exception ignored) { names.add("Saved area"); }
+                }
+                status.setText(regions.length + " offline area(s) saved: " + android.text.TextUtils.join(", ", names) + ".");
+
             }
             @Override public void onError(String error) {
                 status.setText("Could not read offline map storage: " + error);
@@ -296,7 +296,7 @@ public class OfflineMapActivity extends Activity {
                 for (OfflineRegion region : regions) {
                     deleteRegion(region, () -> {
                         if (--remaining[0] == 0) runOnUiThread(() -> status.setText(
-                            "Offline area deleted. The online map is unchanged."));
+                            "All offline areas deleted. The online map is unchanged."));
                     }, error -> runOnUiThread(() -> status.setText("Could not delete offline area: " + error)));
                 }
             }
