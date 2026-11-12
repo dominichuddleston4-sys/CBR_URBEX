@@ -75,7 +75,7 @@ jobs:
           APP_VERSION_CODE: ${{ github.run_number }}
           APP_VERSION_NAME: 1.${{ github.run_number }}
         run: |
-          gradle --no-daemon -PappVersionCode="$APP_VERSION_CODE" -PappVersionName="$APP_VERSION_NAME" assembleRelease
+          gradle --no-daemon --stacktrace --info -PappVersionCode="$APP_VERSION_CODE" -PappVersionName="$APP_VERSION_NAME" assembleRelease
           mkdir -p release
           cp app/build/outputs/apk/release/app-release.apk release/app-release.apk
           echo "VERSION_CODE=$APP_VERSION_CODE" >> "$GITHUB_ENV"
