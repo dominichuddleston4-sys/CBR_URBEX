@@ -3,7 +3,7 @@ name: Build and publish Canberra Explorer APK
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, feature/2.0-completion]
     paths:
       - 'app/**'
       - 'build.gradle'
@@ -67,7 +67,17 @@ jobs:
           echo "VERSION_CODE=$APP_VERSION_CODE" >> "$GITHUB_ENV"
           echo "VERSION_NAME=$APP_VERSION_NAME" >> "$GITHUB_ENV"
 
+      - name: Upload test APK artifact
+        if: github.ref != 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: canberra-explorer-test-apk
+          path: release/app-release.apk
+          if-no-files-found: error
+          retention-days: 14
+
       - name: Publish APK as the latest GitHub Release
+        if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ env.VERSION_NAME }}
@@ -78,6 +88,7 @@ jobs:
           make_latest: true
 
       - name: Publish update information to GitHub Pages
+        if: github.ref == 'refs/heads/main'
         uses: actions/github-script@v7
         env:
           VERSION_CODE: ${{ env.VERSION_CODE }}
