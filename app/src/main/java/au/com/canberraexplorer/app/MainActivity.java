@@ -219,7 +219,7 @@ public class MainActivity extends Activity {
         @JavascriptInterface public void getLocationPhotos(String locationId, String callbackId) {
             FirebaseUser user = firebaseAuth.getCurrentUser();
             if (user == null) { sendPhotoResult(callbackId, photoError("Please sign in again.")); return; }
-            user.getIdTokenResult(false).addOnSuccessListener(token -> {
+            user.getIdToken(false).addOnSuccessListener(token -> {
                 boolean moderator = Boolean.TRUE.equals(token.getClaims().get("moderator"));
                 com.google.firebase.firestore.CollectionReference photos = FirebaseFirestore.getInstance()
                     .collection("locations").document(locationId).collection("photos");
@@ -321,7 +321,7 @@ public class MainActivity extends Activity {
         @JavascriptInterface public void moderateLocationPhoto(String locationId, String photoId, String action, String callbackId) {
             FirebaseUser user = firebaseAuth.getCurrentUser();
             if (user == null) { sendPhotoResult(callbackId, photoError("Please sign in again.")); return; }
-            user.getIdTokenResult(true).addOnSuccessListener(token -> {
+            user.getIdToken(true).addOnSuccessListener(token -> {
                 if (!Boolean.TRUE.equals(token.getClaims().get("moderator"))) {
                     sendPhotoResult(callbackId, photoError("Moderator access is required.")); return;
                 }
