@@ -8,17 +8,22 @@ Provide a downloadable ACT basemap inside Canberra Explorer that remains usable 
 
 ## Approved data-source direction
 
-Use OpenStreetMap data to generate an ACT-only offline map package under our control. Start from a suitable Australia extract (for example, Geofabrik), clip it to a documented ACT boundary, generate the map package and style assets ourselves, and host the finished package at a controlled static endpoint.
+Use the dedicated Geofabrik Australian Capital Territory extract as the starting source. It already provides ACT-scoped OSM data and an ACT boundary polygon file, avoiding the need to clip a much larger Australia extract manually.
 
+- Source page: https://download.geofabrik.de/australia-oceania/australia/act.html
+- Input: `act-latest.osm.pbf`; use the matching `.poly` file for boundary/reference checks.
+- The source page reports a current PBF extract of approximately 18.5 MB at the time this plan was updated; never hardcode that size because the extract changes.
+- Evaluate Planetiler as the first vector-tile generation tool. Its documented outputs include MBTiles and PMTiles; test the chosen output against the actual Android renderer before committing to a format.
+- Host generated files at a controlled static endpoint, with versioned filenames, checksums and a small manifest containing source timestamp, generator version, coverage and attribution.
 - OSM data is available under the Open Database License (ODbL); include clear attribution and preserve applicable share-alike obligations.
 - Do **not** bulk-download tiles from the public OpenStreetMap standard tile server.
-- The build pipeline must record source URL, source timestamp, boundary definition, generator/tool version, output format, checksums and licence/attribution text.
 - Before public release, verify that the chosen generated format, style assets and hosting arrangement comply with ODbL and the host's terms. Do not include third-party style or tile assets unless their redistribution/offline terms are verified.
 - The user has approved this general free OSM approach; approval does not waive the need to validate licensing, hosting, package size or coverage before release.
 
 References:
 - OSM data copyright/licence: https://www.openstreetmap.org/copyright
-- Geofabrik Australia source extract: https://download.geofabrik.de/australia-oceania/australia.html
+- Geofabrik ACT extract and polygon: https://download.geofabrik.de/australia-oceania/australia/act.html
+- Planetiler project and attribution notes: https://github.com/onthegomap/planetiler
 
 ## Proposed Android renderer
 
@@ -33,7 +38,7 @@ Evaluate **MapLibre Native Android 13.7.1** as the native map renderer for the o
 ## Safe implementation sequence
 
 1. **Spike branch (this branch):** record architecture, approved data direction, licence gates and acceptance criteria without changing the stable app.
-2. Build a reproducible ACT package-generation pipeline from OSM source data; document the ACT boundary, ODbL attribution, package format, checksums and hosting.
+2. Build a reproducible ACT package-generation pipeline from the Geofabrik ACT PBF and matching polygon; record source date, generator version, output format, checksums and licence/attribution.
 3. Build a minimal native MapLibre screen on a dedicated branch and verify it renders a test style on the user's Android device.
 4. Download a small ACT sample package; verify it remains usable after force-stop and in airplane mode.
 5. Add Settings controls only after the sample package works: download, progress, cancel/retry, integrity check, data date, update and delete.
