@@ -1,0 +1,63 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+    function moderator() {
+      return signedIn() && request.auth.token.moderator == true;
+    }
+
+    // Location metadata remains readable to signed-in app users.
+    match /locations/{locationId} {
+      allow read: if signedIn();
+
+      // Shared location-photo metadata.
+      match /photos/{photoId} {
+        allow read: if signedIn()
+          && (resource.data.status == "approved"
+              || resource.data.uploaderUid == request.auth.uid
+              || moderator());
+
+        allow create: if signedIn()
+          && request.resource.data.keys().hasOnly([
+            "uploaderUid", "storagePath", "contentType",
+            "sizeBytes", "status", "createdAt", "caption"
+          ])
+          && request.resource.data.uploaderUid == request.auth.uid
+          && request.resource.data.storagePath is string
+          && request.resource.data.storagePath.matches(
+            "^locationPhotos/" + locationId + "/" + request.auth.uid + "/[^/]+$"
+          )
+          && request.resource.data.contentType in [
+            "image/jpeg", "image/png", "image/webp"
+          ]
+          && request.resource.data.sizeBytes is int
+          && request.resource.data.sizeBytes > 0
+          && request.resource.data.sizeBytes <= 10485760
+          && request.resource.data.status == "pending"
+          && request.resource.data.createdAt == request.time
+          && request.resource.data.caption is string
+          && request.resource.data.caption.size() <= 300;
+
+        // Uploaders cannot approve, alter or remove published records.
+        // Moderation is reserved for accounts with a trusted custom claim.
+        allow update, delete: if moderator();
+      }
+
+      match /photoReports/{reportId} {
+        allow create: if signedIn()
+          && request.resource.data.keys().hasOnly([
+            "photoId", "reporterUid", "reason", "createdAt", "status"
+          ])
+          && request.resource.data.reporterUid == request.auth.uid
+          && request.resource.data.photoId is string
+          && request.resource.data.reason is string
+          && request.resource.data.reason.size() <= 500
+          && request.resource.data.createdAt == request.time
+          && request.resource.data.status == "open";
+        allow read, update, delete: if moderator();
+      }
+    }
+  }
+}
