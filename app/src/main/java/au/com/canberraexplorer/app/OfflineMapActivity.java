@@ -187,6 +187,7 @@ public class OfflineMapActivity extends Activity {
                                     error -> runOnUiThread(() -> status.setText("Download stopped, but the partial pack could not be removed: " + error)));
                                 return;
                             }
+                            if (s.isComplete()) region.setDownloadState(OfflineRegion.STATE_INACTIVE);
                             String message = s.isComplete()
                                 ? "Saved " + REGIONS[selected] + " for offline use."
                                 : "Downloading " + REGIONS[selected] + ": " + tiles
@@ -197,7 +198,10 @@ public class OfflineMapActivity extends Activity {
                             runOnUiThread(() -> status.setText("Offline map download error: " + error.getMessage()));
                         }
                         @Override public void mapboxTileCountLimitExceeded(long limit) {
-                            runOnUiThread(() -> status.setText("Download stopped at the " + limit + " tile limit."));
+                            region.setDownloadState(OfflineRegion.STATE_INACTIVE);
+                            deleteRegion(region, () -> runOnUiThread(() -> status.setText(
+                                "Download stopped at the " + limit + " tile limit. Choose a smaller area.")),
+                                error -> runOnUiThread(() -> status.setText("Tile limit reached; partial pack could not be removed: " + error)));
                         }
                     });
                     region.setDownloadState(OfflineRegion.STATE_ACTIVE);
@@ -239,7 +243,7 @@ public class OfflineMapActivity extends Activity {
     private void deleteRegion(OfflineRegion region, Runnable onDeleted, DeleteErrorCallback onError) {
         region.delete(new OfflineRegion.OfflineRegionDeleteCallback() {
             @Override public void onDelete() { onDeleted.run(); }
-            @Override public void onError(String error) { onError.accept(error); }
+            @Override public void onError(String error) { onError.onError(error); }
         });
     }
 
