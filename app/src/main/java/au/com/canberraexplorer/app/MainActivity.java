@@ -79,7 +79,7 @@ public class MainActivity extends Activity {
         googleSignInClient = GoogleSignIn.getClient(this, signInOptions);
 
         if (firebaseAuth.getCurrentUser() == null) showSignInScreen();
-        else loadMap();
+        else continueAfterSignIn();
     }
 
     private void showSignInScreen() {
@@ -177,7 +177,7 @@ public class MainActivity extends Activity {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
                 firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, authTask -> {
-                    if (authTask.isSuccessful()) loadMap();
+                    if (authTask.isSuccessful()) continueAfterSignIn();
                     else {
                         Toast.makeText(this, "Google sign-in failed. Please try again.", Toast.LENGTH_LONG).show();
                         showSignInScreen();
@@ -216,7 +216,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        checkForApkUpdate();
         long pending = getPreferences(MODE_PRIVATE).getLong(PENDING_DOWNLOAD, -1);
         if (pending >= 0) {
             DownloadManager.Query query = new DownloadManager.Query().setFilterById(pending);
@@ -232,8 +231,19 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void checkForApkUpdate() {
-        if (updateCheckRunning) return;
+    /**
+     * Run the app update check only after Google authentication.
+     * Continue to the map after the user chooses Update now or Later.
+     */
+    private void continueAfterSignIn() {
+        checkForApkUpdate(this::loadMap);
+    }
+
+    private void checkForApkUpdate(Runnable continueToMap) {
+        if (updateCheckRunning) {
+            continueToMap.run();
+            return;
+        }
         updateCheckRunning = true;
         new Thread(() -> {
             HttpURLConnection connection = null;
@@ -242,7 +252,10 @@ public class MainActivity extends Activity {
                 connection.setConnectTimeout(7000);
                 connection.setReadTimeout(7000);
                 connection.setRequestProperty("Cache-Control", "no-cache");
-                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) return;
+                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    runOnUiThread(continueToMap);
+                    return;
+                }
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 StringBuilder body = new StringBuilder();
                 String line;
@@ -255,23 +268,30 @@ public class MainActivity extends Activity {
                 PackageInfo installed = getPackageManager().getPackageInfo(getPackageName(), 0);
                 long installedCode = Build.VERSION.SDK_INT >= 28 ? installed.getLongVersionCode() : installed.versionCode;
                 runOnUiThread(() -> {
-                    if (latestCode <= installedCode) {
-                        if (updateDialog != null && updateDialog.isShowing()) updateDialog.dismiss();
-                        updateDialog = null;
+                    if (isFinishing() || isDestroyed()) return;
+                    if (latestCode <= installedCode || !apkUrl.startsWith("https://")) {
+                        continueToMap.run();
                         return;
                     }
-                    if (!apkUrl.startsWith("https://") || isFinishing() || isDestroyed()) return;
-                    if (updateDialog != null && updateDialog.isShowing()) return;
+                    if (updateDialog != null && updateDialog.isShowing()) {
+                        continueToMap.run();
+                        return;
+                    }
                     updateDialog = new AlertDialog.Builder(MainActivity.this)
                         .setTitle("Canberra Explorer update")
-                        .setMessage("Version " + latestName + " is available. Download it now? The app will ask Android to install it when the download finishes.")
-                        .setPositiveButton("Update now", (dialog, which) -> downloadUpdate(apkUrl, latestName))
-                        .setNegativeButton("Later", null)
+                        .setMessage("Version " + latestName + " is available. Would you like to update now?")
+                        .setPositiveButton("Update now", (dialog, which) -> {
+                            downloadUpdate(apkUrl, latestName);
+                            continueToMap.run();
+                        })
+                        .setNegativeButton("Later", (dialog, which) -> continueToMap.run())
+                        .setOnCancelListener(dialog -> continueToMap.run())
                         .create();
                     updateDialog.show();
                 });
             } catch (Exception ignored) {
-                // Keep the app usable if the update service is unavailable.
+                // Keep sign-in and map access working if the update service is unavailable.
+                runOnUiThread(continueToMap);
             } finally {
                 if (connection != null) connection.disconnect();
                 updateCheckRunning = false;
