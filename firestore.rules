@@ -44,7 +44,11 @@ service cloud.firestore {
 
         // Uploaders cannot approve, alter or remove published records.
         // Moderation is reserved for accounts with a trusted custom claim.
-        allow update, delete: if moderator();
+        allow update: if moderator();
+        allow delete: if moderator()
+          || (signedIn()
+              && resource.data.uploaderUid == request.auth.uid
+              && resource.data.status == "pending");
       }
 
       match /photoReports/{reportId} {
