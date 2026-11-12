@@ -311,7 +311,7 @@ public class OfflineMapActivity extends Activity {
     @Override protected void onPause() { mapView.onPause(); super.onPause(); }
     @Override protected void onStop() { mapView.onStop(); super.onStop(); }
     @Override public void onLowMemory() { super.onLowMemory(); mapView.onLowMemory(); }
-    @Override protected void onDestroy() { mapView.onDestroy(); super.onDestroy(); }
+    @Override protected void onDestroy() { if (activeRegion != null) activeRegion.setObserver(null); mapView.onDestroy(); super.onDestroy(); }
     @Override protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
