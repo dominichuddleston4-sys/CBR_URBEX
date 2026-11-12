@@ -11,7 +11,7 @@ Last reviewed: 12 November 2026
 
 ## Offline basemap implementation in the development branch
 
-A native MapLibre screen has been added in `OfflineMapActivity`. It offers Central, North, South, West and East Canberra region choices, downloads one region at a time, stores saved place pins supplied by the existing web map, and offers a delete-all control. Multiple area packs can be saved; the first download for each area requires internet. Each development pack is capped at 3,000 tiles and stops/removes a region if its completed resource size exceeds 50 MB. The device-wide MapLibre tile ceiling is set to 15,000 to allow up to five regional packs. The style is OpenFreeMap Liberty and attribution is supplied by the MapLibre style controls.
+A native MapLibre screen has been added in `OfflineMapActivity`. It offers Central, North, South, West and East ACT sector choices, downloads one region at a time, stores saved place pins supplied by the existing web map, and offers a delete-all control. Multiple area packs can be saved; the first download for each area requires internet. Each development pack is capped at 3,000 tiles and stops/removes a region if its completed resource size exceeds 50 MB. The device-wide MapLibre tile ceiling is set to 15,000 to allow up to five regional packs. The style is OpenFreeMap Liberty and attribution is supplied by the MapLibre style controls.
 
 The downloader sets an app-identifying User-Agent, limits map requests to four in parallel, and enforces OpenFreeMap's 3,000-tile / 50 MB per-download ceiling. The native screen and download flow still require a successful CI build and on-device airplane-mode tests before being considered shipped. Offline routing is not included.
 
