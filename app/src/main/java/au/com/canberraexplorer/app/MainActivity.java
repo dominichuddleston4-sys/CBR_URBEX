@@ -160,13 +160,26 @@ public class MainActivity extends Activity {
                 } catch (Exception ignored) { }
                 return true;
             }
+            private boolean handleNavigation(String url) {
+                if (openGoogleMaps(url)) return true;
+                Uri uri = Uri.parse(url);
+                String scheme = uri.getScheme();
+                String host = uri.getHost();
+                if ("https".equalsIgnoreCase(scheme)
+                    && "dominichuddleston4-sys.github.io".equalsIgnoreCase(host)
+                    && uri.getPath() != null
+                    && uri.getPath().startsWith("/CBR_URBEX")) return false;
+                try { startActivity(new Intent(Intent.ACTION_VIEW, uri)); }
+                catch (Exception ignored) { }
+                return true;
+            }
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                return openGoogleMaps(request.getUrl().toString());
+                return handleNavigation(request.getUrl().toString());
             }
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                return openGoogleMaps(url);
+                return handleNavigation(url);
             }
         });
         webView.addJavascriptInterface(new Object() {
