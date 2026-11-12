@@ -32,6 +32,29 @@ features separate from features confirmed as shipped.
 - Netlify deployment was not verified in that status report.
 - **Note:** This is a historical status snapshot, not a complete list of v1.28 code changes.
 
+## December update plan — Google account sign-in
+
+**Status: Planned only; not implemented or released.**
+
+The user has requested that everyone must sign in with a Google account **before they can view the map**.
+
+Planned behaviour and requirements:
+- Show a Google sign-in screen when the app opens.
+- Keep the map and app content locked until authentication succeeds.
+- Allow authenticated users to sign out from Settings; signing out returns the app to the sign-in screen.
+- Keep shared map locations and shared location-photo galleries available to signed-in users.
+- Associate photo uploads with the authenticated user's account and provide suitable uploader attribution and reporting/removal controls.
+- Configure Firebase Authentication with the Google provider, and secure any photo/database backend with authenticated-user rules. A sign-in screen alone is not sufficient to protect stored data.
+- Test sign-in, sign-out, app restart/session persistence, denied/cancelled sign-in, and access blocking before publishing.
+
+Implementation dependencies still to confirm:
+- Firebase project and Google sign-in provider configuration.
+- Android application/package ID and signing certificate fingerprints for the release build.
+- Web/PWA sign-in configuration if the website and Android app share the same authentication flow.
+- Backend/database and storage rules for shared user-uploaded photos.
+
+Do not mark this feature as complete until the configuration, implementation, release build, and access-control behaviour have been tested.
+
 ## Work planned or discussed — not confirmed as shipped
 
 The following items have been discussed for future Canberra Explorer updates. Do not describe them
