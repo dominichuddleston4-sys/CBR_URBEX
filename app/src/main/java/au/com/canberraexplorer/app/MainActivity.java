@@ -179,12 +179,19 @@ public class MainActivity extends Activity {
                 firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, authTask -> {
                     if (authTask.isSuccessful()) continueAfterSignIn();
                     else {
-                        Toast.makeText(this, "Google sign-in failed. Please try again.", Toast.LENGTH_LONG).show();
+                        Exception failure = authTask.getException();
+                        String detail = failure == null ? "Unknown Firebase authentication error" : failure.getClass().getSimpleName() + ": " + failure.getMessage();
+                        Toast.makeText(this, "Firebase sign-in failed: " + detail, Toast.LENGTH_LONG).show();
                         showSignInScreen();
                     }
                 });
             } catch (ApiException e) {
-                Toast.makeText(this, "Google sign-in was cancelled or failed. Please try again.", Toast.LENGTH_LONG).show();
+                String detail = "Google sign-in error " + e.getStatusCode();
+                if (e.getStatusMessage() != null) detail += ": " + e.getStatusMessage();
+                Toast.makeText(this, detail, Toast.LENGTH_LONG).show();
+                showSignInScreen();
+            } catch (Exception e) {
+                Toast.makeText(this, "Sign-in error: " + e.getClass().getSimpleName() + ": " + e.getMessage(), Toast.LENGTH_LONG).show();
                 showSignInScreen();
             }
             return;
