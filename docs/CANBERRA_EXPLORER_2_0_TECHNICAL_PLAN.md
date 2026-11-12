@@ -73,7 +73,7 @@ The current app uses Firebase Authentication, but sign-in alone does not protect
 - Add reporting and moderation/removal flow.
 - Test cross-account visibility and unauthorised reads/writes using Firebase rules tests.
 
-No Firebase database/storage rules or photo backend are currently evidenced in this repository. Do not add a client-only upload feature and describe it as shared or secure.
+Initial Firestore and Storage rules plus firebase.json have now been committed for review, with a security/deployment note at docs/FIREBASE_PHOTO_GALLERY_SECURITY.md. They are not deployed or emulator-tested, and no photo UI/backend flow exists yet. Do not add a client-only upload feature and describe it as shared or secure.
 
 ## Current implementation status
 
