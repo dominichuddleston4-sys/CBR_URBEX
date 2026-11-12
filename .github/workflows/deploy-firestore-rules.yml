@@ -23,10 +23,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24.18.0"
 
       - name: Install Firebase CLI
-        run: npm install --global firebase-tools
+        run: npm install --global firebase-tools@15.22.3
 
       - name: Authenticate with Firebase
         env:
@@ -37,7 +37,8 @@ jobs:
             exit 1
           }
           printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/firebase-service-account.json"
+          node -e "JSON.parse(require('fs').readFileSync(process.env.RUNNER_TEMP + '/firebase-service-account.json', 'utf8')); console.log('Service account JSON format is valid')"
           echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/firebase-service-account.json" >> "$GITHUB_ENV"
 
       - name: Deploy Firestore security rules
-        run: firebase deploy --only firestore:rules --project canberra-explorer --non-interactive
+        run: firebase deploy --only firestore:rules --project canberra-explorer --non-interactive --debug
