@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "282611690988",
+    "project_id": "canberra-explorer",
+    "storage_bucket": "canberra-explorer.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:282611690988:android:57e0ed697b9a8baa1524c9",
+        "android_client_info": {
+          "package_name": "au.com.canberraexplorer.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyRTAf3cTCni7Q7umZIta71nDighD_e4c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
