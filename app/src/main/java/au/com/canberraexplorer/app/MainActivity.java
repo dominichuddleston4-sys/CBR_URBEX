@@ -24,6 +24,21 @@ import android.webkit.WebSettings;
 import android.view.View;
 import android.graphics.Color;
 import android.widget.Toast;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.view.Gravity;
+import android.view.ViewGroup;
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.android.gms.tasks.Task;
 
 import org.json.JSONObject;
 import java.io.BufferedReader;
@@ -33,6 +48,9 @@ import java.net.URL;
 
 public class MainActivity extends Activity {
     private static final int LOCATION_REQUEST = 42;
+    private static final int GOOGLE_SIGN_IN_REQUEST = 44;
+    private FirebaseAuth firebaseAuth;
+    private GoogleSignInClient googleSignInClient;
     private static final int INSTALL_PERMISSION_REQUEST = 43;
     private static final String UPDATE_INFO_URL = "https://dominichuddleston4-sys.github.io/CBR_URBEX/version.json";
     private static final String PREFS = "canberra_explorer_updates";
@@ -53,6 +71,54 @@ public class MainActivity extends Activity {
         downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
         registerDownloadReceiver();
 
+        firebaseAuth = FirebaseAuth.getInstance();
+        GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build();
+        googleSignInClient = GoogleSignIn.getClient(this, signInOptions);
+
+        if (firebaseAuth.getCurrentUser() == null) showSignInScreen();
+        else loadMap();
+    }
+
+    private void showSignInScreen() {
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setGravity(Gravity.CENTER);
+        layout.setPadding(36, 36, 36, 36);
+        layout.setBackgroundColor(Color.rgb(10, 24, 17));
+
+        TextView title = new TextView(this);
+        title.setText("Canberra Explorer");
+        title.setTextColor(Color.WHITE);
+        title.setTextSize(28);
+        title.setGravity(Gravity.CENTER);
+        layout.addView(title, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        TextView message = new TextView(this);
+        message.setText("Sign in with Google to access the map.");
+        message.setTextColor(Color.LTGRAY);
+        message.setTextSize(16);
+        message.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams messageParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        messageParams.topMargin = 24;
+        layout.addView(message, messageParams);
+
+        Button signIn = new Button(this);
+        signIn.setText("Sign in with Google");
+        signIn.setOnClickListener(v -> startGoogleSignIn());
+        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        buttonParams.topMargin = 28;
+        layout.addView(signIn, buttonParams);
+        setContentView(layout);
+    }
+
+    private void startGoogleSignIn() {
+        startActivityForResult(googleSignInClient.getSignInIntent(), GOOGLE_SIGN_IN_REQUEST);
+    }
+
+    private void loadMap() {
         webView = new WebView(this);
         webView.setBackgroundColor(Color.rgb(10, 24, 17));
         WebSettings settings = webView.getSettings();
@@ -99,8 +165,37 @@ public class MainActivity extends Activity {
             }
         });
         setContentView(webView);
-        if (savedInstanceState == null) webView.loadUrl("https://dominichuddleston4-sys.github.io/CBR_URBEX/");
-        else webView.restoreState(savedInstanceState);
+        webView.loadUrl("https://dominichuddleston4-sys.github.io/CBR_URBEX/");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == GOOGLE_SIGN_IN_REQUEST) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+                firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, authTask -> {
+                    if (authTask.isSuccessful()) loadMap();
+                    else {
+                        Toast.makeText(this, "Google sign-in failed. Please try again.", Toast.LENGTH_LONG).show();
+                        showSignInScreen();
+                    }
+                });
+            } catch (ApiException e) {
+                Toast.makeText(this, "Google sign-in was cancelled or failed. Please try again.", Toast.LENGTH_LONG).show();
+                showSignInScreen();
+            }
+            return;
+        }
+        if (requestCode == INSTALL_PERMISSION_REQUEST && Build.VERSION.SDK_INT >= 26 && getPackageManager().canRequestPackageInstalls()) {
+            long pending = getPreferences(MODE_PRIVATE).getLong(PENDING_DOWNLOAD, -1);
+            if (pending >= 0) {
+                getPreferences(MODE_PRIVATE).edit().remove(PENDING_DOWNLOAD).apply();
+                installDownloadedApk(pending);
+            }
+        }
     }
 
     private void registerDownloadReceiver() {
@@ -219,18 +314,6 @@ public class MainActivity extends Activity {
             startActivity(install);
         } catch (Exception e) {
             Toast.makeText(this, "Android could not open the installer.", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == INSTALL_PERMISSION_REQUEST && Build.VERSION.SDK_INT >= 26 && getPackageManager().canRequestPackageInstalls()) {
-            long pending = getPreferences(MODE_PRIVATE).getLong(PENDING_DOWNLOAD, -1);
-            if (pending >= 0) {
-                getPreferences(MODE_PRIVATE).edit().remove(PENDING_DOWNLOAD).apply();
-                installDownloadedApk(pending);
-            }
         }
     }
 
