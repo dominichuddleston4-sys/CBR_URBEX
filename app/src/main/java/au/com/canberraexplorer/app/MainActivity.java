@@ -49,7 +49,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.android.gms.tasks.Tasks;
-import android.net.Uri;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
