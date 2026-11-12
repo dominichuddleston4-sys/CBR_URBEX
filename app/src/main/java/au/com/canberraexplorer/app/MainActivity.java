@@ -226,7 +226,7 @@ public class MainActivity extends Activity {
                                 sendAdminCallback(callbackId, result.toString());
                             } catch (Exception ignored) { sendAdminError(callbackId, "Could not format user list."); }
                         }).addOnFailureListener(error ->
-                            sendAdminError(callbackId, "Firestore read failed (" + error.getCode() + "). Publish firestore.rules in Firebase Console and confirm Firestore Database exists."))
+                            sendAdminError(callbackId, "Firestore read failed (" + error.getMessage() + "). Publish firestore.rules in Firebase Console and confirm Firestore Database exists."))
                 ).addOnFailureListener(error ->
                     sendAdminError(callbackId, "Could not refresh administrator sign-in (" + error.getMessage() + "). Sign out and back in."));
 
@@ -245,7 +245,7 @@ public class MainActivity extends Activity {
                 adminUser.getIdToken(true).addOnSuccessListener(tokenResult ->
                     firestore.collection("appUsers").document(uid).update(change)
                         .addOnSuccessListener(unused -> sendAdminCallback(callbackId, "{\"ok\":true}"))
-                        .addOnFailureListener(error -> sendAdminError(callbackId, "Firestore update failed (" + error.getCode() + "). Check that firestore.rules is published."))
+                        .addOnFailureListener(error -> sendAdminError(callbackId, "Firestore update failed (" + error.getMessage() + "). Check that firestore.rules is published."))
                 ).addOnFailureListener(error ->
                     sendAdminError(callbackId, "Could not refresh administrator sign-in. Sign out and back in."));
 
