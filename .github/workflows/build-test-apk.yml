@@ -3,9 +3,10 @@ name: Build and publish Canberra Explorer APK
 on:
   workflow_dispatch:
   push:
-    branches: [main, feature/2.0-completion]
+    branches: [main, feature/2.0-completion, feature/admin-app-prototype]
     paths:
       - 'app/**'
+      - 'admin/**'
       - 'build.gradle'
       - 'settings.gradle'
       - 'gradle.properties'
@@ -19,6 +20,7 @@ on:
     branches: [main]
     paths:
       - 'app/**'
+      - 'admin/**'
       - 'build.gradle'
       - 'settings.gradle'
       - 'gradle.properties'
@@ -67,7 +69,7 @@ jobs:
           test -s "$RUNNER_TEMP/canberra-explorer-release.jks"
           echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/canberra-explorer-release.jks" >> "$GITHUB_ENV"
 
-      - name: Build signed release APK
+      - name: Build signed release APKs
         env:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
@@ -78,19 +80,22 @@ jobs:
           gradle --no-daemon --stacktrace --info -PappVersionCode="$APP_VERSION_CODE" -PappVersionName="$APP_VERSION_NAME" assembleRelease
           mkdir -p release
           cp app/build/outputs/apk/release/app-release.apk release/app-release.apk
+          cp admin/build/outputs/apk/release/admin-release.apk release/canberra-explorer-admin-preview.apk
           echo "VERSION_CODE=$APP_VERSION_CODE" >> "$GITHUB_ENV"
           echo "VERSION_NAME=$APP_VERSION_NAME" >> "$GITHUB_ENV"
 
-      - name: Upload test APK artifact
+      - name: Upload test APK artifacts
         if: github.ref != 'refs/heads/main'
         uses: actions/upload-artifact@v4
         with:
-          name: canberra-explorer-test-apk
-          path: release/app-release.apk
+          name: canberra-explorer-test-apks
+          path: |
+            release/app-release.apk
+            release/canberra-explorer-admin-preview.apk
           if-no-files-found: error
           retention-days: 14
 
-      - name: Publish APK as the latest GitHub Release
+      - name: Publish public Canberra Explorer APK as the latest GitHub Release
         if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
@@ -114,7 +119,7 @@ jobs:
               versionCode: Number(process.env.VERSION_CODE),
               versionName: process.env.VERSION_NAME,
               apkUrl: 'https://github.com/dominichuddleston4-sys/CBR_URBEX/releases/latest/download/app-release.apk'
-            }, null, 2) + '\n';
+            }, null, 2) + '\\n';
             let sha;
             try {
               const current = await github.rest.repos.getContent({

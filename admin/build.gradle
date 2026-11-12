@@ -1,0 +1,32 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'au.com.canberraexplorer.admin'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'au.com.canberraexplorer.admin'
+        minSdk 23
+        targetSdk 35
+        versionCode 1
+        versionName '0.1.0-preview'
+    }
+
+    signingConfigs {
+        release {
+            storeFile = file(System.getenv('ANDROID_KEYSTORE_PATH') ?: 'missing-keystore.jks')
+            storePassword = System.getenv('ANDROID_KEYSTORE_PASSWORD') ?: ''
+            keyAlias = System.getenv('ANDROID_KEY_ALIAS') ?: ''
+            keyPassword = System.getenv('ANDROID_KEY_PASSWORD') ?: ''
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig = signingConfigs.release
+            minifyEnabled false
+        }
+    }
+}
