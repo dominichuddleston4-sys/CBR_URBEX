@@ -21,6 +21,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebSettings;
+import android.webkit.JavascriptInterface;
 import android.view.View;
 import android.graphics.Color;
 import android.widget.Toast;
@@ -142,15 +143,35 @@ public class MainActivity extends Activity {
                 } catch (Exception ignored) { }
                 return true;
             }
+            private boolean handleNavigation(String url) {
+                if (openGoogleMaps(url)) return true;
+                Uri uri = Uri.parse(url);
+                String scheme = uri.getScheme();
+                String host = uri.getHost();
+                if ("https".equalsIgnoreCase(scheme)
+                    && "dominichuddleston4-sys.github.io".equalsIgnoreCase(host)
+                    && uri.getPath() != null
+                    && uri.getPath().startsWith("/CBR_URBEX")) return false;
+                try { startActivity(new Intent(Intent.ACTION_VIEW, uri)); }
+                catch (Exception ignored) { }
+                return true;
+            }
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                return openGoogleMaps(request.getUrl().toString());
+                return handleNavigation(request.getUrl().toString());
             }
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                return openGoogleMaps(url);
+                return handleNavigation(url);
             }
         });
+        webView.addJavascriptInterface(new Object() {
+            @JavascriptInterface public void openOfflineMap(String placesGeoJson) {
+                Intent intent = new Intent(MainActivity.this, OfflineMapActivity.class);
+                if (placesGeoJson != null && placesGeoJson.length() <= 2000000) intent.putExtra("places_geojson", placesGeoJson);
+                runOnUiThread(() -> startActivity(intent));
+            }
+        }, "CanberraNative");
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
@@ -168,6 +189,7 @@ public class MainActivity extends Activity {
         webView.loadUrl("https://dominichuddleston4-sys.github.io/CBR_URBEX/");
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -177,7 +199,7 @@ public class MainActivity extends Activity {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
                 firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, authTask -> {
-                    if (authTask.isSuccessful()) loadMap();
+                    if (authTask.isSuccessful()) { loadMap(); checkForApkUpdate(); }
                     else {
                         Toast.makeText(this, "Google sign-in failed. Please try again.", Toast.LENGTH_LONG).show();
                         showSignInScreen();
@@ -216,7 +238,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        checkForApkUpdate();
+        if (firebaseAuth != null && firebaseAuth.getCurrentUser() != null) checkForApkUpdate();
         long pending = getPreferences(MODE_PRIVATE).getLong(PENDING_DOWNLOAD, -1);
         if (pending >= 0) {
             DownloadManager.Query query = new DownloadManager.Query().setFilterById(pending);

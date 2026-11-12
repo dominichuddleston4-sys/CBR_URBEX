@@ -3,6 +3,19 @@ name: Build and publish Canberra Explorer APK
 on:
   workflow_dispatch:
   push:
+    branches: [main, feature/2.0-completion]
+    paths:
+      - 'app/**'
+      - 'build.gradle'
+      - 'settings.gradle'
+      - 'gradle.properties'
+      - 'index.html'
+      - 'manifest.json'
+      - 'sw.js'
+      - 'places.json'
+      - 'icon.svg'
+      - '.github/workflows/build-test-apk.yml'
+  pull_request:
     branches: [main]
     paths:
       - 'app/**'
@@ -17,11 +30,12 @@ on:
       - '.github/workflows/build-test-apk.yml'
 
 concurrency:
-  group: canberra-explorer-release
+  group: canberra-explorer-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
   contents: write
+  statuses: write
 
 jobs:
   build-and-publish:
@@ -61,13 +75,23 @@ jobs:
           APP_VERSION_CODE: ${{ github.run_number }}
           APP_VERSION_NAME: 1.${{ github.run_number }}
         run: |
-          gradle --no-daemon -PappVersionCode="$APP_VERSION_CODE" -PappVersionName="$APP_VERSION_NAME" assembleRelease
+          gradle --no-daemon --stacktrace --info -PappVersionCode="$APP_VERSION_CODE" -PappVersionName="$APP_VERSION_NAME" assembleRelease
           mkdir -p release
           cp app/build/outputs/apk/release/app-release.apk release/app-release.apk
           echo "VERSION_CODE=$APP_VERSION_CODE" >> "$GITHUB_ENV"
           echo "VERSION_NAME=$APP_VERSION_NAME" >> "$GITHUB_ENV"
 
+      - name: Upload test APK artifact
+        if: github.ref != 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: canberra-explorer-test-apk
+          path: release/app-release.apk
+          if-no-files-found: error
+          retention-days: 14
+
       - name: Publish APK as the latest GitHub Release
+        if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ env.VERSION_NAME }}
@@ -78,6 +102,7 @@ jobs:
           make_latest: true
 
       - name: Publish update information to GitHub Pages
+        if: github.ref == 'refs/heads/main'
         uses: actions/github-script@v7
         env:
           VERSION_CODE: ${{ env.VERSION_CODE }}
@@ -109,4 +134,24 @@ jobs:
               content: Buffer.from(content).toString('base64'),
               ...(sha ? { sha } : {}),
               branch: 'main'
+            });
+
+      - name: Report build result on commit
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          BUILD_STATUS: ${{ job.status }}
+        with:
+          script: |
+            const state = process.env.BUILD_STATUS === 'success'
+              ? 'success'
+              : process.env.BUILD_STATUS === 'failure' ? 'failure' : 'error';
+            await github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              state,
+              context: 'canberra-explorer/build',
+              description: 'Signed APK build ' + state,
+              target_url: 'https://github.com/' + context.repo.owner + '/' + context.repo.repo + '/actions/runs/' + context.runId
             });

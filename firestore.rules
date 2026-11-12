@@ -21,14 +21,16 @@ service cloud.firestore {
 
         allow create: if signedIn()
           && request.resource.data.keys().hasOnly([
-            "uploaderUid", "storagePath", "contentType",
+            "uploaderUid", "uploaderName", "storagePath", "contentType",
             "sizeBytes", "status", "createdAt", "caption"
           ])
+          && photoId.matches("^[a-zA-Z0-9-]{1,100}$")
+          && locationId.matches("^[a-z0-9-]{1,80}$")
           && request.resource.data.uploaderUid == request.auth.uid
+          && request.resource.data.uploaderName is string
+          && request.resource.data.uploaderName.size() <= 80
           && request.resource.data.storagePath is string
-          && request.resource.data.storagePath.matches(
-            "^locationPhotos/" + locationId + "/" + request.auth.uid + "/[^/]+$"
-          )
+          && request.resource.data.storagePath == "locationPhotos/" + locationId + "/" + request.auth.uid + "/" + photoId
           && request.resource.data.contentType in [
             "image/jpeg", "image/png", "image/webp"
           ]
@@ -42,7 +44,11 @@ service cloud.firestore {
 
         // Uploaders cannot approve, alter or remove published records.
         // Moderation is reserved for accounts with a trusted custom claim.
-        allow update, delete: if moderator();
+        allow update: if moderator();
+        allow delete: if moderator()
+          || (signedIn()
+              && resource.data.uploaderUid == request.auth.uid
+              && resource.data.status == "pending");
       }
 
       match /photoReports/{reportId} {
