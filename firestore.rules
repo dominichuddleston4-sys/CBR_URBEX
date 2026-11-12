@@ -2,9 +2,7 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() { return request.auth != null; }
-    function moderator() {
-      return signedIn() && request.auth.token.moderator == true;
-    }
+    function moderator() { return signedIn() && request.auth.token.moderator == true; }
     function appAdmin() {
       return signedIn()
         && request.auth.token.email_verified == true
@@ -16,27 +14,20 @@ service cloud.firestore {
       allow list: if appAdmin();
       allow create: if signedIn()
         && request.auth.uid == uid
-        && request.resource.data.keys().hasOnly([
-          "uid", "email", "displayName", "lastSeen", "blocked", "forceSignOut"
-        ])
+        && request.resource.data.keys().hasOnly(["uid", "email", "displayName", "lastSeen", "blocked", "forceSignOut"])
         && request.resource.data.uid == uid
         && request.resource.data.email == request.auth.token.email
         && request.resource.data.blocked == false
         && request.resource.data.forceSignOut == false
         && request.resource.data.lastSeen == request.time;
       allow update: if (
-          signedIn()
-          && request.auth.uid == uid
-          && request.resource.data.diff(resource.data).affectedKeys()
-              .hasOnly(["lastSeen", "displayName", "forceSignOut"])
+          signedIn() && request.auth.uid == uid
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["lastSeen", "displayName", "forceSignOut"])
           && request.resource.data.lastSeen == request.time
-          && (!("forceSignOut" in request.resource.data.diff(resource.data).affectedKeys())
-              || (resource.data.forceSignOut == true
-                  && request.resource.data.forceSignOut == false))
+          && (!( "forceSignOut" in request.resource.data.diff(resource.data).affectedKeys())
+              || (resource.data.forceSignOut == true && request.resource.data.forceSignOut == false))
         ) || (
-          appAdmin()
-          && request.resource.data.diff(resource.data).affectedKeys()
-              .hasOnly(["blocked", "forceSignOut"])
+          appAdmin() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["blocked", "forceSignOut"])
         );
       allow delete: if appAdmin();
     }
@@ -45,47 +36,44 @@ service cloud.firestore {
       allow read: if signedIn();
       match /photos/{photoId} {
         allow read: if signedIn()
-          && (resource.data.status == "approved"
-              || resource.data.uploaderUid == request.auth.uid
-              || moderator());
+          && (resource.data.status == "approved" || resource.data.uploaderUid == request.auth.uid || appAdmin() || moderator());
         allow create: if signedIn()
           && request.resource.data.keys().hasOnly([
-            "uploaderUid", "uploaderName", "storagePath", "contentType",
-            "sizeBytes", "status", "createdAt", "caption"
+            "uploaderUid", "uploaderName", "imageBase64", "contentType", "sizeBytes",
+            "status", "createdAt", "caption"
           ])
-          && photoId.matches("^[a-zA-Z0-9-]{1,100}$")
+          && photoId.matches("^[A-Za-z0-9-]{1,100}$")
           && locationId.matches("^[a-z0-9-]{1,80}$")
           && request.resource.data.uploaderUid == request.auth.uid
           && request.resource.data.uploaderName is string
           && request.resource.data.uploaderName.size() <= 80
-          && request.resource.data.storagePath is string
-          && request.resource.data.storagePath == "locationPhotos/" + locationId + "/" + request.auth.uid + "/" + photoId
-          && request.resource.data.contentType in ["image/jpeg", "image/png", "image/webp"]
+          && request.resource.data.imageBase64 is string
+          && request.resource.data.imageBase64.size() <= 680000
+          && request.resource.data.contentType == "image/jpeg"
           && request.resource.data.sizeBytes is int
           && request.resource.data.sizeBytes > 0
-          && request.resource.data.sizeBytes <= 10485760
+          && request.resource.data.sizeBytes <= 500000
           && request.resource.data.status == "pending"
           && request.resource.data.createdAt == request.time
           && request.resource.data.caption is string
           && request.resource.data.caption.size() <= 300;
-        allow update: if moderator();
-        allow delete: if moderator()
-          || (signedIn()
-              && resource.data.uploaderUid == request.auth.uid
-              && resource.data.status == "pending");
+        allow update: if (appAdmin() || moderator())
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["status", "reviewedAt", "reviewedBy"])
+          && request.resource.data.status in ["approved", "removed"]
+          && request.resource.data.reviewedAt == request.time;
+        allow delete: if appAdmin() || moderator()
+          || (signedIn() && resource.data.uploaderUid == request.auth.uid && resource.data.status == "pending");
       }
       match /photoReports/{reportId} {
         allow create: if signedIn()
-          && request.resource.data.keys().hasOnly([
-            "photoId", "reporterUid", "reason", "createdAt", "status"
-          ])
+          && request.resource.data.keys().hasOnly(["photoId", "reporterUid", "reason", "createdAt", "status"])
           && request.resource.data.reporterUid == request.auth.uid
           && request.resource.data.photoId is string
           && request.resource.data.reason is string
           && request.resource.data.reason.size() <= 500
           && request.resource.data.createdAt == request.time
           && request.resource.data.status == "open";
-        allow read, update, delete: if moderator();
+        allow read, update, delete: if appAdmin() || moderator();
       }
     }
   }
