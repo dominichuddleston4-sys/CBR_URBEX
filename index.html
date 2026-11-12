@@ -287,10 +287,12 @@ function renderPhotoGallery(result){
  status.textContent=photos.length?photos.length+" photo(s) in this gallery. Pending uploads are visible only to you and moderators.":"No shared photos yet. Be the first to add one.";
  grid.innerHTML=photos.map(p=>{
   const pending=p.status==="pending";
-  const id=esc(p.id);
-  const controls=pending&&result.moderator
-   ?'<div class="actions"><button onclick="moderatePhoto('+JSON.stringify(p.id).replace(/"/g,'&quot;')+',\'approve\')">Approve</button><button class="secondary" onclick="moderatePhoto('+JSON.stringify(p.id).replace(/"/g,'&quot;')+',\'delete\')">Remove</button></div>'
-   :(!pending?'<div class="actions"><button class="secondary" onclick="reportPhoto('+JSON.stringify(p.id).replace(/"/g,'&quot;')+')">Report</button></div>':'');
+  const approveCall="moderatePhoto("+JSON.stringify(p.id)+",'approve')";
+  const removeCall="moderatePhoto("+JSON.stringify(p.id)+",'delete')";
+  const reportCall="reportPhoto("+JSON.stringify(p.id)+")";
+  const controls=result.moderator
+   ?'<div class="actions">'+(pending?'<button onclick="'+esc(approveCall)+'">Approve</button>':'')+'<button class="secondary" onclick="'+esc(removeCall)+'">Remove</button></div>'
+   :(!pending?'<div class="actions"><button class="secondary" onclick="'+esc(reportCall)+'">Report</button></div>':'');
   return '<article class="photo-item"><img src="'+esc(p.url)+'" alt="Photo uploaded by '+esc(p.uploaderName)+'" loading="lazy"><small>'+(pending?"Pending review · ":"")+ 'Uploaded by '+esc(p.uploaderName)+'</small><p>'+esc(p.caption||"")+'</p>'+controls+'</article>';
  }).join("");
 }
