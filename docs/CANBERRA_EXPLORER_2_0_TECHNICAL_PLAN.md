@@ -13,7 +13,7 @@ Last reviewed: 12 November 2026
 
 A native MapLibre screen has been added in `OfflineMapActivity`. It offers Central, North, South, West and East Canberra region choices, downloads one region at a time, stores saved place pins supplied by the existing web map, and offers a delete control. The first download requires an internet connection. The development implementation caps offline resources at 3,000 tiles and stops/removes a region if its completed resource size exceeds 50 MB. This is a deliberately small, user-selected regional pack rather than a claim that the entire ACT is available offline at once. The style is OpenFreeMap Liberty and attribution is supplied by the MapLibre style controls.
 
-The native screen and download flow still require a successful CI build and on-device airplane-mode tests before being considered shipped. Offline routing is not included.
+The downloader sets an app-identifying User-Agent, limits map requests to four in parallel, and enforces OpenFreeMap's 3,000-tile / 50 MB per-download ceiling. The native screen and download flow still require a successful CI build and on-device airplane-mode tests before being considered shipped. Offline routing is not included.
 
 ## Offline basemap direction
 
