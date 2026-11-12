@@ -21,6 +21,7 @@ import org.maplibre.android.geometry.LatLngBounds;
 import org.maplibre.android.maps.MapView;
 import org.maplibre.android.maps.Style;
 import org.maplibre.android.style.layers.CircleLayer;
+import org.maplibre.android.style.layers.SymbolLayer;
 import org.maplibre.android.style.layers.PropertyFactory;
 import org.maplibre.android.style.sources.GeoJsonSource;
 import org.maplibre.android.offline.OfflineManager;
@@ -157,6 +158,15 @@ public class OfflineMapActivity extends Activity {
                 PropertyFactory.circleStrokeWidth(2f)
             );
             style.addLayer(pins);
+            SymbolLayer labels = new SymbolLayer("ce-place-labels", "ce-place-source");
+            labels.setProperties(
+                PropertyFactory.textField("{name}"),
+                PropertyFactory.textSize(10f),
+                PropertyFactory.textColor("#FFFFFF"),
+                PropertyFactory.textHaloColor("#0B100D"),
+                PropertyFactory.textHaloWidth(1.5f)
+            );
+            style.addLayer(labels);
         } catch (Exception error) {
             runOnUiThread(() -> status.setText("Map loaded, but saved place pins could not be displayed."));
         }
