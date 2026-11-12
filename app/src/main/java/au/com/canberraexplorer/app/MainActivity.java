@@ -169,9 +169,7 @@ public class MainActivity extends Activity {
                     && uri.getPath() != null
                     && uri.getPath().startsWith("/CBR_URBEX")) return false;
                 if ("https".equalsIgnoreCase(scheme)
-                    && "raw.githack.com".equalsIgnoreCase(host)
-                    && uri.getPath() != null
-                    && uri.getPath().startsWith("/dominichuddleston4-sys/CBR_URBEX/feature/2.0.5-photo-galleries/")) return false;
+                    && "deploy-preview-7--cbrurbex.netlify.app".equalsIgnoreCase(host)) return false;
                 try { startActivity(new Intent(Intent.ACTION_VIEW, uri)); }
                 catch (Exception ignored) { }
                 return true;
