@@ -4,6 +4,17 @@ on:
   workflow_dispatch:
   push:
     branches: [main, feature/2.0-completion]
+    paths:
+      - 'app/**'
+      - 'build.gradle'
+      - 'settings.gradle'
+      - 'gradle.properties'
+      - 'index.html'
+      - 'manifest.json'
+      - 'sw.js'
+      - 'places.json'
+      - 'icon.svg'
+      - '.github/workflows/build-test-apk.yml'
   pull_request:
     branches: [main]
     paths:
