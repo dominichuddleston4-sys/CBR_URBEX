@@ -164,7 +164,30 @@ public class MainActivity extends Activity {
                 }
             }
         });
-        setContentView(webView);
+        LinearLayout appLayout = new LinearLayout(this);
+        appLayout.setOrientation(LinearLayout.VERTICAL);
+        appLayout.setBackgroundColor(Color.rgb(10, 24, 17));
+
+        LinearLayout toolbar = new LinearLayout(this);
+        toolbar.setOrientation(LinearLayout.HORIZONTAL);
+        toolbar.setGravity(Gravity.CENTER_VERTICAL);
+        toolbar.setPadding(12, 6, 12, 6);
+
+        TextView appTitle = new TextView(this);
+        appTitle.setText("Canberra Explorer");
+        appTitle.setTextColor(Color.WHITE);
+        appTitle.setTextSize(16);
+        appTitle.setGravity(Gravity.CENTER_VERTICAL);
+        toolbar.addView(appTitle, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+
+        Button updateButton = new Button(this);
+        updateButton.setText("Check for updates");
+        updateButton.setOnClickListener(v -> checkForApkUpdate(true));
+        toolbar.addView(updateButton, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        appLayout.addView(toolbar, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        appLayout.addView(webView, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f));
+        setContentView(appLayout);
         webView.loadUrl("https://dominichuddleston4-sys.github.io/CBR_URBEX/");
     }
 
@@ -216,7 +239,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        checkForApkUpdate();
+        checkForApkUpdate(false);
         long pending = getPreferences(MODE_PRIVATE).getLong(PENDING_DOWNLOAD, -1);
         if (pending >= 0) {
             DownloadManager.Query query = new DownloadManager.Query().setFilterById(pending);
@@ -232,7 +255,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void checkForApkUpdate() {
+    private void checkForApkUpdate(boolean showUpToDateMessage) {
         if (updateCheckRunning) return;
         updateCheckRunning = true;
         new Thread(() -> {
@@ -256,6 +279,9 @@ public class MainActivity extends Activity {
                 long installedCode = Build.VERSION.SDK_INT >= 28 ? installed.getLongVersionCode() : installed.versionCode;
                 runOnUiThread(() -> {
                     if (latestCode <= installedCode) {
+                        if (showUpToDateMessage) {
+                            Toast.makeText(MainActivity.this, "You're using the latest version.", Toast.LENGTH_LONG).show();
+                        }
                         if (updateDialog != null && updateDialog.isShowing()) updateDialog.dismiss();
                         updateDialog = null;
                         return;
@@ -271,6 +297,9 @@ public class MainActivity extends Activity {
                     updateDialog.show();
                 });
             } catch (Exception ignored) {
+                if (showUpToDateMessage) {
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "Couldn't check for updates. Please try again.", Toast.LENGTH_LONG).show());
+                }
                 // Keep the app usable if the update service is unavailable.
             } finally {
                 if (connection != null) connection.disconnect();
