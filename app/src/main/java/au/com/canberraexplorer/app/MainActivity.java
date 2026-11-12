@@ -177,7 +177,7 @@ public class MainActivity extends Activity {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
                 firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, authTask -> {
-                    if (authTask.isSuccessful()) loadMap();
+                    if (authTask.isSuccessful()) { loadMap(); checkForApkUpdate(); }
                     else {
                         Toast.makeText(this, "Google sign-in failed. Please try again.", Toast.LENGTH_LONG).show();
                         showSignInScreen();
@@ -216,7 +216,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        checkForApkUpdate();
+        if (firebaseAuth != null && firebaseAuth.getCurrentUser() != null) checkForApkUpdate();
         long pending = getPreferences(MODE_PRIVATE).getLong(PENDING_DOWNLOAD, -1);
         if (pending >= 0) {
             DownloadManager.Query query = new DownloadManager.Query().setFilterById(pending);
