@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "CanberraExplorerTest"
-include(":app")
+include(":app", ":admin")
