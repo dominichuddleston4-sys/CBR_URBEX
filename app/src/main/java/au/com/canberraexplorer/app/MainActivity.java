@@ -174,6 +174,7 @@ public class MainActivity extends Activity {
                 runOnUiThread(() -> startActivity(new Intent(MainActivity.this, OfflineMapActivity.class)));
             }
         }, "CanberraNative");
+        webView.addJavascriptInterface(new PhotoBridge(), "CanberraPhotos");
         webView.setWebChromeClient(new WebChromeClient() {\n            @Override\n            public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {\n                if (photoFileCallback != null) photoFileCallback.onReceiveValue(null);\n                photoFileCallback = callback;\n                try { startActivityForResult(params.createIntent(), PHOTO_PICKER_REQUEST); return true; }\n                catch (Exception e) { photoFileCallback = null; return false; }\n            }
             @Override
             public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
@@ -191,9 +192,181 @@ public class MainActivity extends Activity {
         webView.loadUrl("https://dominichuddleston4-sys.github.io/CBR_URBEX/");
     }
 
+
+    private class PhotoBridge {
+        @JavascriptInterface public void getLocationPhotos(String locationId, String callbackId) {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user == null) { sendPhotoResult(callbackId, photoError("Please sign in again.")); return; }
+            user.getIdTokenResult(false).addOnSuccessListener(token -> {
+                boolean moderator = Boolean.TRUE.equals(token.getClaims().get("moderator"));
+                com.google.firebase.firestore.CollectionReference photos = FirebaseFirestore.getInstance()
+                    .collection("locations").document(locationId).collection("photos");
+                Task<QuerySnapshot> approved = photos.whereEqualTo("status", "approved").get();
+                Task<QuerySnapshot> pending = moderator ? photos.whereEqualTo("status", "pending").get()
+                    : photos.whereEqualTo("status", "pending").whereEqualTo("uploaderUid", user.getUid()).get();
+                Tasks.whenAllSuccess(approved, pending).addOnSuccessListener(results -> {
+                    List<DocumentSnapshot> docs = new ArrayList<>();
+                    docs.addAll(((QuerySnapshot) results.get(0)).getDocuments());
+                    docs.addAll(((QuerySnapshot) results.get(1)).getDocuments());
+                    if (docs.isEmpty()) {
+                        JSONObject result = new JSONObject();
+                        try { result.put("photos", new org.json.JSONArray()); result.put("moderator", moderator); } catch (Exception ignored) { }
+                        sendPhotoResult(callbackId, result);
+                        return;
+                    }
+                    List<JSONObject> items = java.util.Collections.synchronizedList(new ArrayList<>());
+                    AtomicInteger remaining = new AtomicInteger(docs.size());
+                    for (DocumentSnapshot doc : docs) {
+                        String path = doc.getString("storagePath");
+                        if (path == null) { if (remaining.decrementAndGet() == 0) finishPhotoList(callbackId, items, moderator); continue; }
+                        FirebaseStorage.getInstance().getReference().child(path).getDownloadUrl()
+                            .addOnSuccessListener(uri -> {
+                                JSONObject item = new JSONObject();
+                                try {
+                                    item.put("id", doc.getId());
+                                    item.put("url", uri.toString());
+                                    item.put("caption", doc.getString("caption") == null ? "" : doc.getString("caption"));
+                                    item.put("uploaderName", doc.getString("uploaderName") == null ? "Explorer" : doc.getString("uploaderName"));
+                                    item.put("status", doc.getString("status") == null ? "approved" : doc.getString("status"));
+                                    items.add(item);
+                                } catch (Exception ignored) { }
+                                if (remaining.decrementAndGet() == 0) finishPhotoList(callbackId, items, moderator);
+                            })
+                            .addOnFailureListener(error -> { if (remaining.decrementAndGet() == 0) finishPhotoList(callbackId, items, moderator); });
+                    }
+                }).addOnFailureListener(error -> sendPhotoResult(callbackId, photoError("Could not load the shared gallery: " + error.getMessage())));
+            }).addOnFailureListener(error -> sendPhotoResult(callbackId, photoError("Could not verify your sign-in. Reopen the app.")));
+        }
+
+        @JavascriptInterface public void uploadLocationPhoto(String locationId, String base64, String contentType, String caption, String callbackId) {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user == null) { sendPhotoResult(callbackId, photoError("Please sign in again.")); return; }
+            if (!("image/jpeg".equals(contentType) || "image/png".equals(contentType) || "image/webp".equals(contentType))) {
+                sendPhotoResult(callbackId, photoError("Use a JPG, PNG or WebP image.")); return;
+            }
+            String safeCaption = caption == null ? "" : caption.trim();
+            if (safeCaption.length() > 300) { sendPhotoResult(callbackId, photoError("Caption must be 300 characters or less.")); return; }
+            try {
+                byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
+                if (bytes.length == 0 || bytes.length > 10 * 1024 * 1024) { sendPhotoResult(callbackId, photoError("Image must be smaller than 10 MB.")); return; }
+                String photoId = UUID.randomUUID().toString();
+                String path = "locationPhotos/" + locationId + "/" + user.getUid() + "/" + photoId;
+                String display = user.getDisplayName() == null || user.getDisplayName().trim().isEmpty() ? "Explorer" : user.getDisplayName().trim();
+                final String uploaderName = display.length() > 80 ? display.substring(0, 80) : display;
+                StorageMetadata metadata = new StorageMetadata.Builder().setContentType(contentType).build();
+                FirebaseStorage.getInstance().getReference().child(path).putBytes(bytes, metadata)
+                    .addOnSuccessListener(task -> {
+                        HashMap<String, Object> record = new HashMap<>();
+                        record.put("uploaderUid", user.getUid());
+                        record.put("uploaderName", uploaderName);
+                        record.put("storagePath", path);
+                        record.put("contentType", contentType);
+                        record.put("sizeBytes", bytes.length);
+                        record.put("status", "pending");
+                        record.put("createdAt", FieldValue.serverTimestamp());
+                        record.put("caption", safeCaption);
+                        FirebaseFirestore.getInstance().collection("locations").document(locationId)
+                            .collection("photos").document(photoId).set(record)
+                            .addOnSuccessListener(done -> {
+                                JSONObject result = new JSONObject();
+                                try { result.put("success", true); result.put("pending", true); } catch (Exception ignored) { }
+                                sendPhotoResult(callbackId, result);
+                            })
+                            .addOnFailureListener(error -> {
+                                FirebaseStorage.getInstance().getReference().child(path).delete();
+                                sendPhotoResult(callbackId, photoError("Photo uploaded but its record could not be saved."));
+                            });
+                    })
+                    .addOnFailureListener(error -> sendPhotoResult(callbackId, photoError("Photo upload failed: " + error.getMessage())));
+            } catch (Exception error) { sendPhotoResult(callbackId, photoError("Could not read that image.")); }
+        }
+
+        @JavascriptInterface public void reportLocationPhoto(String locationId, String photoId, String reason, String callbackId) {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user == null) { sendPhotoResult(callbackId, photoError("Please sign in again.")); return; }
+            String safeReason = reason == null ? "Reported by app user" : reason.trim();
+            if (safeReason.length() > 500) safeReason = safeReason.substring(0, 500);
+            HashMap<String, Object> report = new HashMap<>();
+            report.put("photoId", photoId);
+            report.put("reporterUid", user.getUid());
+            report.put("reason", safeReason);
+            report.put("createdAt", FieldValue.serverTimestamp());
+            report.put("status", "open");
+            FirebaseFirestore.getInstance().collection("locations").document(locationId).collection("photoReports")
+                .add(report).addOnSuccessListener(ref -> {
+                    JSONObject result = new JSONObject();
+                    try { result.put("success", true); } catch (Exception ignored) { }
+                    sendPhotoResult(callbackId, result);
+                }).addOnFailureListener(error -> sendPhotoResult(callbackId, photoError("Could not submit the report.")));
+        }
+
+        @JavascriptInterface public void moderateLocationPhoto(String locationId, String photoId, String action, String callbackId) {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user == null) { sendPhotoResult(callbackId, photoError("Please sign in again.")); return; }
+            user.getIdTokenResult(true).addOnSuccessListener(token -> {
+                if (!Boolean.TRUE.equals(token.getClaims().get("moderator"))) {
+                    sendPhotoResult(callbackId, photoError("Moderator access is required.")); return;
+                }
+                com.google.firebase.firestore.DocumentReference doc = FirebaseFirestore.getInstance()
+                    .collection("locations").document(locationId).collection("photos").document(photoId);
+                if ("approve".equals(action)) {
+                    doc.update("status", "approved").addOnSuccessListener(done -> sendPhotoResult(callbackId, photoSuccess()))
+                        .addOnFailureListener(error -> sendPhotoResult(callbackId, photoError("Could not approve photo.")));
+                } else if ("delete".equals(action)) {
+                    doc.get().addOnSuccessListener(snapshot -> {
+                        String path = snapshot.getString("storagePath");
+                        if (path == null) { sendPhotoResult(callbackId, photoError("Photo file reference is missing.")); return; }
+                        FirebaseStorage.getInstance().getReference().child(path).delete()
+                            .addOnSuccessListener(done -> doc.delete().addOnSuccessListener(deleted -> sendPhotoResult(callbackId, photoSuccess()))
+                                .addOnFailureListener(error -> sendPhotoResult(callbackId, photoError("Image removed but its record could not be deleted."))))
+                            .addOnFailureListener(error -> sendPhotoResult(callbackId, photoError("Could not remove image file.")));
+                    }).addOnFailureListener(error -> sendPhotoResult(callbackId, photoError("Could not find that photo.")));
+                } else sendPhotoResult(callbackId, photoError("Unknown moderation action."));
+            }).addOnFailureListener(error -> sendPhotoResult(callbackId, photoError("Could not verify moderator access.")));
+        }
+    }
+
+    private JSONObject photoSuccess() {
+        JSONObject result = new JSONObject();
+        try { result.put("success", true); } catch (Exception ignored) { }
+        return result;
+    }
+
+    private JSONObject photoError(String message) {
+        JSONObject result = new JSONObject();
+        try { result.put("success", false); result.put("error", message); } catch (Exception ignored) { }
+        return result;
+    }
+
+    private void finishPhotoList(String callbackId, List<JSONObject> items, boolean moderator) {
+        JSONObject result = new JSONObject();
+        org.json.JSONArray photos = new org.json.JSONArray();
+        for (JSONObject item : items) photos.put(item);
+        try { result.put("photos", photos); result.put("moderator", moderator); } catch (Exception ignored) { }
+        sendPhotoResult(callbackId, result);
+    }
+
+    private void sendPhotoResult(String callbackId, JSONObject result) {
+        if (webView == null) return;
+        String id = JSONObject.quote(callbackId == null ? "" : callbackId);
+        String payload = result == null ? "{}" : result.toString();
+        runOnUiThread(() -> {
+            if (webView != null) webView.evaluateJavascript(
+                "window.onNativePhotoResult && window.onNativePhotoResult(" + id + "," + payload + ");", null);
+        });
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PHOTO_PICKER_REQUEST) {
+            if (photoFileCallback != null) {
+                Uri uri = resultCode == RESULT_OK && data != null ? data.getData() : null;
+                photoFileCallback.onReceiveValue(uri == null ? null : new Uri[] { uri });
+                photoFileCallback = null;
+            }
+            return;
+        }
         if (requestCode == GOOGLE_SIGN_IN_REQUEST) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
@@ -345,7 +518,8 @@ public class MainActivity extends Activity {
         if (downloadReceiver != null) {
             try { unregisterReceiver(downloadReceiver); } catch (Exception ignored) { }
         }
-        if (photoFileCallback != null) { photoFileCallback.onReceiveValue(null); photoFileCallback = null; }\n        if (webView != null) webView.destroy();
+        if (photoFileCallback != null) { photoFileCallback.onReceiveValue(null); photoFileCallback = null; }\n        if (photoFileCallback != null) { photoFileCallback.onReceiveValue(null); photoFileCallback = null; }
+        if (webView != null) webView.destroy();
         super.onDestroy();
     }
 
