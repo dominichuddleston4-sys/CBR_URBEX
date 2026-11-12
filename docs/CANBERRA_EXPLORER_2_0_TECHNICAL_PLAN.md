@@ -11,6 +11,9 @@ Last reviewed: 12 November 2026
 
 ## Offline basemap direction
 
+Implementation spike: [docs/ACT_OFFLINE_MAP_POC.md](ACT_OFFLINE_MAP_POC.md). Work is isolated on `feature/act-offline-map-poc`; no production map code or tile downloads are enabled by that documentation change.
+
+
 ### Candidate: MapLibre Native Android offline regions
 
 MapLibre Native Android exposes OfflineManager, OfflineRegion, OfflineTilePyramidRegionDefinition and offline region status/progress APIs. Region definitions include a style URL, geographic bounds and zoom range. This fits a Settings workflow with a named ACT package, progress, completed bytes/resources, pause/resume and delete.
@@ -78,7 +81,7 @@ Initial Firestore and Storage rules plus firebase.json have now been committed f
 ## Current implementation status
 
 - Google sign-in gate: shipped in v1.47 and user-tested for sign-in and session persistence.
-- Android launcher icon: resources and manifest wiring added in the current development commits; signed build and device verification pending.
+- Android launcher icon: resources and manifest wiring are present; user-confirmed working on device (12 November 2026).
 - ACT-wide offline map: not implemented; provider/licensing and renderer migration must be resolved.
 - Offline routing: not implemented; native Valhalla Android proof-of-concept required.
 - Shared photo galleries: not implemented; backend schema, security rules and moderation required.
