@@ -38,6 +38,8 @@ or user/device testing. Keep planned features separate from features confirmed a
 
 ## Canberra Explorer 2.0 — development plan
 
+**Tracking issue:** [Canberra Explorer 2.0 implementation checklist](https://github.com/dominichuddleston4-sys/CBR_URBEX/issues/1). The workstreams and acceptance tests are recorded there. This is project tracking only; it does not mean the features are implemented.
+
 The next development work is being started with offline maps as the first priority. The user has requested
 that the offline map and offline-only directions be available from the app's Settings.
 
