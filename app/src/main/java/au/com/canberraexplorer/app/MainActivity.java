@@ -541,7 +541,6 @@ public class MainActivity extends Activity {
             try { unregisterReceiver(downloadReceiver); } catch (Exception ignored) { }
         }
         if (photoFileCallback != null) { photoFileCallback.onReceiveValue(null); photoFileCallback = null; }
-        if (photoFileCallback != null) { photoFileCallback.onReceiveValue(null); photoFileCallback = null; }
         if (webView != null) webView.destroy();
         super.onDestroy();
     }
