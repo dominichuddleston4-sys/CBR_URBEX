@@ -171,6 +171,11 @@ public class MainActivity extends Activity {
                 if (placesGeoJson != null && placesGeoJson.length() <= 2000000) intent.putExtra("places_geojson", placesGeoJson);
                 runOnUiThread(() -> startActivity(intent));
             }
+            @JavascriptInterface public boolean isAdminAccount() {
+                com.google.firebase.auth.FirebaseUser user = firebaseAuth == null ? null : firebaseAuth.getCurrentUser();
+                return user != null && user.isEmailVerified()
+                    && "Dominichuddleston299@gmail.com".equalsIgnoreCase(user.getEmail());
+            }
         }, "CanberraNative");
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
