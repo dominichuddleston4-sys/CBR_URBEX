@@ -1,0 +1,24 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function signedIn() {
+      return request.auth != null;
+    }
+    function moderator() {
+      return signedIn() && request.auth.token.moderator == true;
+    }
+
+    // Shared image files are readable only to signed-in users.
+    // Uploads are isolated by location and uploader UID.
+    match /locationPhotos/{locationId}/{uploaderUid}/{fileName} {
+      allow read: if signedIn();
+      allow create: if signedIn()
+        && request.auth.uid == uploaderUid
+        && request.resource.size > 0
+        && request.resource.size <= 10 * 1024 * 1024
+        && request.resource.contentType.matches('image/(jpeg|png|webp)');
+      allow update: if false;
+      allow delete: if moderator();
+    }
+  }
+}
