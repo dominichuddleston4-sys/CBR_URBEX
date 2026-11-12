@@ -8,14 +8,49 @@ or user/device testing. Keep planned features separate from features confirmed a
 
 ## Current published release
 
-- **Version:** v1.47
-- **Published:** 12 November 2026
-- **APK:** [Download app-release.apk](https://github.com/dominichuddleston4-sys/CBR_URBEX/releases/download/v1.47/app-release.apk)
-- **Release page:** https://github.com/dominichuddleston4-sys/CBR_URBEX/releases/tag/v1.47
-- **Publication status:** GitHub release is public and the APK asset is uploaded.
-- **Device verification:** User reports successful installation and confirms Google sign-in appears before map access, the map opens after sign-in, and the sign-in session remains remembered after closing and reopening the app.
+- **Version:** v1.173
+- **Published:** 13 November 2026 in Canberra (GitHub publication timestamp: 12 November 2026 at 17:24:27 UTC).
+- **APK:** [Download app-release.apk](https://github.com/dominichuddleston4-sys/CBR_URBEX/releases/download/v1.173/app-release.apk)
+- **APK asset:** Uploaded and publicly available; 55,394,131 bytes (about 52.8 MiB).
+- **APK SHA-256:** `87799220687565af22b8e36c6168ee593a2fb178a691549a2ff5b21279a4ab0f`
+- **Release page:** https://github.com/dominichuddleston4-sys/CBR_URBEX/releases/tag/v1.173
+- **Build:** GitHub Actions APK workflow run 173 completed successfully, including signing-key preparation, signed APK build, GitHub Release upload and version metadata publication.
+- **Website deployment:** GitHub Pages deploy workflow completed successfully. No Netlify deployment result was evidenced in the inspected workflows.
+- **Device verification:** No new v1.173 installation or runtime test is recorded. Earlier user-reported tests on v1.47 confirmed Google sign-in before map access and session persistence; the app icon was later user-confirmed as working. Those reports are not a fresh v1.173 regression test.
+- **Automatic updates:** The default-branch `version.json` reports versionCode 173 / versionName 1.173 and points to the latest-release APK URL. The GitHub Pages metadata-publish step succeeded. End-to-end in-app detection, download, Android install, restart and update-banner clearing have not been independently verified.
 
 ## Release history
+
+### v1.173 — 13 November 2026 (Canberra local date)
+
+- **Release:** [Canberra Explorer v1.173](https://github.com/dominichuddleston4-sys/CBR_URBEX/releases/tag/v1.173), published 12 November 2026 at 17:24:27 UTC (13 November at 04:24:27 Canberra time).
+- **Release notes:** The GitHub release body is empty. The implementation summary below is based on the release commit, the 46-commit comparison from v1.47, current source files and workflow results—not on release-note claims.
+- **APK:** `app-release.apk` is uploaded. [Download APK](https://github.com/dominichuddleston4-sys/CBR_URBEX/releases/download/v1.173/app-release.apk). Size: 55,394,131 bytes. SHA-256: `87799220687565af22b8e36c6168ee593a2fb178a691549a2ff5b21279a4ab0f`.
+- **Build commit:** [`7827cff` — Fix Firestore error handling in Android admin panel](https://github.com/dominichuddleston4-sys/CBR_URBEX/commit/7827cff21cc38ceb342607ea50c14f92524ed7bd). The comparison from v1.47 to this commit contains 46 commits.
+- **Code included in this release:**
+  - The native Android entry point still requires Firebase Google sign-in before it loads the map. The sign-in gate and remembered session were user-tested on v1.47, but were not re-tested on v1.173.
+  - Settings includes a sign-out control, and the Android bridge signs out of Firebase and Google before returning to the sign-in screen. The sign-out flow is present in code but has not been independently device-tested.
+  - A native MapLibre offline-map screen is included, with Central, North, South, West and East ACT area choices, saved-area status and deletion. The implementation applies per-area limits of 50 MB / 3,000 tiles and a 15,000-tile total limit. This confirms code is included, not that downloads or offline reopening have passed device tests.
+  - Android launcher icon resources are included. The project log records the user's confirmation that the installed app icon works; adaptive-icon variations were not separately tested.
+  - Owner-only admin tools are included for listing registered accounts and setting blocked / force-sign-out flags. The Firestore rules deployment workflow completed successfully (see below).
+- **Verified fixes and improvements:**
+  - [Commit `7827cff`](https://github.com/dominichuddleston4-sys/CBR_URBEX/commit/7827cff21cc38ceb342607ea50c14f92524ed7bd) changes the admin panel's Firestore read/update error reporting to show the Firebase error message rather than only its error code.
+  - [Commit `392642d`](https://github.com/dominichuddleston4-sys/CBR_URBEX/commit/392642ded91aa640e07d58b766464bebdd5c1d91) refreshes the administrator ID token before Firestore user-management requests.
+  - The APK build workflow completed its signing-key preparation, signed release APK build, release upload and update-metadata publication successfully.
+- **Build and deployment outcomes:**
+  - [APK build and publish — run 173](https://github.com/dominichuddleston4-sys/CBR_URBEX/actions/runs/43268899694): **success**. The signed APK build and GitHub Release upload steps both passed.
+  - [GitHub Pages deployment — run 82](https://github.com/dominichuddleston4-sys/CBR_URBEX/actions/runs/43268899329): **success**. The Pages upload and deploy steps passed.
+  - [Firestore rules deployment](https://github.com/dominichuddleston4-sys/CBR_URBEX/actions/runs/43264740147): **success**. The workflow deploys Firestore rules only; this is not evidence that Firebase Storage rules were deployed.
+  - Netlify deployment: **not verified** from the inspected workflow evidence.
+- **Known issues and unverified items:**
+  - No independent v1.173 physical-device installation, upgrade, sign-out, account-switching or authentication-edge-case test is recorded.
+  - The offline-map screen and download code are present, but map download, map reopening in airplane mode, coverage, attribution and recovery tests remain unverified. Offline driving/walking directions are not implemented.
+  - Shared location photo-gallery UI and upload flow are not shipped. A `storage.rules` file exists in the repository, but the inspected deployment workflow only deploys Firestore rules; Storage-rule deployment and photo-upload security tests are not verified.
+  - The Android app's native wrapper enforces Google sign-in before loading the map. The standalone website/PWA source has no Firebase sign-in implementation, so opening the website directly in a browser does not have the same sign-in gate.
+  - The automatic updater's metadata is current, but the complete in-app update/install/restart flow and update-banner clearing have not been device-tested.
+  - The 2.0 test plan still says 2.0 is **NOT READY FOR RELEASE** and needs refreshing to reflect the newer offline-map code while retaining the outstanding device-test gates.
+- **Automatic-update status:** Default-branch `version.json` is set to 1.173 and points to `https://github.com/dominichuddleston4-sys/CBR_URBEX/releases/latest/download/app-release.apk`. The update-check code is present and the Pages metadata-publish workflow step passed. No end-to-end automatic-update test evidence is available.
+- **Comparison with v1.47:** 46 commits were added between the recorded v1.47 release and v1.173. The cumulative code changes include the native offline-map screen, launcher icon resources, Settings sign-out, owner admin controls, Firestore rules/deployment workflow and APK/Pages workflow changes. This entry records the latest published release; it does not claim that every intermediate v1.48–v1.172 tag was individually audited.
 
 ### v1.47 — 12 November 2026
 - Public GitHub release published with APK asset `app-release.apk`.
@@ -44,7 +79,7 @@ The next development work is being started with offline maps as the first priori
 that the offline map and offline-only directions be available from the app's Settings.
 
 ### 1. Offline Canberra map — first priority
-**Status: Development not yet implemented.**
+**Status: Native MapLibre offline-map screen and bounded area-download code are included in v1.173; physical-device and airplane-mode verification is still pending.**
 
 Requirements:
 - Add an Offline map section in the Android app's Settings.
@@ -116,3 +151,12 @@ failed, or not tested.
 ## 2.0 testing
 
 The release-gate checklist is maintained in [docs/CANBERRA_EXPLORER_2_0_TEST_PLAN.md](docs/CANBERRA_EXPLORER_2_0_TEST_PLAN.md). The checklist records implemented, tested, blocked and not-implemented items separately. 2.0 must not be released until all mandatory tests pass.
+
+
+## 2.0 development status update — 13 November 2026
+
+- The v1.173 source includes the native MapLibre offline-map activity and its ACT-area download flow. This supersedes the earlier 12 November note that the offline-map implementation had not yet been started; it does **not** supersede the outstanding device, airplane-mode, licensing/attribution and recovery tests.
+- Offline directions remain not implemented.
+- Shared location photo galleries and uploads remain not implemented. Firestore rules deployment succeeded, but the inspected workflow does not deploy Firebase Storage rules.
+- The mandatory Google sign-in gate is present in the Android wrapper. The standalone web/PWA page still has no web sign-in gate.
+- The 2.0 test plan should be refreshed to distinguish code implemented from tests passed. Its release decision remains **NOT READY FOR RELEASE** until mandatory tests are completed and evidenced.
