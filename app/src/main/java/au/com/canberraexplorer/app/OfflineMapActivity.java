@@ -196,6 +196,8 @@ public class OfflineMapActivity extends Activity {
     }
 
     private void startDownload() {
+        if (activeRegion != null) activeRegion.setObserver(null);
+        activeRegion = null;
         int selected = regionPicker.getSelectedItemPosition();
         double[] b = BOUNDS[selected];
         LatLngBounds bounds = new LatLngBounds.Builder()
