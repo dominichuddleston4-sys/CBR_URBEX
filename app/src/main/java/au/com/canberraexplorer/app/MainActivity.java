@@ -342,7 +342,13 @@ public class MainActivity extends Activity {
         }
     }
 
-    private JSONObject photoSuccessPending() {\n        JSONObject result = photoSuccess();\n        try { result.put("pending", true); } catch (Exception ignored) { }\n        return result;\n    }\n\n    private JSONObject photoSuccess() {
+    private JSONObject photoSuccessPending() {
+        JSONObject result = photoSuccess();
+        try { result.put("pending", true); } catch (Exception ignored) { }
+        return result;
+    }
+
+    private JSONObject photoSuccess() {
         JSONObject result = new JSONObject();
         try { result.put("success", true); } catch (Exception ignored) { }
         return result;
