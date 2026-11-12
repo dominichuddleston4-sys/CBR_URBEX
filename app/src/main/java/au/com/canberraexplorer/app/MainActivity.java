@@ -22,6 +22,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebSettings;
 import android.webkit.JavascriptInterface;
+import android.webkit.ValueCallback;
+import android.util.Base64;
 import android.view.View;
 import android.graphics.Color;
 import android.widget.Toast;
@@ -39,6 +41,20 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.android.gms.tasks.Tasks;
+import android.net.Uri;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import com.google.android.gms.tasks.Task;
 
 import org.json.JSONObject;
@@ -63,6 +79,8 @@ public class MainActivity extends Activity {
     private volatile boolean updateCheckRunning = false;
     private DownloadManager downloadManager;
     private BroadcastReceiver downloadReceiver;
+    private static final int PHOTO_PICKER_REQUEST = 45;
+    private ValueCallback<Uri[]> photoFileCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,7 +175,7 @@ public class MainActivity extends Activity {
                 runOnUiThread(() -> startActivity(new Intent(MainActivity.this, OfflineMapActivity.class)));
             }
         }, "CanberraNative");
-        webView.setWebChromeClient(new WebChromeClient() {
+        webView.setWebChromeClient(new WebChromeClient() {\n            @Override\n            public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {\n                if (photoFileCallback != null) photoFileCallback.onReceiveValue(null);\n                photoFileCallback = callback;\n                try { startActivityForResult(params.createIntent(), PHOTO_PICKER_REQUEST); return true; }\n                catch (Exception e) { photoFileCallback = null; return false; }\n            }
             @Override
             public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
                 if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
@@ -328,7 +346,7 @@ public class MainActivity extends Activity {
         if (downloadReceiver != null) {
             try { unregisterReceiver(downloadReceiver); } catch (Exception ignored) { }
         }
-        if (webView != null) webView.destroy();
+        if (photoFileCallback != null) { photoFileCallback.onReceiveValue(null); photoFileCallback = null; }\n        if (webView != null) webView.destroy();
         super.onDestroy();
     }
 
