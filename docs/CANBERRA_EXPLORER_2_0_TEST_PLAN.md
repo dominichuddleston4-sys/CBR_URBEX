@@ -56,8 +56,8 @@ This document is the release-gate checklist for Canberra Explorer 2.0. A test is
 
 ## C. Launcher icon
 
-- [ ] Icon appears on Android home screen after install/update.
-- [ ] Icon appears in app drawer and Android app info.
+- [x] Icon appears on Android home screen after install/update. (User-confirmed)
+- [x] Icon appears in app drawer and Android app info. (User-confirmed that the app icon works; individual launcher surfaces not separately recorded)
 - [ ] Adaptive icon renders correctly on light/dark and themed-icon launchers.
 - [ ] No clipping, blank icon, generic Android icon or unreadable foreground.
 - [ ] Existing app retains the correct icon after an in-place update.
@@ -138,3 +138,7 @@ For each test, record:
 
 A release can be considered only after all mandatory sections have been implemented, tested and evidenced, with no unresolved critical/high-severity defects. The current stable release must remain available until then.
 \n## Latest implementation note — 12 November 2026\n\n- Added initial `firestore.rules`, `storage.rules` and `firebase.json` for the proposed shared photo gallery.\n- Added `docs/FIREBASE_PHOTO_GALLERY_SECURITY.md` documenting the data model, custom moderator claim and deployment gates.\n- These files are committed but **not deployed** to Firebase; no gallery UI or upload capability is enabled. Emulator tests and owner approval are still required.\n
+
+## User test update — 12 November 2026
+
+- User confirmed: **the Android app icon works**. Record as user-confirmed device verification. Individual adaptive-icon theme/shape variants have not been separately tested.
