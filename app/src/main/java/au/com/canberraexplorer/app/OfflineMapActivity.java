@@ -20,7 +20,6 @@ import org.maplibre.android.geometry.LatLng;
 import org.maplibre.android.geometry.LatLngBounds;
 import org.maplibre.android.maps.MapView;
 import org.maplibre.android.maps.Style;
-import org.maplibre.android.offline.DownloadState;
 import org.maplibre.android.offline.OfflineManager;
 import org.maplibre.android.offline.OfflineRegion;
 import org.maplibre.android.offline.OfflineRegionError;
@@ -28,6 +27,7 @@ import org.maplibre.android.offline.OfflineRegionStatus;
 import org.maplibre.android.offline.OfflineTilePyramidRegionDefinition;
 
 import java.nio.charset.StandardCharsets;
+import java.util.function.Consumer;
 
 public class OfflineMapActivity extends Activity {
     private static final String STYLE_URL = "https://tiles.openfreemap.org/styles/liberty";
@@ -141,13 +141,10 @@ public class OfflineMapActivity extends Activity {
                 }
                 final int[] remaining = {regions.length};
                 for (OfflineRegion region : regions) {
-                    region.delete(error -> {
-                        if (error != null) {
-                            runOnUiThread(() -> status.setText("Could not replace old offline area: " + error));
-                            return;
-                        }
+                    deleteRegion(region, () -> {
                         if (--remaining[0] == 0) startDownload();
-                    });
+                    }, error -> runOnUiThread(() ->
+                        status.setText("Could not replace old offline area: " + error)));
                 }
             }
             @Override public void onError(String error) {
@@ -184,9 +181,10 @@ public class OfflineMapActivity extends Activity {
                             long bytes = s.getCompletedResourceSize();
                             long tiles = s.getCompletedTileCount();
                             if (bytes > MAX_REGION_BYTES || tiles > MAX_TILES) {
-                                region.setDownloadState(DownloadState.STATE_INACTIVE);
-                                region.delete(error -> runOnUiThread(() -> status.setText(
-                                    "Download stopped: the area reached the 50 MB / 3,000 tile safety limit.")));
+                                region.setDownloadState(OfflineRegion.STATE_INACTIVE);
+                                deleteRegion(region, () -> runOnUiThread(() -> status.setText(
+                                    "Download stopped: the area reached the 50 MB / 3,000 tile safety limit.")),
+                                    error -> runOnUiThread(() -> status.setText("Download stopped, but the partial pack could not be removed: " + error)));
                                 return;
                             }
                             String message = s.isComplete()
@@ -202,7 +200,7 @@ public class OfflineMapActivity extends Activity {
                             runOnUiThread(() -> status.setText("Download stopped at the " + limit + " tile limit."));
                         }
                     });
-                    region.setDownloadState(DownloadState.STATE_ACTIVE);
+                    region.setDownloadState(OfflineRegion.STATE_ACTIVE);
                 }
                 @Override public void onError(String error) {
                     runOnUiThread(() -> status.setText("Could not start download: " + error));
@@ -236,6 +234,13 @@ public class OfflineMapActivity extends Activity {
         });
     }
 
+    private void deleteRegion(OfflineRegion region, Runnable onDeleted, Consumer<String> onError) {
+        region.delete(new OfflineRegion.OfflineRegionDeleteCallback() {
+            @Override public void onDelete() { onDeleted.run(); }
+            @Override public void onError(String error) { onError.accept(error); }
+        });
+    }
+
     private void deleteOfflineRegions() {
         offlineManager.listOfflineRegions(new OfflineManager.ListOfflineRegionsCallback() {
             @Override public void onList(OfflineRegion[] regions) {
@@ -245,10 +250,10 @@ public class OfflineMapActivity extends Activity {
                 }
                 final int[] remaining = {regions.length};
                 for (OfflineRegion region : regions) {
-                    region.delete(error -> {
+                    deleteRegion(region, () -> {
                         if (--remaining[0] == 0) runOnUiThread(() -> status.setText(
                             "Offline area deleted. The online map is unchanged."));
-                    });
+                    }, error -> runOnUiThread(() -> status.setText("Could not delete offline area: " + error)));
                 }
             }
             @Override public void onError(String error) {
