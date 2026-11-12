@@ -174,7 +174,7 @@ public class MainActivity extends Activity {
             @JavascriptInterface public boolean isAdminAccount() {
                 com.google.firebase.auth.FirebaseUser user = firebaseAuth == null ? null : firebaseAuth.getCurrentUser();
                 return user != null && user.isEmailVerified()
-                    && "Dominichuddleston299@gmail.com".equalsIgnoreCase(user.getEmail());
+                    && "dominichuddleston299@gmail.com".equalsIgnoreCase(user.getEmail());
             }
         }, "CanberraNative");
         webView.setWebChromeClient(new WebChromeClient() {
