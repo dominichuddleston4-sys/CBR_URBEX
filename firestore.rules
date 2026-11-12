@@ -21,10 +21,12 @@ service cloud.firestore {
 
         allow create: if signedIn()
           && request.resource.data.keys().hasOnly([
-            "uploaderUid", "storagePath", "contentType",
+            "uploaderUid", "uploaderName", "storagePath", "contentType",
             "sizeBytes", "status", "createdAt", "caption"
           ])
           && request.resource.data.uploaderUid == request.auth.uid
+          && request.resource.data.uploaderName is string
+          && request.resource.data.uploaderName.size() <= 80
           && request.resource.data.storagePath is string
           && request.resource.data.storagePath.matches(
             "^locationPhotos/" + locationId + "/" + request.auth.uid + "/[^/]+$"
