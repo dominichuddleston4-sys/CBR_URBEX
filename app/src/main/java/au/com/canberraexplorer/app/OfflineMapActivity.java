@@ -20,6 +20,9 @@ import org.maplibre.android.geometry.LatLng;
 import org.maplibre.android.geometry.LatLngBounds;
 import org.maplibre.android.maps.MapView;
 import org.maplibre.android.maps.Style;
+import org.maplibre.android.style.layers.CircleLayer;
+import org.maplibre.android.style.layers.PropertyFactory;
+import org.maplibre.android.style.sources.GeoJsonSource;
 import org.maplibre.android.offline.OfflineManager;
 import org.maplibre.android.offline.OfflineRegion;
 import org.maplibre.android.offline.OfflineRegionError;
@@ -79,7 +82,8 @@ public class OfflineMapActivity extends Activity {
             LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f));
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(map -> {
-            map.setStyle(new Style.Builder().fromUri(STYLE_URL));
+            String placesGeoJson = getIntent().getStringExtra("places_geojson");
+            map.setStyle(new Style.Builder().fromUri(STYLE_URL), style -> addPlacePins(style, placesGeoJson));
             map.setCameraPosition(new CameraPosition.Builder()
                 .target(new LatLng(-35.28, 149.13)).zoom(10.0).build());
         });
@@ -121,6 +125,23 @@ public class OfflineMapActivity extends Activity {
         controls.addView(close);
         setContentView(root);
         refreshOfflineStatus();
+    }
+
+    private void addPlacePins(Style style, String geoJson) {
+        if (geoJson == null || geoJson.trim().isEmpty()) return;
+        try {
+            style.addSource(new GeoJsonSource("ce-place-source", geoJson));
+            CircleLayer pins = new CircleLayer("ce-place-pins", "ce-place-source");
+            pins.setProperties(
+                PropertyFactory.circleRadius(7f),
+                PropertyFactory.circleColor("#9CFF57"),
+                PropertyFactory.circleStrokeColor("#FFFFFF"),
+                PropertyFactory.circleStrokeWidth(2f)
+            );
+            style.addLayer(pins);
+        } catch (Exception error) {
+            runOnUiThread(() -> status.setText("Map loaded, but saved place pins could not be displayed."));
+        }
     }
 
     private void confirmDownload() {
