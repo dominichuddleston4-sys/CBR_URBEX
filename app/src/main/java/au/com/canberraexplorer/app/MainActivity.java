@@ -287,11 +287,13 @@ public class MainActivity extends Activity {
                 record.put("status", "pending");
                 record.put("createdAt", FieldValue.serverTimestamp());
                 record.put("caption", safeCaption);
+                com.google.firebase.storage.StorageReference photoFile = FirebaseStorage.getInstance().getReference().child(path);
                 photoDoc.set(record).addOnSuccessListener(saved -> {
-                    FirebaseStorage.getInstance().getReference().child(path).putBytes(bytes, metadata)
+                    photoFile.putBytes(bytes, metadata)
                         .addOnSuccessListener(task -> sendPhotoResult(callbackId, photoSuccessPending()))
-                        .addOnFailureListener(error -> photoDoc.delete().addOnCompleteListener(cleanup ->
-                            sendPhotoResult(callbackId, photoError("Photo upload failed: " + error.getMessage()))));
+                        .addOnFailureListener(error -> photoFile.delete().addOnCompleteListener(cleanupFile ->
+                            photoDoc.delete().addOnCompleteListener(cleanupDoc ->
+                                sendPhotoResult(callbackId, photoError("Photo upload failed: " + error.getMessage())))));
                 }).addOnFailureListener(error ->
                     sendPhotoResult(callbackId, photoError("Could not save photo details: " + error.getMessage())));
             } catch (Exception error) { sendPhotoResult(callbackId, photoError("Could not read that image.")); }
