@@ -8,10 +8,17 @@ service firebase.storage {
       return signedIn() && request.auth.token.moderator == true;
     }
 
-    // Shared image files are readable only to signed-in users.
-    // Uploads are isolated by location and uploader UID.
+    // Firestore metadata controls access to the stored image.
+    // Pending images are visible only to their uploader and trusted moderators.
     match /locationPhotos/{locationId}/{uploaderUid}/{fileName} {
-      allow read: if signedIn();
+      function photoRecord() {
+        return firestore.get(/databases/(default)/documents/locations/$(locationId)/photos/$(fileName)).data;
+      }
+      allow read: if signedIn() && (
+        moderator()
+        || photoRecord().status == "approved"
+        || (request.auth.uid == uploaderUid && photoRecord().uploaderUid == uploaderUid)
+      );
       allow create: if signedIn()
         && request.auth.uid == uploaderUid
         && request.resource.size > 0
