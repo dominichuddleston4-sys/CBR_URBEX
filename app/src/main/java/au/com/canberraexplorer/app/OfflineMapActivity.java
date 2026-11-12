@@ -47,14 +47,14 @@ public class OfflineMapActivity extends Activity {
     private OfflineRegion activeRegion;
 
     private static final String[] REGIONS = {
-        "Central Canberra", "North Canberra", "South Canberra", "West Canberra", "East Canberra"
+        "Central ACT", "North ACT", "South ACT", "West ACT", "East ACT"
     };
     private static final double[][] BOUNDS = {
-        {-35.34, 149.08, -35.23, 149.20},
-        {-35.25, 149.02, -35.13, 149.19},
-        {-35.50, 149.02, -35.34, 149.20},
-        {-35.36, 148.98, -35.22, 149.09},
-        {-35.36, 149.18, -35.18, 149.30}
+        {-35.48, 148.96, -35.28, 149.30},
+        {-35.32, 148.90, -35.12, 149.35},
+        {-35.92, 148.95, -35.48, 149.35},
+        {-35.65, 148.76, -35.25, 149.00},
+        {-35.62, 149.25, -35.12, 149.40}
     };
 
     @Override protected void onCreate(Bundle savedInstanceState) {
