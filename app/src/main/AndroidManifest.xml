@@ -12,6 +12,10 @@
         android:theme="@android:style/Theme.Material.Light.NoActionBar"
         android:usesCleartextTraffic="false">
         <activity
+            android:name=".OfflineMapPrototypeActivity"
+            android:exported="false"
+            android:label="Map renderer prototype" />
+        <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="true">
