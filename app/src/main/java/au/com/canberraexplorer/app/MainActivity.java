@@ -170,8 +170,10 @@ public class MainActivity extends Activity {
             }
         });
         webView.addJavascriptInterface(new Object() {
-            @JavascriptInterface public void openOfflineMap() {
-                runOnUiThread(() -> startActivity(new Intent(MainActivity.this, OfflineMapActivity.class)));
+            @JavascriptInterface public void openOfflineMap(String placesGeoJson) {
+                Intent intent = new Intent(MainActivity.this, OfflineMapActivity.class);
+                if (placesGeoJson != null && placesGeoJson.length() <= 2000000) intent.putExtra("places_geojson", placesGeoJson);
+                runOnUiThread(() -> startActivity(intent));
             }
         }, "CanberraNative");
         webView.addJavascriptInterface(new PhotoBridge(), "CanberraPhotos");
