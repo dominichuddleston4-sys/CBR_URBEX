@@ -16,14 +16,22 @@ service firebase.storage {
       }
       allow read: if signedIn() && (
         moderator()
-        || photoRecord().status == "approved"
-        || (request.auth.uid == uploaderUid && photoRecord().uploaderUid == uploaderUid)
+        || (photoRecord().storagePath == "locationPhotos/" + locationId + "/" + uploaderUid + "/" + fileName
+            && photoRecord().status == "approved")
+        || (request.auth.uid == uploaderUid && photoRecord().uploaderUid == uploaderUid
+            && photoRecord().storagePath == "locationPhotos/" + locationId + "/" + uploaderUid + "/" + fileName)
       );
       allow create: if signedIn()
         && request.auth.uid == uploaderUid
         && request.resource.size > 0
         && request.resource.size <= 10 * 1024 * 1024
-        && request.resource.contentType.matches('image/(jpeg|png|webp)');
+        && request.resource.contentType.matches('image/(jpeg|png|webp)')
+        && fileName.matches('^[a-zA-Z0-9-]{1,100}
+      allow update: if false;
+      allow delete: if moderator();
+    }
+  }
+});
       allow update: if false;
       allow delete: if moderator();
     }
