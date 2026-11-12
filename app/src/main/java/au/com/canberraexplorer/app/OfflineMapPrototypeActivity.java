@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import org.maplibre.android.MapLibre;
 import org.maplibre.android.maps.MapView;
-import org.maplibre.android.maps.MapboxMap;
 import org.maplibre.android.maps.Style;
 import org.maplibre.android.camera.CameraPosition;
 import org.maplibre.android.geometry.LatLng;
