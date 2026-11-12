@@ -28,6 +28,9 @@ import org.maplibre.android.offline.OfflineRegion;
 import org.maplibre.android.offline.OfflineRegionError;
 import org.maplibre.android.offline.OfflineRegionStatus;
 import org.maplibre.android.offline.OfflineTilePyramidRegionDefinition;
+import org.maplibre.android.module.http.HttpRequestUtil;
+import okhttp3.Dispatcher;
+import okhttp3.OkHttpClient;
 
 import java.nio.charset.StandardCharsets;
 
@@ -55,6 +58,7 @@ public class OfflineMapActivity extends Activity {
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        configureMapNetwork();
         MapLibre.getInstance(this);
         offlineManager = OfflineManager.Companion.getInstance(this);
         offlineManager.setOfflineMapboxTileCountLimit(MAX_TILES);
@@ -125,6 +129,20 @@ public class OfflineMapActivity extends Activity {
         controls.addView(close);
         setContentView(root);
         refreshOfflineStatus();
+    }
+
+    private void configureMapNetwork() {
+        Dispatcher dispatcher = new Dispatcher();
+        dispatcher.setMaxRequests(4);
+        dispatcher.setMaxRequestsPerHost(4);
+        OkHttpClient client = new OkHttpClient.Builder()
+            .dispatcher(dispatcher)
+            .addInterceptor(chain -> chain.proceed(
+                chain.request().newBuilder()
+                    .header("User-Agent", "CanberraExplorer/2.0 (Android)")
+                    .build()))
+            .build();
+        HttpRequestUtil.setOkHttpClient(client);
     }
 
     private void addPlacePins(Style style, String geoJson) {
