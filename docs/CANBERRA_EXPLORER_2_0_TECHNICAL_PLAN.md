@@ -9,6 +9,12 @@ Last reviewed: 12 November 2026
 - Leaflet map layers are remote tile services. The current app therefore does not have a reliable ACT-wide offline basemap.
 - The current Android manifest did not declare a launcher icon. Root-level PNG/SVG files are PWA assets, not Android launcher resources.
 
+## Offline basemap implementation in the development branch
+
+A native MapLibre screen has been added in `OfflineMapActivity`. It offers Central, North, South, West and East Canberra region choices, downloads one region at a time, stores saved place pins supplied by the existing web map, and offers a delete control. The first download requires an internet connection. The development implementation caps offline resources at 3,000 tiles and stops/removes a region if its completed resource size exceeds 50 MB. This is a deliberately small, user-selected regional pack rather than a claim that the entire ACT is available offline at once. The style is OpenFreeMap Liberty and attribution is supplied by the MapLibre style controls.
+
+The native screen and download flow still require a successful CI build and on-device airplane-mode tests before being considered shipped. Offline routing is not included.
+
 ## Offline basemap direction
 
 ### Candidate: MapLibre Native Android offline regions
@@ -78,7 +84,7 @@ Initial Firestore and Storage rules plus firebase.json have now been committed f
 ## Current implementation status
 
 - Google sign-in gate: shipped in v1.47 and user-tested for sign-in and session persistence.
-- Android launcher icon: resources and manifest wiring added in the current development commits; signed build and device verification pending.
-- ACT-wide offline map: not implemented; provider/licensing and renderer migration must be resolved.
+- Android launcher icon: adaptive icon plus API 23-25 vector fallbacks and a dedicated round icon are wired in the development branch; signed build and launcher verification pending.
+- Offline map: native MapLibre regional downloads are implemented on the development branch; CI and on-device tests pending. Only one selected Canberra area is kept at a time; this is not full ACT-wide offline coverage.
 - Offline routing: not implemented; native Valhalla Android proof-of-concept required.
-- Shared photo galleries: not implemented; backend schema, security rules and moderation required.
+- Shared photo galleries: Android native Firebase bridge and per-location gallery UI are implemented on the development branch, including attribution, pending review, reports and moderator-only approve/remove. Firestore/Storage rules remain undeployed; cross-account and moderation tests are pending.
