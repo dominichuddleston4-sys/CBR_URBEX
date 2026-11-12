@@ -21,6 +21,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebSettings;
+import android.webkit.JavascriptInterface;
 import android.view.View;
 import android.graphics.Color;
 import android.widget.Toast;
@@ -151,6 +152,11 @@ public class MainActivity extends Activity {
                 return openGoogleMaps(url);
             }
         });
+        webView.addJavascriptInterface(new Object() {
+            @JavascriptInterface public void openOfflineMap() {
+                runOnUiThread(() -> startActivity(new Intent(MainActivity.this, OfflineMapActivity.class)));
+            }
+        }, "CanberraNative");
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
