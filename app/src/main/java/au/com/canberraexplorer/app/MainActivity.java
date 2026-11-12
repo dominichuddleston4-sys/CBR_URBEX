@@ -175,7 +175,14 @@ public class MainActivity extends Activity {
             }
         }, "CanberraNative");
         webView.addJavascriptInterface(new PhotoBridge(), "CanberraPhotos");
-        webView.setWebChromeClient(new WebChromeClient() {\n            @Override\n            public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {\n                if (photoFileCallback != null) photoFileCallback.onReceiveValue(null);\n                photoFileCallback = callback;\n                try { startActivityForResult(params.createIntent(), PHOTO_PICKER_REQUEST); return true; }\n                catch (Exception e) { photoFileCallback = null; return false; }\n            }
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {
+                if (photoFileCallback != null) photoFileCallback.onReceiveValue(null);
+                photoFileCallback = callback;
+                try { startActivityForResult(params.createIntent(), PHOTO_PICKER_REQUEST); return true; }
+                catch (Exception e) { photoFileCallback = null; return false; }
+            }
             @Override
             public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
                 if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
@@ -518,7 +525,8 @@ public class MainActivity extends Activity {
         if (downloadReceiver != null) {
             try { unregisterReceiver(downloadReceiver); } catch (Exception ignored) { }
         }
-        if (photoFileCallback != null) { photoFileCallback.onReceiveValue(null); photoFileCallback = null; }\n        if (photoFileCallback != null) { photoFileCallback.onReceiveValue(null); photoFileCallback = null; }
+        if (photoFileCallback != null) { photoFileCallback.onReceiveValue(null); photoFileCallback = null; }
+        if (photoFileCallback != null) { photoFileCallback.onReceiveValue(null); photoFileCallback = null; }
         if (webView != null) webView.destroy();
         super.onDestroy();
     }
