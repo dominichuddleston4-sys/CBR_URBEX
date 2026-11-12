@@ -168,6 +168,10 @@ public class MainActivity extends Activity {
                     && "dominichuddleston4-sys.github.io".equalsIgnoreCase(host)
                     && uri.getPath() != null
                     && uri.getPath().startsWith("/CBR_URBEX")) return false;
+                if ("https".equalsIgnoreCase(scheme)
+                    && "raw.githack.com".equalsIgnoreCase(host)
+                    && uri.getPath() != null
+                    && uri.getPath().startsWith("/dominichuddleston4-sys/CBR_URBEX/feature/2.0.5-photo-galleries/")) return false;
                 try { startActivity(new Intent(Intent.ACTION_VIEW, uri)); }
                 catch (Exception ignored) { }
                 return true;
@@ -359,7 +363,7 @@ public class MainActivity extends Activity {
             }
         });
         setContentView(webView);
-        webView.loadUrl("https://dominichuddleston4-sys.github.io/CBR_URBEX/");
+        webView.loadUrl(getString(R.string.app_web_url));
     }
 
 
