@@ -1,10 +1,24 @@
 # ACT offline map — implementation spike
 
-Status: **design spike only; no offline map is shipped by this branch.**
+Status: **design spike only; no offline map is shipped by this branch.** The user has approved the free, self-generated OpenStreetMap data approach for the ACT.
 
 ## Goal
 
 Provide a downloadable ACT basemap inside Canberra Explorer that remains usable in airplane mode. The existing Leaflet map runs in a WebView and requests remote tiles, so simply enabling browser cache or adding a download button would not meet this requirement.
+
+## Approved data-source direction
+
+Use OpenStreetMap data to generate an ACT-only offline map package under our control. Start from a suitable Australia extract (for example, Geofabrik), clip it to a documented ACT boundary, generate the map package and style assets ourselves, and host the finished package at a controlled static endpoint.
+
+- OSM data is available under the Open Database License (ODbL); include clear attribution and preserve applicable share-alike obligations.
+- Do **not** bulk-download tiles from the public OpenStreetMap standard tile server.
+- The build pipeline must record source URL, source timestamp, boundary definition, generator/tool version, output format, checksums and licence/attribution text.
+- Before public release, verify that the chosen generated format, style assets and hosting arrangement comply with ODbL and the host's terms. Do not include third-party style or tile assets unless their redistribution/offline terms are verified.
+- The user has approved this general free OSM approach; approval does not waive the need to validate licensing, hosting, package size or coverage before release.
+
+References:
+- OSM data copyright/licence: https://www.openstreetmap.org/copyright
+- Geofabrik Australia source extract: https://download.geofabrik.de/australia-oceania/australia.html
 
 ## Proposed Android renderer
 
@@ -16,28 +30,16 @@ Evaluate **MapLibre Native Android 13.7.1** as the native map renderer for the o
 - The SDK's `OfflineManager` creates and lists offline regions; `OfflineRegionStatus` reports completed/required resources and byte counts.
 - Pin the SDK version. Validate renderer compatibility and APK size on the actual target Android device before merging it into the production app.
 
-## Data-source and licence gate
-
-No production tile URL has been selected. The public OpenStreetMap standard tile server must **not** be bulk-downloaded or used as an offline package source.
-
-Preferred no-subscription direction: generate a clipped ACT map dataset from OpenStreetMap data using a reproducible build pipeline, then serve that generated package from a controlled static endpoint. Preserve ODbL obligations and visible attribution. Confirm the chosen tile format, style assets, hosting terms, update mechanism and redistribution rights before enabling downloads.
-
-References:
-- OSM data copyright/licence: https://www.openstreetmap.org/copyright
-- Geofabrik Australia source extract: https://download.geofabrik.de/australia-oceania/australia.html
-- MapLibre Native Android offline-region API: https://maplibre.org/maplibre-native/android/api/-map-libre%20-native%20-android/org.maplibre.android.offline/index.html
-
-Do not embed a third-party style or tile URL in the app until its offline caching and redistribution terms are verified. A working online style alone is not proof that offline downloads are permitted.
-
 ## Safe implementation sequence
 
-1. **Spike branch (this branch):** record architecture, dependencies, licence gates and acceptance criteria without changing the stable app.
-2. Build a minimal native MapLibre screen on a dedicated branch and verify it renders a test style on the user's Android device.
-3. Build a small ACT sample package from a licensed/self-generated dataset; verify the package can be downloaded and used after force-stop and in airplane mode.
-4. Add Settings controls only after the sample package works: download, progress, cancel/retry, integrity check, data date, update and delete.
-5. Migrate or bridge the existing location data and pins into the native map; retain the current online map until regression testing passes.
-6. Test ACT coverage, low storage, interrupted downloads, corrupt packages, no network, app upgrades and attribution.
-7. Merge to main only after CI and device tests pass. Do not publish a 2.0 APK while required tests are blocked.
+1. **Spike branch (this branch):** record architecture, approved data direction, licence gates and acceptance criteria without changing the stable app.
+2. Build a reproducible ACT package-generation pipeline from OSM source data; document the ACT boundary, ODbL attribution, package format, checksums and hosting.
+3. Build a minimal native MapLibre screen on a dedicated branch and verify it renders a test style on the user's Android device.
+4. Download a small ACT sample package; verify it remains usable after force-stop and in airplane mode.
+5. Add Settings controls only after the sample package works: download, progress, cancel/retry, integrity check, data date, update and delete.
+6. Migrate or bridge the existing location data and pins into the native map; retain the current online map until regression testing passes.
+7. Test ACT coverage, low storage, interrupted downloads, corrupt packages, no network, app upgrades and attribution.
+8. Merge to main only after CI and device tests pass. Do not publish a 2.0 APK while required tests are blocked.
 
 ## Acceptance criteria
 
