@@ -3,7 +3,7 @@ name: Build and publish Canberra Explorer APK
 on:
   workflow_dispatch:
   push:
-    branches: [main, feature/2.0-completion]
+    branches: [main, feature/2.0-completion, feature/2.0.5-photo-galleries]
     paths:
       - 'app/**'
       - 'build.gradle'
@@ -12,6 +12,7 @@ on:
       - 'index.html'
       - 'manifest.json'
       - 'sw.js'
+      - 'firestore.rules'
       - 'places.json'
       - 'icon.svg'
       - '.github/workflows/build-test-apk.yml'
