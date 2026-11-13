@@ -660,7 +660,7 @@ async function importMyData(event){
    const s=data.settings;appSettings={...appSettings,...s};
    appSettings.mapStyle=["street","voyager","satellite"].includes(s.mapStyle)?s.mapStyle:"street";
    appSettings.theme=["system","dark","light"].includes(s.theme)?s.theme:"system";
-   appSettings.appStyle=["forest","ocean","sunset","slate","cyberpunk","gta5"].includes(s.appStyle)?s.appStyle:"forest";
+   appSettings.appStyle=["forest","ocean","sunset","slate","cyberpunk","gta5","genshin"].includes(s.appStyle)?s.appStyle:"forest";
    appSettings.textSize=["small","normal","large"].includes(s.textSize)?s.textSize:"normal";
    appSettings.showPins=s.showPins!==false;appSettings.startAtCanberra=s.startAtCanberra!==false;
    appSettings.reduceMotion=s.reduceMotion===true;appSettings.confirmActions=s.confirmActions!==false;
