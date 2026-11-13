@@ -67,6 +67,29 @@ body.settings-open>header,body.settings-open>main> :not(#settingsPanel),body.set
 body.settings-open>#settingsPanel{display:block!important;position:fixed;inset:0;z-index:20000;width:100%;height:100%;height:100dvh;overflow-y:auto;margin:0;padding:max(20px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom));border:0;border-radius:0;background:#0d1712;box-sizing:border-box}
 #settingsPanel .settings-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
 #settingsPanel .settings-top h2{margin:0;font-size:22px}
+
+/* Reliable touch scrolling for the full-screen settings view */
+body.settings-open>#settingsPanel{
+  display:block!important;
+  overflow-x:hidden!important;
+  overflow-y:scroll!important;
+  -webkit-overflow-scrolling:touch;
+  touch-action:pan-y;
+  overscroll-behavior-y:contain;
+  scrollbar-width:thin;
+  padding-bottom:calc(36px + env(safe-area-inset-bottom))!important;
+}
+body.settings-open>#settingsPanel .settings-top{
+  position:sticky;
+  top:0;
+  z-index:2;
+  padding:6px 0 12px;
+  background:#0d1712;
+}
+body.settings-open>#settingsPanel .setting-row{
+  min-height:64px;
+}
+
 </style><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"><link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#101510"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Canberra Explorer"><link rel="apple-touch-icon" href="./icon-192.png"><link rel="icon" href="./icon.svg" type="image/svg+xml"></head>
 <body>
 <header><div class="brand">CANBERRA EXPLORER</div><h1>Canberra Explorer</h1><p>Abandoned places, local history &amp; field notes</p></header>
