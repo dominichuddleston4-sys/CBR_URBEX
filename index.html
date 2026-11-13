@@ -61,6 +61,22 @@ footer{padding-bottom:max(26px,env(safe-area-inset-bottom))}
 @media(prefers-reduced-motion:reduce){button,.btn{transition:none}}
 
 
+body.light-theme{--bg:#f3f7f4;--panel:#fff;--line:#d4e1d8;--green:#286b27;--muted:#52645a;--white:#17231c;--accent:#087f70;color-scheme:light;background:#f3f7f4}
+body.light-theme header{background:linear-gradient(145deg,#e1f0e6,#f3f7f4);border-color:#c8ddcf}
+body.light-theme .notice{background:#e8f2eb;border-color:#c5ddca;color:#263c2d}
+body.light-theme .place,body.light-theme #settingsPanel,body.light-theme #addPanel{background:#fff;border-color:#d4e1d8;box-shadow:0 5px 18px #203c2810}
+body.light-theme input,body.light-theme textarea,body.light-theme select{background:#fff;color:#17231c;border-color:#cbd9d0}
+body.light-theme button.secondary,body.light-theme .btn.secondary{background:#e7efe9;border-color:#cbd9d0;color:#203328}
+body.light-theme .tabs{background:#e8f0ea;border-color:#d4e1d8}
+body.light-theme .tabs button{color:#34483b}
+body.light-theme #appBottomNav .navMenuToggle{background:#fff;color:#286b27;border-color:#cbd9d0}
+body.light-theme #appBottomNav .navMenuItems{background:#fff;border-color:#cbd9d0}
+body.light-theme #appBottomNav .navMenuItems button{color:#203328}
+body.light-theme #appBottomNav .navMenuItems button.active{background:#e8f2eb;color:#286b27}
+body[data-text-size="small"]{font-size:14px}
+body[data-text-size="large"]{font-size:17px}
+body.reduce-motion *,body.reduce-motion *:before,body.reduce-motion *:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}
+@media(prefers-color-scheme:light){body.system-light{--bg:#f3f7f4;--panel:#fff;--line:#d4e1d8;--green:#286b27;--muted:#52645a;--white:#17231c;--accent:#087f70;color-scheme:light;background:#f3f7f4}body.system-light header{background:linear-gradient(145deg,#e1f0e6,#f3f7f4)}body.system-light .place,body.system-light #settingsPanel,body.system-light #addPanel{background:#fff;border-color:#d4e1d8}body.system-light input,body.system-light textarea,body.system-light select{background:#fff;color:#17231c;border-color:#cbd9d0}body.system-light button.secondary,body.system-light .btn.secondary{background:#e7efe9;border-color:#cbd9d0;color:#203328}}
 /* Settings is a dedicated full-screen view (settingsPanel lives inside main). */
 body.settings-open{overflow:hidden!important;padding:0!important}
 body.settings-open>header,
@@ -117,6 +133,12 @@ body.settings-open>main>#settingsPanel .setting-row{min-height:64px}
 <div class="setting-row"><div><label for="mapStyle">Map appearance</label><small>Choose street, detailed or satellite imagery</small></div><select id="mapStyle" onchange="saveSettings()"><option value="street">Street map</option><option value="voyager">Detailed map</option><option value="satellite">Satellite</option></select></div>
 <div class="setting-row"><div><label for="showPins">Show location pins</label><small>Show or hide all saved map markers</small></div><input id="showPins" type="checkbox" checked onchange="saveSettings()" style="width:22px;height:22px"></div>
 <div class="setting-row"><div><label for="startAtCanberra">Start map at Canberra</label><small>Return to Canberra when opening the map</small></div><input id="startAtCanberra" type="checkbox" checked onchange="saveSettings()" style="width:22px;height:22px"></div>
+<div class="setting-row"><div><label for="appTheme">App theme</label><small>Choose dark, light or match your device</small></div><select id="appTheme" onchange="saveSettings()"><option value="system">Device setting</option><option value="dark">Dark</option><option value="light">Light</option></select></div>
+<div class="setting-row"><div><label for="textSize">Text size</label><small>Make app text easier to read</small></div><select id="textSize" onchange="saveSettings()"><option value="small">Small</option><option value="normal">Standard</option><option value="large">Large</option></select></div>
+<div class="setting-row"><div><label for="reduceMotion">Reduce animations</label><small>Use fewer moving effects</small></div><input id="reduceMotion" type="checkbox" onchange="saveSettings()" style="width:22px;height:22px"></div>
+<div class="setting-row"><div><label for="confirmActions">Confirm before clearing data</label><small>Ask before deleting saved places and additions</small></div><input id="confirmActions" type="checkbox" checked onchange="saveSettings()" style="width:22px;height:22px"></div>
+<div class="setting-row"><div><label>Reset app preferences</label><small>Restore the default appearance and map options</small></div><button class="secondary" type="button" onclick="resetAppSettings()">Reset</button></div>
+<div class="setting-row"><div><label>App information</label><small>Canberra Explorer · Version 2.0½</small></div><button class="secondary" type="button" onclick="showAppInfo()">About</button></div>
 <div id="logoutEntry" class="setting-row"><div><label>Sign out</label><small>Return to the sign-in screen on this device</small></div><button class="secondary" onclick="logoutFromApp()">Log out</button></div>
 <div id="adminEntry" class="setting-row" hidden><div><label>🔒 Admin tools</label><small>Private controls for the verified administrator</small></div><button class="secondary" onclick="toggleAdminPanel()">Open admin</button></div>
 <section id="adminPanel" hidden style="margin:12px 0;padding:14px;border:1px solid #dc2330;border-radius:12px;background:#171717;color:#fff">
@@ -243,8 +265,12 @@ const seed=[
 {"name":"Unidentified red building (KML label: the red one)","area":"Canberra / ACT (KML import)","lat":-35.3527101,"lon":149.2266549,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
 {"name":"Unidentified house (original KML label was non-descriptive)","area":"Canberra / ACT (KML import)","lat":-35.2354334,"lon":149.1549683,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},];
 let custom=JSON.parse(localStorage.getItem("cbr_custom")||"[]"),saved=JSON.parse(localStorage.getItem("cbr_saved")||"[]"),tab="all";
-let appSettings={mapStyle:"street",showPins:true,startAtCanberra:true};
+let appSettings={mapStyle:"street",showPins:true,startAtCanberra:true,theme:"system",textSize:"normal",reduceMotion:false,confirmActions:true};
 try{appSettings={...appSettings,...JSON.parse(localStorage.getItem("ce_settings")||"{}")};}catch(e){}
+if(!["street","voyager","satellite"].includes(appSettings.mapStyle))appSettings.mapStyle="street";
+if(!["system","dark","light"].includes(appSettings.theme))appSettings.theme="system";
+if(!["small","normal","large"].includes(appSettings.textSize))appSettings.textSize="normal";
+appSettings.showPins=appSettings.showPins!==false;appSettings.startAtCanberra=appSettings.startAtCanberra!==false;appSettings.reduceMotion=appSettings.reduceMotion===true;appSettings.confirmActions=appSettings.confirmActions!==false;
 let map=null,markers=[];
 const all=()=>[...seed,...custom];
 function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -410,14 +436,41 @@ function toggleSettings(){
  document.getElementById("settingsToggle").textContent=opening?"⚙ Settings":"⚙ Settings";
  if(opening)refreshAdminVisibility();
 }
+function applyAppearance(){
+ document.body.classList.toggle("light-theme",appSettings.theme==="light");
+ document.body.classList.toggle("system-light",appSettings.theme==="system");
+ document.body.classList.toggle("reduce-motion",!!appSettings.reduceMotion);
+ document.body.dataset.textSize=appSettings.textSize||"normal";
+}
+function syncSettingsControls(){
+ document.getElementById("mapStyle").value=appSettings.mapStyle;
+ document.getElementById("showPins").checked=!!appSettings.showPins;
+ document.getElementById("startAtCanberra").checked=!!appSettings.startAtCanberra;
+ document.getElementById("appTheme").value=appSettings.theme;
+ document.getElementById("textSize").value=appSettings.textSize;
+ document.getElementById("reduceMotion").checked=!!appSettings.reduceMotion;
+ document.getElementById("confirmActions").checked=!!appSettings.confirmActions;
+}
 function saveSettings(){
  appSettings.mapStyle=document.getElementById("mapStyle").value;
  appSettings.showPins=document.getElementById("showPins").checked;
  appSettings.startAtCanberra=document.getElementById("startAtCanberra").checked;
+ appSettings.theme=document.getElementById("appTheme").value;
+ appSettings.textSize=document.getElementById("textSize").value;
+ appSettings.reduceMotion=document.getElementById("reduceMotion").checked;
+ appSettings.confirmActions=document.getElementById("confirmActions").checked;
  localStorage.setItem("ce_settings",JSON.stringify(appSettings));
+ applyAppearance();
  if(appSettings.startAtCanberra&&map)map.setView([-35.28,149.13],10);
  setMapStyle(appSettings.mapStyle);renderMap();
 }
+function resetAppSettings(){
+ if(!confirm("Restore the default app preferences? Your saved places and photos will not be deleted."))return;
+ appSettings={mapStyle:"street",showPins:true,startAtCanberra:true,theme:"system",textSize:"normal",reduceMotion:false,confirmActions:true};
+ localStorage.setItem("ce_settings",JSON.stringify(appSettings));syncSettingsControls();applyAppearance();
+ if(map)map.setView([-35.28,149.13],10);setMapStyle(appSettings.mapStyle);renderMap();
+}
+function showAppInfo(){alert("Canberra Explorer\\nVersion 2.0½\\n\\nYour settings and personal additions are stored on this device. Map tiles and online updates need an internet connection.");}
 function exportMyData(){
  const data={app:"Canberra Explorer",exportedAt:new Date().toISOString(),customPlaces:custom,savedPlaces:saved,settings:appSettings};
  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
@@ -439,16 +492,20 @@ async function importMyData(event){
   if(!confirm("Restore "+restored.length+" personal place(s) and saved items? This replaces the personal additions currently on this device."))return;
   custom=restored;saved=data.savedPlaces.filter(x=>typeof x==="string");
   if(data.settings&&typeof data.settings==="object"){
-   const s=data.settings;appSettings={mapStyle:["street","voyager","satellite"].includes(s.mapStyle)?s.mapStyle:"street",showPins:s.showPins!==false,startAtCanberra:s.startAtCanberra!==false};
-   localStorage.setItem("ce_settings",JSON.stringify(appSettings));
-   document.getElementById("mapStyle").value=appSettings.mapStyle;document.getElementById("showPins").checked=appSettings.showPins;document.getElementById("startAtCanberra").checked=appSettings.startAtCanberra;
+   const s=data.settings;appSettings={...appSettings,...s};
+   appSettings.mapStyle=["street","voyager","satellite"].includes(s.mapStyle)?s.mapStyle:"street";
+   appSettings.theme=["system","dark","light"].includes(s.theme)?s.theme:"system";
+   appSettings.textSize=["small","normal","large"].includes(s.textSize)?s.textSize:"normal";
+   appSettings.showPins=s.showPins!==false;appSettings.startAtCanberra=s.startAtCanberra!==false;
+   appSettings.reduceMotion=s.reduceMotion===true;appSettings.confirmActions=s.confirmActions!==false;
+   localStorage.setItem("ce_settings",JSON.stringify(appSettings));syncSettingsControls();applyAppearance();
   }
   localStorage.setItem("cbr_custom",JSON.stringify(custom));localStorage.setItem("cbr_saved",JSON.stringify(saved));
   setMapStyle(appSettings.mapStyle);renderMap();render();document.getElementById("updateStatus").textContent="Backup restored successfully.";
  }catch(err){alert("Could not restore backup: "+err.message);}finally{event.target.value="";}
 }
 function clearMyData(){
- if(!confirm("Clear your saved places and personal additions from this device? This cannot be undone unless you exported a backup."))return;
+ if(appSettings.confirmActions&&!confirm("Clear your saved places and personal additions from this device? This cannot be undone unless you exported a backup."))return;
  localStorage.removeItem("cbr_custom");localStorage.removeItem("cbr_saved");
  custom=[];saved=[];renderMap();render();document.getElementById("updateStatus").textContent="Your saved places and personal additions were cleared from this device.";
 }
@@ -469,9 +526,7 @@ function toggleSaved(n){saved=saved.includes(n)?saved.filter(x=>x!==n):[...saved
 function toggleAdd(){let p=document.getElementById("addPanel");p.style.display=p.style.display==="block"?"none":"block"}
 function addPlace(){let name=document.getElementById("newName").value.trim(),area=document.getElementById("newArea").value.trim(),notes=document.getElementById("newNotes").value.trim(),lat=document.getElementById("newLat").value.trim(),lon=document.getElementById("newLon").value.trim();if(!name){alert("Please enter a place name.");return}if((lat==="")!==(lon==="")){alert("Enter both latitude and longitude, or leave both blank.");return}if(lat!==""&&(!Number.isFinite(Number(lat))||!Number.isFinite(Number(lon))||Math.abs(Number(lat))>90||Math.abs(Number(lon))>180)){alert("Those coordinates are not valid. Check latitude and longitude.");return}custom.push({name,area:area||"Canberra / ACT",notes:notes||"No notes added yet. Verify details and access.",status:"My addition",custom:true,lat:lat===""?null:Number(lat),lon:lon===""?null:Number(lon)});localStorage.setItem("cbr_custom",JSON.stringify(custom));renderMap();document.getElementById("newName").value="";document.getElementById("newArea").value="";document.getElementById("newNotes").value="";document.getElementById("newLat").value="";document.getElementById("newLon").value="";toggleAdd();tab="mine";document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("active",x.dataset.tab==="mine"));render()}
 document.getElementById("search").addEventListener("input",render);
-document.getElementById("mapStyle").value=appSettings.mapStyle;
-document.getElementById("showPins").checked=!!appSettings.showPins;
-document.getElementById("startAtCanberra").checked=!!appSettings.startAtCanberra;
+syncSettingsControls();applyAppearance();
 render();
 function waitForLeaflet(){
  if(window.L){initMap();return}
