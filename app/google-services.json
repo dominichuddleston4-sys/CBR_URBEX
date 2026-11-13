@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "282611690988-tltvog55fu28ajl5bifn8oqhno5frhbk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "au.com.canberraexplorer.app",
+            "certificate_hash": "13070f1a8a507c703328be5e4ac5b3f755c3eb6f"
+          }
+        },
+        {
           "client_id": "282611690988-te5aq24r9j9tbpjlab173fnt4d8g904e.apps.googleusercontent.com",
           "client_type": 3
         }
