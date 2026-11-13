@@ -57,6 +57,13 @@ footer{padding-bottom:max(26px,env(safe-area-inset-bottom))}
 @media(max-width:520px){header{padding:22px 16px 17px}main{padding:13px 12px 24px}#map{height:360px}.searchrow{gap:6px}.searchrow button{padding:10px 12px;white-space:nowrap}.actions button,.actions a{min-height:38px}.place{padding:14px}}
 @media(prefers-reduced-motion:reduce){button,.btn{transition:none}}
 
+
+/* Settings is a dedicated screen: hide the app behind it until closed. */
+body.settings-open{overflow:hidden;padding-bottom:0}
+body.settings-open>header,body.settings-open>main> :not(#settingsPanel),body.settings-open>footer,body.settings-open>#appBottomNav,body.settings-open>#galleryPanel{display:none!important}
+body.settings-open>#settingsPanel{display:block!important;position:fixed;inset:0;z-index:20000;width:100%;height:100%;height:100dvh;overflow-y:auto;margin:0;padding:max(20px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom));border:0;border-radius:0;background:#0d1712;box-sizing:border-box}
+#settingsPanel .settings-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+#settingsPanel .settings-top h2{margin:0;font-size:22px}
 </style><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"><link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#101510"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Canberra Explorer"><link rel="apple-touch-icon" href="./icon-192.png"><link rel="icon" href="./icon.svg" type="image/svg+xml"></head>
 <body>
 <header><div class="brand">CANBERRA EXPLORER</div><h1>Canberra Explorer</h1><p>Abandoned places, local history &amp; field notes</p></header>
@@ -64,7 +71,7 @@ footer{padding-bottom:max(26px,env(safe-area-inset-bottom))}
 <div style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px"><button id="installApp" class="secondary" hidden>⬇ Install Canberra Explorer</button><button id="settingsToggle" class="secondary" onclick="toggleSettings()">⚙ Settings</button><button class="secondary" onclick="openOfflineMap()">⬇ Offline map</button><span style="font-size:12px;color:var(--muted);align-self:center">Android: menu ⋮ → Install app. iPhone/iPad: Safari Share ↑ → Add to Home Screen.</span></div><div class="notice"><strong>Field safety:</strong> Entries are research leads, not permission to enter. Some sites may be private, occupied, demolished, hazardous or protected. Check current ownership, access rules and safety before visiting. Do not trespass or disturb sites.</div>
 <h2 style="font-size:18px;margin:18px 0 8px">Canberra map</h2><div id="mapShell"><div class="mapbar"><button onclick="locateMe()">◎ My location</button><button onclick="fitAllPins()">Show all pins</button><button onclick="toggleMapFullscreen()">⛶ Full screen</button><button id="closeMap" onclick="toggleMapFullscreen()">✕ Close</button></div><div id="map" aria-label="Interactive road map of Canberra with place pins"></div></div><p class="mapnote">Real street map with roads, suburb labels, parks and waterways. Switch between OpenStreetMap streets, a detailed street style and satellite imagery using the layer button. Map tiles need internet. Tap a pin for details; use My location to centre the map on your phone (permission required). Some directory leads have no confirmed coordinates and therefore appear only in the list. Imported locations are unverified and do not imply permission to enter.</p>
 <section id="settingsPanel" hidden aria-label="App settings">
-<h3>Settings</h3><p class="mapnote" style="margin:0 0 8px">Change how Canberra Explorer looks and manages information on this device.</p>
+<div class="settings-top"><h2>Settings</h2><button class="secondary" type="button" onclick="toggleSettings()">✕ Close</button></div><p class="mapnote" style="margin:0 0 8px">Change how Canberra Explorer looks and manages information on this device.</p>
 <div class="setting-row"><div><label for="mapStyle">Map appearance</label><small>Choose street, detailed or satellite imagery</small></div><select id="mapStyle" onchange="saveSettings()"><option value="street">Street map</option><option value="voyager">Detailed map</option><option value="satellite">Satellite</option></select></div>
 <div class="setting-row"><div><label for="showPins">Show location pins</label><small>Show or hide all saved map markers</small></div><input id="showPins" type="checkbox" checked onchange="saveSettings()" style="width:22px;height:22px"></div>
 <div class="setting-row"><div><label for="startAtCanberra">Start map at Canberra</label><small>Return to Canberra when opening the map</small></div><input id="startAtCanberra" type="checkbox" checked onchange="saveSettings()" style="width:22px;height:22px"></div>
@@ -291,9 +298,12 @@ function logoutFromApp(){
  CanberraNative.signOut();
 }
 function toggleSettings(){
- const panel=document.getElementById("settingsPanel");panel.hidden=!panel.hidden;
- document.getElementById("settingsToggle").textContent=panel.hidden?"⚙ Settings":"✕ Close settings";
- if(!panel.hidden)refreshAdminVisibility();
+ const panel=document.getElementById("settingsPanel");
+ const opening=panel.hidden;
+ panel.hidden=!opening;
+ document.body.classList.toggle("settings-open",opening);
+ document.getElementById("settingsToggle").textContent=opening?"⚙ Settings":"⚙ Settings";
+ if(opening)refreshAdminVisibility();
 }
 function saveSettings(){
  appSettings.mapStyle=document.getElementById("mapStyle").value;
