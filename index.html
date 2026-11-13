@@ -339,7 +339,7 @@ let appSettings={mapStyle:"street",showPins:true,startAtCanberra:true,theme:"sys
 try{appSettings={...appSettings,...JSON.parse(localStorage.getItem("ce_settings")||"{}")};}catch(e){}
 if(!["street","voyager","satellite"].includes(appSettings.mapStyle))appSettings.mapStyle="street";
 if(!["system","dark","light"].includes(appSettings.theme))appSettings.theme="system";
-if(!["forest","ocean","sunset","slate"].includes(appSettings.appStyle))appSettings.appStyle="forest";
+if(!["forest","ocean","sunset","slate","cyberpunk"].includes(appSettings.appStyle))appSettings.appStyle="forest";
 if(!["small","normal","large"].includes(appSettings.textSize))appSettings.textSize="normal";
 appSettings.showPins=appSettings.showPins!==false;appSettings.startAtCanberra=appSettings.startAtCanberra!==false;appSettings.reduceMotion=appSettings.reduceMotion===true;appSettings.confirmActions=appSettings.confirmActions!==false;
 let map=null,markers=[];
