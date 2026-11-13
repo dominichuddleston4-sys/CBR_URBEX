@@ -105,6 +105,15 @@ body[data-app-style="cyberpunk"] input:focus,body[data-app-style="cyberpunk"] te
 body[data-app-style="cyberpunk"] .tabs{background:#11151d;border-color:#343d48}
 body[data-app-style="cyberpunk"] .tabs button{background:transparent;color:#c5c5d0}
 body[data-app-style="cyberpunk"] #mapShell{border-color:#00aebb;box-shadow:0 0 18px #00f0ff20}
+body[data-app-style="cyberpunk"] #map{background:#080d16}
+body[data-app-style="cyberpunk"] #map .leaflet-tile-pane{filter:brightness(.78) saturate(1.75) hue-rotate(145deg) contrast(1.16)}
+body[data-app-style="cyberpunk"] #map:after{content:"";position:absolute;inset:0;z-index:450;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0,transparent 47px,#00f0ff16 48px),repeating-linear-gradient(90deg,transparent 0,transparent 47px,#fcee0a10 48px);mix-blend-mode:screen}
+body[data-app-style="cyberpunk"] #map .leaflet-overlay-pane path{stroke:#00f0ff!important;filter:drop-shadow(0 0 4px #00f0ff)}
+body[data-app-style="cyberpunk"] #map .leaflet-popup-content-wrapper,body[data-app-style="cyberpunk"] #map .leaflet-popup-tip{background:#101721;color:#f7f4ff;border:1px solid #00b9c8;box-shadow:0 0 14px #00f0ff35}
+body[data-app-style="cyberpunk"] #map .leaflet-popup-content a{color:#fcee0a}
+body[data-app-style="cyberpunk"] #map .leaflet-control-zoom a{background:#111923;color:#00f0ff!important;border-color:#00aebb}
+body[data-app-style="cyberpunk"] #map .leaflet-control-attribution{background:#080d16dd;color:#b7b4c2}
+body[data-app-style="cyberpunk"] #map .leaflet-control-attribution a{color:#00f0ff}
 body[data-app-style="cyberpunk"] #galleryPanel{background:#07090df5}
 body[data-app-style="cyberpunk"] #galleryPanel .gallery-inner{background:#15151c;border-color:#00aebb}
 body[data-app-style="cyberpunk"] #galleryPhotos figure{background:#0b1016;border-color:#343d48}
@@ -342,7 +351,8 @@ function renderMap(){
  if(!appSettings.showPins)return;
  [...seed,...custom].filter(p=>p.lat!==null&&p.lat!==undefined&&p.lat!==""&&p.lon!==null&&p.lon!==undefined&&p.lon!==""&&Number.isFinite(Number(p.lat))&&Number.isFinite(Number(p.lon))&&Math.abs(Number(p.lat))<=90&&Math.abs(Number(p.lon))<=180).forEach(p=>{
   const lat=Number(p.lat),lon=Number(p.lon);
-  const marker=L.circleMarker([lat,lon],{radius:8,color:"#fff",weight:2,fillColor:"#16833b",fillOpacity:1}).addTo(map);
+  const cyberpunk=appSettings.appStyle==="cyberpunk";
+  const marker=L.circleMarker([lat,lon],cyberpunk?{radius:9,color:"#00f0ff",weight:2,fillColor:"#fcee0a",fillOpacity:1}:{radius:8,color:"#fff",weight:2,fillColor:"#16833b",fillOpacity:1}).addTo(map);
   marker.bindPopup("<b>"+esc(p.name)+"</b><br>"+esc(p.area||"Canberra / ACT")+"<br><small>"+esc(p.status||"Research lead")+" · location and access not independently verified</small><br><a target=\"_blank\" rel=\"noopener\" href=\"https://www.google.com/maps/dir/?api=1&destination="+lat+","+lon+"\">Directions ↗</a>");
   marker._placeName=p.name;markers.push(marker);
  });
@@ -360,9 +370,10 @@ function initMap(){
  baseLayers={
   street:L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}),
   voyager:L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",{maxZoom:20,attribution:'&copy; OpenStreetMap contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'}),
-  satellite:L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:'Tiles &copy; Esri'})
+  satellite:L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:'Tiles &copy; Esri'}),
+  cyberpunk:L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",{maxZoom:20,attribution:'&copy; OpenStreetMap contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'})
  };
- const chosen=baseLayers[appSettings.mapStyle]||baseLayers.street;chosen.addTo(map);
+ const chosen=baseLayers[appSettings.appStyle==="cyberpunk"?"cyberpunk":appSettings.mapStyle]||baseLayers.street;chosen.addTo(map);
  L.control.layers({"Street map":baseLayers.street,"Detailed map":baseLayers.voyager,"Satellite":baseLayers.satellite},{},{collapsed:true}).addTo(map);
  map.on("locationfound",e=>{
   if(userMarker)map.removeLayer(userMarker);if(userAccuracy)map.removeLayer(userAccuracy);
@@ -378,8 +389,9 @@ function initMap(){
 }
 function setMapStyle(style){
  if(!map||!baseLayers[style])return;
+ const activeStyle=appSettings.appStyle==="cyberpunk"?"cyberpunk":style;
  Object.values(baseLayers).forEach(layer=>{if(map.hasLayer(layer))map.removeLayer(layer);});
- baseLayers[style].addTo(map);
+ baseLayers[activeStyle].addTo(map);
 }
 function focusPlace(name){
  const p=all().find(x=>x.name===name);if(!p)return;
@@ -504,6 +516,7 @@ function applyAppearance(){
  document.body.classList.toggle("system-light",appSettings.theme==="system");
  document.body.classList.toggle("reduce-motion",!!appSettings.reduceMotion);
  document.body.dataset.textSize=appSettings.textSize||"normal";
+ if(map)setMapStyle(appSettings.mapStyle||"street");
 }
 function syncSettingsControls(){
  document.getElementById("mapStyle").value=appSettings.mapStyle;
