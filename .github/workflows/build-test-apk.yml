@@ -157,3 +157,5 @@ jobs:
               description: 'Signed APK build ' + state,
               target_url: 'https://github.com/' + context.repo.owner + '/' + context.repo.repo + '/actions/runs/' + context.runId
             });
+
+# Rebuild the test APK for the latest mobile menu UI.
