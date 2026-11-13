@@ -90,6 +90,31 @@ body[data-app-style="slate"] #appBottomNav .navMenuItems{background:#1d1f31;bord
 body[data-app-style="ocean"] .tag,body[data-app-style="sunset"] .tag,body[data-app-style="slate"] .tag{color:var(--accent)}
 body[data-app-style="ocean"] #galleryPanel .gallery-inner,body[data-app-style="sunset"] #galleryPanel .gallery-inner,body[data-app-style="slate"] #galleryPanel .gallery-inner{background:var(--panel);border-color:var(--line)}
 
+/* Cyberpunk neon city theme */
+body[data-app-style="cyberpunk"]{--bg:#08090d;--panel:#15151c;--line:#34313b;--green:#fcee0a;--muted:#b7b4c2;--white:#f7f4ff;--accent:#00f0ff;background:radial-gradient(ellipse at 50% -15%,#33200f 0,transparent 48%),radial-gradient(ellipse at 100% 20%,#102c38 0,transparent 38%),#08090d}
+body[data-app-style="cyberpunk"] header{background:linear-gradient(135deg,#29200c 0%,#17131b 52%,#07161b 100%);border-color:#6c5b16;box-shadow:0 5px 26px #fcee0a18}
+body[data-app-style="cyberpunk"] .brand,body[data-app-style="cyberpunk"] .tag{color:#fcee0a;text-shadow:0 0 10px #fcee0a55}
+body[data-app-style="cyberpunk"] .brand:before{background:#fcee0a;box-shadow:0 0 7px #fcee0a,0 0 18px #fcee0a}
+body[data-app-style="cyberpunk"] .notice{background:linear-gradient(110deg,#29220d,#171820);border-color:#776719;color:#fff7c2;box-shadow:inset 3px 0 #fcee0a}
+body[data-app-style="cyberpunk"] .place,body[data-app-style="cyberpunk"] #settingsPanel,body[data-app-style="cyberpunk"] #addPanel{background:linear-gradient(145deg,#1b1a22,#10151b);border-color:#3c3946;box-shadow:0 7px 22px #0008,0 0 0 1px #00f0ff0c}
+body[data-app-style="cyberpunk"] .place h3{color:#fff7d6}
+body[data-app-style="cyberpunk"] button:not(.secondary),body[data-app-style="cyberpunk"] .btn:not(.secondary),body[data-app-style="cyberpunk"] .tabs button.active{background:#fcee0a;color:#11100a;box-shadow:0 0 12px #fcee0a35}
+body[data-app-style="cyberpunk"] button.secondary,body[data-app-style="cyberpunk"] .btn.secondary{background:#171d25;border:1px solid #00b9c8;color:#8df8ff;box-shadow:inset 0 0 12px #00f0ff0b}
+body[data-app-style="cyberpunk"] input,body[data-app-style="cyberpunk"] textarea,body[data-app-style="cyberpunk"] select{background:#0e131a;border-color:#3a4852;color:#f7f4ff}
+body[data-app-style="cyberpunk"] input:focus,body[data-app-style="cyberpunk"] textarea:focus,body[data-app-style="cyberpunk"] select:focus{outline:2px solid #00f0ff77;border-color:#00f0ff}
+body[data-app-style="cyberpunk"] .tabs{background:#11151d;border-color:#343d48}
+body[data-app-style="cyberpunk"] .tabs button{background:transparent;color:#c5c5d0}
+body[data-app-style="cyberpunk"] #mapShell{border-color:#00aebb;box-shadow:0 0 18px #00f0ff20}
+body[data-app-style="cyberpunk"] #galleryPanel{background:#07090df5}
+body[data-app-style="cyberpunk"] #galleryPanel .gallery-inner{background:#15151c;border-color:#00aebb}
+body[data-app-style="cyberpunk"] #galleryPhotos figure{background:#0b1016;border-color:#343d48}
+body[data-app-style="cyberpunk"] #appBottomNav .navMenuToggle{background:#171d25;color:#fcee0a;border-color:#00b9c8;box-shadow:0 0 16px #00f0ff22}
+body[data-app-style="cyberpunk"] #appBottomNav .navMenuItems{background:#10151d;border-color:#00aebb;box-shadow:0 0 22px #00f0ff20}
+body[data-app-style="cyberpunk"] #appBottomNav .navMenuItems button{color:#e9e8f1}
+body[data-app-style="cyberpunk"] #appBottomNav .navMenuItems button.active{background:#252313;color:#fcee0a}
+body[data-app-style="cyberpunk"] #updateBanner{background:#1b1b12;border-color:#fcee0a}
+body[data-app-style="cyberpunk"] #updateBanner strong{color:#fcee0a}
+body[data-app-style="cyberpunk"].settings-open>main>#settingsPanel,body[data-app-style="cyberpunk"].settings-open>main>#settingsPanel .settings-top{background:#0b0d12!important}
 body.light-theme{--bg:#f3f7f4;--panel:#fff;--line:#d4e1d8;--green:#286b27;--muted:#52645a;--white:#17231c;--accent:#087f70;color-scheme:light;background:#f3f7f4}
 body.light-theme header{background:linear-gradient(145deg,#e1f0e6,#f3f7f4);border-color:#c8ddcf}
 body.light-theme .notice{background:#e8f2eb;border-color:#c5ddca;color:#263c2d}
@@ -168,7 +193,7 @@ body[data-app-style="slate"].settings-open>main>#settingsPanel,body[data-app-sty
 <div class="setting-row"><div><label for="mapStyle">Map appearance</label><small>Choose street, detailed or satellite imagery</small></div><select id="mapStyle" onchange="saveSettings()"><option value="street">Street map</option><option value="voyager">Detailed map</option><option value="satellite">Satellite</option></select></div>
 <div class="setting-row"><div><label for="showPins">Show location pins</label><small>Show or hide all saved map markers</small></div><input id="showPins" type="checkbox" checked onchange="saveSettings()" style="width:22px;height:22px"></div>
 <div class="setting-row"><div><label for="startAtCanberra">Start map at Canberra</label><small>Return to Canberra when opening the map</small></div><input id="startAtCanberra" type="checkbox" checked onchange="saveSettings()" style="width:22px;height:22px"></div>
-<div class="setting-row"><div><label for="appStyle">Whole app style</label><small>Change the colours and overall look of every screen</small></div><select id="appStyle" onchange="saveSettings()"><option value="forest">Forest green</option><option value="ocean">Ocean blue</option><option value="sunset">Warm sunset</option><option value="slate">Midnight violet</option></select></div>
+<div class="setting-row"><div><label for="appStyle">Whole app style</label><small>Change the colours and overall look of every screen</small></div><select id="appStyle" onchange="saveSettings()"><option value="forest">Forest green</option><option value="ocean">Ocean blue</option><option value="sunset">Warm sunset</option><option value="slate">Midnight violet</option><option value="cyberpunk">Cyberpunk neon</option></select></div>
 <div class="setting-row"><div><label for="appTheme">App theme</label><small>Choose dark, light or match your device</small></div><select id="appTheme" onchange="saveSettings()"><option value="system">Device setting</option><option value="dark">Dark</option><option value="light">Light</option></select></div>
 <div class="setting-row"><div><label for="textSize">Text size</label><small>Make app text easier to read</small></div><select id="textSize" onchange="saveSettings()"><option value="small">Small</option><option value="normal">Standard</option><option value="large">Large</option></select></div>
 <div class="setting-row"><div><label for="reduceMotion">Reduce animations</label><small>Use fewer moving effects</small></div><input id="reduceMotion" type="checkbox" onchange="saveSettings()" style="width:22px;height:22px"></div>
@@ -535,7 +560,7 @@ async function importMyData(event){
    const s=data.settings;appSettings={...appSettings,...s};
    appSettings.mapStyle=["street","voyager","satellite"].includes(s.mapStyle)?s.mapStyle:"street";
    appSettings.theme=["system","dark","light"].includes(s.theme)?s.theme:"system";
-   appSettings.appStyle=["forest","ocean","sunset","slate"].includes(s.appStyle)?s.appStyle:"forest";
+   appSettings.appStyle=["forest","ocean","sunset","slate","cyberpunk"].includes(s.appStyle)?s.appStyle:"forest";
    appSettings.textSize=["small","normal","large"].includes(s.textSize)?s.textSize:"normal";
    appSettings.showPins=s.showPins!==false;appSettings.startAtCanberra=s.startAtCanberra!==false;
    appSettings.reduceMotion=s.reduceMotion===true;appSettings.confirmActions=s.confirmActions!==false;
