@@ -135,8 +135,8 @@ body[data-app-style="gta5"] input:focus,body[data-app-style="gta5"] textarea:foc
 body[data-app-style="gta5"] .tabs{background:#211c17;border-color:#594832}
 body[data-app-style="gta5"] .tabs button{background:transparent;color:#d8c7a8}
 body[data-app-style="gta5"] #mapShell{border-color:#a87538;box-shadow:0 0 18px #f3b43b22}
-body[data-app-style="gta5"][data-map-style="voyager"] #map .leaflet-tile-pane{filter:grayscale(1) contrast(1.28) brightness(1.08)}
-body[data-app-style="gta5"][data-map-style="voyager"] #map .leaflet-overlay-pane path{stroke:#171717!important;stroke-width:3!important;filter:drop-shadow(0 0 1px #fff)}
+body[data-app-style="gta5"][data-map-style="voyager"] #map .leaflet-tile-pane{filter:none}
+body[data-app-style="gta5"][data-map-style="voyager"] #map .leaflet-overlay-pane path{stroke:#fff!important;stroke-width:3!important;filter:drop-shadow(0 0 2px #000)}
 body[data-app-style="gta5"][data-map-style="voyager"] #map .leaflet-popup-content-wrapper,body[data-app-style="gta5"][data-map-style="voyager"] #map .leaflet-popup-tip{background:#fff;color:#111;border:1px solid #333;box-shadow:0 0 8px #0005}
 body[data-app-style="gta5"][data-map-style="voyager"] #map .leaflet-popup-content a{color:#111;text-decoration:underline}
 body[data-app-style="gta5"][data-map-style="voyager"] #map .leaflet-control-zoom a{background:#fff;color:#111!important;border-color:#333}
@@ -147,7 +147,7 @@ body[data-app-style="gta5"] #galleryPanel{background:#100d0bf5}body[data-app-sty
 body[data-app-style="gta5"] #appBottomNav .navMenuToggle{background:#30271e;color:#ffc45a;border-color:#80613a;box-shadow:0 0 16px #f3b43b22}body[data-app-style="gta5"] #appBottomNav .navMenuItems{background:#211c17;border-color:#80613a;box-shadow:0 0 22px #0008}body[data-app-style="gta5"] #appBottomNav .navMenuItems button{color:#f5e6c8}body[data-app-style="gta5"] #appBottomNav .navMenuItems button.active{background:#49351f;color:#ffc45a}
 body[data-app-style="gta5"] #updateBanner{background:#332719;border-color:#f3b43b}body[data-app-style="gta5"] #updateBanner strong{color:#ffc45a}
 body[data-app-style="gta5"].settings-open>main>#settingsPanel,body[data-app-style="gta5"].settings-open>main>#settingsPanel .settings-top{background:#211c17!important}
-body[data-app-style="gta5"] #map{background:#f2f2f2}
+body[data-app-style="gta5"] #map{background:#050505}
 body[data-app-style="cyberpunk"] #galleryPanel{background:#07090df5}
 body[data-app-style="cyberpunk"] #galleryPanel .gallery-inner{background:#15151c;border-color:#00aebb}
 body[data-app-style="cyberpunk"] #galleryPhotos figure{background:#0b1016;border-color:#343d48}
@@ -311,6 +311,7 @@ body[data-app-style="slate"].settings-open>main>#settingsPanel,body[data-app-sty
 </main>
 <section id="galleryPanel" role="dialog" aria-modal="true" aria-label="Location photo gallery"><div class="gallery-inner"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><h2 id="galleryTitle" style="margin:0;font-size:19px">Location photos</h2><button class="secondary" onclick="closeGallery()">Close</button></div><p class="gallery-note">Share photos of places you can lawfully access. Avoid faces, number plates, personal information and sensitive site details. Uploads are reviewed by the administrator before appearing to everyone.</p><label for="photoCaption" style="font-size:12px;color:var(--muted)">Photo caption (optional)</label><input id="photoCaption" maxlength="300" placeholder="Add a short caption"><div class="actions"><button onclick="chooseLocationPhoto()">＋ Add photo</button><button class="secondary" onclick="refreshLocationGallery()">Refresh</button></div><p id="galleryStatus" class="gallery-note" aria-live="polite"></p><div id="galleryPhotos"></div></div></section><footer>CANBERRA EXPLORER · Offline-friendly app · Your saved items stay in this browser on this device</footer>
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" onerror="this.onerror=null;this.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'"></script>
+<script src="https://tiles.jasontally.com/vendor/protomaps-leaflet.js"></script>
 <script>
 const seed=[
 {name:"Milk Factory",area:"Canberra / ACT — exact location not confirmed",notes:"Zuniz Canberra directory entry; exact site not confirmed. Source: https://zuniz.com/explore/australia/australian-capital-territory/canberra. Treat as an unverified research lead; do not assume access is permitted.",status:"Zuniz listing — unverified"},
@@ -409,7 +410,7 @@ function initMap(){
   detailedSunset:L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:20,attribution:'&copy; OpenStreetMap contributors &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}),
   detailedSlate:L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:20,attribution:'&copy; OpenStreetMap contributors &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}),
   detailedCyberpunk:L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:20,attribution:'&copy; OpenStreetMap contributors &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}),
-  detailedGta5:L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}),
+  detailedGta5:window.protomapsL?protomapsL.leafletLayer({url:"https://tiles.jasontally.com/basemap.pmtiles",flavor:"black",lang:"en",maxDataZoom:15,maxZoom:19,attribution:'&copy; <a href="https://protomaps.com">Protomaps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}):L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}),
   satellite:L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:'Tiles &copy; Esri'})
  };
  const detailKey="detailed"+(appSettings.appStyle||"forest").charAt(0).toUpperCase()+(appSettings.appStyle||"forest").slice(1);
