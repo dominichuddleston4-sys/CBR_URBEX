@@ -3,7 +3,7 @@ name: Build and publish Canberra Explorer APK
 on:
   workflow_dispatch:
   push:
-    branches: [main, feature/2.0-completion, feature/2.0.5-photo-galleries]
+    branches: [main, feature/2.0-completion, feature/2.0.5-photo-galleries, feature/iphone-matched-android-ui, release/2-0-half-iphone-menu]
     paths:
       - 'app/**'
       - 'build.gradle'
@@ -74,8 +74,8 @@ jobs:
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
           APP_VERSION_CODE: ${{ github.run_number }}
-          APP_VERSION_NAME: ${{ github.ref == 'refs/heads/main' && '2.0½' || (github.ref == 'refs/heads/feature/2.0.5-photo-galleries' && '2.0½-test' || format('1.{0}', github.run_number)) }}
-          APP_WEB_URL: ${{ github.ref == 'refs/heads/feature/2.0.5-photo-galleries' && 'https://deploy-preview-7--cbrurbex.netlify.app/' || 'https://dominichuddleston4-sys.github.io/CBR_URBEX/' }}
+          APP_VERSION_NAME: ${{ github.ref == 'refs/heads/main' && '2.0½' || (github.ref == 'refs/heads/feature/2.0.5-photo-galleries' && '2.0½-test' || (github.ref == 'refs/heads/release/2-0-half-iphone-menu' && '2.0½-release-test' || (github.ref == 'refs/heads/feature/iphone-matched-android-ui' && '2.0½-iphone-test' || format('1.{0}', github.run_number))) }}
+          APP_WEB_URL: ${{ github.ref == 'refs/heads/feature/2.0.5-photo-galleries' && 'https://deploy-preview-7--cbrurbex.netlify.app/' || (github.ref == 'refs/heads/feature/iphone-matched-android-ui' && 'https://deploy-preview-10--cbrurbex.netlify.app/' || (github.ref == 'refs/heads/release/2-0-half-iphone-menu' && 'https://deploy-preview-11--cbrurbex.netlify.app/' || 'https://dominichuddleston4-sys.github.io/CBR_URBEX/')) }}
         run: |
           gradle --no-daemon --stacktrace --info -PappVersionCode="$APP_VERSION_CODE" -PappVersionName="$APP_VERSION_NAME" -PappWebUrl="$APP_WEB_URL" assembleRelease
           mkdir -p release
