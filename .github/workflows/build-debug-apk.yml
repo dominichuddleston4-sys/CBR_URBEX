@@ -3,22 +3,19 @@ name: Build Canberra Explorer debug test APK
 on:
   push:
     branches: [main]
-    paths:
-      - 'app/**'
-      - 'build.gradle'
-      - 'settings.gradle'
-      - 'gradle.properties'
-      - 'index.html'
-      - 'sw.js'
-      - '.github/workflows/build-debug-apk.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: canberra-explorer-debug-apk
+  cancel-in-progress: true
+
 jobs:
   build-debug:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Check out source
         uses: actions/checkout@v4
