@@ -61,6 +61,35 @@ footer{padding-bottom:max(26px,env(safe-area-inset-bottom))}
 @media(prefers-reduced-motion:reduce){button,.btn{transition:none}}
 
 
+
+/* Whole-app visual themes */
+body[data-app-style="ocean"]{--bg:#08131f;--panel:#102538;--line:#24465d;--green:#65c8ff;--muted:#a8c2d5;--white:#eef8ff;--accent:#49e0cf;background:radial-gradient(ellipse at 50% -15%,#16466a 0,transparent 50%),var(--bg)}
+body[data-app-style="ocean"] header{background:linear-gradient(145deg,#123b59,#0b2032 65%,#08131f);border-color:#285879}
+body[data-app-style="ocean"] .notice{background:linear-gradient(120deg,#15364c,#102538);border-color:#2d6484;color:#e0f3ff}
+body[data-app-style="ocean"] .place,body[data-app-style="ocean"] #settingsPanel,body[data-app-style="ocean"] #addPanel{background:linear-gradient(150deg,#153149,#102538);border-color:#28516b}
+body[data-app-style="ocean"] button.secondary,body[data-app-style="ocean"] .btn.secondary{background:#17364b;border-color:#32617d;color:#eef8ff}
+body[data-app-style="ocean"] .tabs{background:#0d2233;border-color:#24465d}
+body[data-app-style="ocean"] #appBottomNav .navMenuToggle{background:#102b40;color:#65c8ff;border-color:#32617d}
+body[data-app-style="ocean"] #appBottomNav .navMenuItems{background:#0d2233;border-color:#32617d}
+body[data-app-style="sunset"]{--bg:#1b100d;--panel:#2b1b16;--line:#604033;--green:#ffb15c;--muted:#d2b5a5;--white:#fff4eb;--accent:#ff786d;background:radial-gradient(ellipse at 50% -15%,#633522 0,transparent 50%),var(--bg)}
+body[data-app-style="sunset"] header{background:linear-gradient(145deg,#65351f,#321d16 65%,#1b100d);border-color:#754a35}
+body[data-app-style="sunset"] .notice{background:linear-gradient(120deg,#48291d,#2b1b16);border-color:#80543a;color:#ffeadb}
+body[data-app-style="sunset"] .place,body[data-app-style="sunset"] #settingsPanel,body[data-app-style="sunset"] #addPanel{background:linear-gradient(150deg,#38231b,#281914);border-color:#604033}
+body[data-app-style="sunset"] button.secondary,body[data-app-style="sunset"] .btn.secondary{background:#43291e;border-color:#80543a;color:#fff4eb}
+body[data-app-style="sunset"] .tabs{background:#281914;border-color:#604033}
+body[data-app-style="sunset"] #appBottomNav .navMenuToggle{background:#38231b;color:#ffb15c;border-color:#80543a}
+body[data-app-style="sunset"] #appBottomNav .navMenuItems{background:#281914;border-color:#80543a}
+body[data-app-style="slate"]{--bg:#11121d;--panel:#202235;--line:#3b3e59;--green:#c2a5ff;--muted:#b8b8d0;--white:#f5f2ff;--accent:#7edbd2;background:radial-gradient(ellipse at 50% -15%,#37345f 0,transparent 50%),var(--bg)}
+body[data-app-style="slate"] header{background:linear-gradient(145deg,#39345f,#24243b 65%,#11121d);border-color:#514c7a}
+body[data-app-style="slate"] .notice{background:linear-gradient(120deg,#302d4c,#202235);border-color:#514c7a;color:#eee9ff}
+body[data-app-style="slate"] .place,body[data-app-style="slate"] #settingsPanel,body[data-app-style="slate"] #addPanel{background:linear-gradient(150deg,#292a43,#1d1f31);border-color:#3b3e59}
+body[data-app-style="slate"] button.secondary,body[data-app-style="slate"] .btn.secondary{background:#30314d;border-color:#514c7a;color:#f5f2ff}
+body[data-app-style="slate"] .tabs{background:#1d1f31;border-color:#3b3e59}
+body[data-app-style="slate"] #appBottomNav .navMenuToggle{background:#292a43;color:#c2a5ff;border-color:#514c7a}
+body[data-app-style="slate"] #appBottomNav .navMenuItems{background:#1d1f31;border-color:#514c7a}
+body[data-app-style="ocean"] .tag,body[data-app-style="sunset"] .tag,body[data-app-style="slate"] .tag{color:var(--accent)}
+body[data-app-style="ocean"] #galleryPanel .gallery-inner,body[data-app-style="sunset"] #galleryPanel .gallery-inner,body[data-app-style="slate"] #galleryPanel .gallery-inner{background:var(--panel);border-color:var(--line)}
+
 body.light-theme{--bg:#f3f7f4;--panel:#fff;--line:#d4e1d8;--green:#286b27;--muted:#52645a;--white:#17231c;--accent:#087f70;color-scheme:light;background:#f3f7f4}
 body.light-theme header{background:linear-gradient(145deg,#e1f0e6,#f3f7f4);border-color:#c8ddcf}
 body.light-theme .notice{background:#e8f2eb;border-color:#c5ddca;color:#263c2d}
@@ -135,6 +164,7 @@ body.settings-open>main>#settingsPanel .setting-row{min-height:64px}
 <div class="setting-row"><div><label for="mapStyle">Map appearance</label><small>Choose street, detailed or satellite imagery</small></div><select id="mapStyle" onchange="saveSettings()"><option value="street">Street map</option><option value="voyager">Detailed map</option><option value="satellite">Satellite</option></select></div>
 <div class="setting-row"><div><label for="showPins">Show location pins</label><small>Show or hide all saved map markers</small></div><input id="showPins" type="checkbox" checked onchange="saveSettings()" style="width:22px;height:22px"></div>
 <div class="setting-row"><div><label for="startAtCanberra">Start map at Canberra</label><small>Return to Canberra when opening the map</small></div><input id="startAtCanberra" type="checkbox" checked onchange="saveSettings()" style="width:22px;height:22px"></div>
+<div class="setting-row"><div><label for="appStyle">Whole app style</label><small>Change the colours and overall look of every screen</small></div><select id="appStyle" onchange="saveSettings()"><option value="forest">Forest green</option><option value="ocean">Ocean blue</option><option value="sunset">Warm sunset</option><option value="slate">Midnight violet</option></select></div>
 <div class="setting-row"><div><label for="appTheme">App theme</label><small>Choose dark, light or match your device</small></div><select id="appTheme" onchange="saveSettings()"><option value="system">Device setting</option><option value="dark">Dark</option><option value="light">Light</option></select></div>
 <div class="setting-row"><div><label for="textSize">Text size</label><small>Make app text easier to read</small></div><select id="textSize" onchange="saveSettings()"><option value="small">Small</option><option value="normal">Standard</option><option value="large">Large</option></select></div>
 <div class="setting-row"><div><label for="reduceMotion">Reduce animations</label><small>Use fewer moving effects</small></div><input id="reduceMotion" type="checkbox" onchange="saveSettings()" style="width:22px;height:22px"></div>
@@ -267,10 +297,11 @@ const seed=[
 {"name":"Unidentified red building (KML label: the red one)","area":"Canberra / ACT (KML import)","lat":-35.3527101,"lon":149.2266549,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
 {"name":"Unidentified house (original KML label was non-descriptive)","area":"Canberra / ACT (KML import)","lat":-35.2354334,"lon":149.1549683,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},];
 let custom=JSON.parse(localStorage.getItem("cbr_custom")||"[]"),saved=JSON.parse(localStorage.getItem("cbr_saved")||"[]"),tab="all";
-let appSettings={mapStyle:"street",showPins:true,startAtCanberra:true,theme:"system",textSize:"normal",reduceMotion:false,confirmActions:true};
+let appSettings={mapStyle:"street",showPins:true,startAtCanberra:true,theme:"system",appStyle:"forest",textSize:"normal",reduceMotion:false,confirmActions:true};
 try{appSettings={...appSettings,...JSON.parse(localStorage.getItem("ce_settings")||"{}")};}catch(e){}
 if(!["street","voyager","satellite"].includes(appSettings.mapStyle))appSettings.mapStyle="street";
 if(!["system","dark","light"].includes(appSettings.theme))appSettings.theme="system";
+if(!["forest","ocean","sunset","slate"].includes(appSettings.appStyle))appSettings.appStyle="forest";
 if(!["small","normal","large"].includes(appSettings.textSize))appSettings.textSize="normal";
 appSettings.showPins=appSettings.showPins!==false;appSettings.startAtCanberra=appSettings.startAtCanberra!==false;appSettings.reduceMotion=appSettings.reduceMotion===true;appSettings.confirmActions=appSettings.confirmActions!==false;
 let map=null,markers=[];
@@ -439,6 +470,7 @@ function toggleSettings(){
  if(opening)refreshAdminVisibility();
 }
 function applyAppearance(){
+ document.body.dataset.appStyle=appSettings.appStyle||"forest";
  document.body.classList.toggle("light-theme",appSettings.theme==="light");
  document.body.classList.toggle("system-light",appSettings.theme==="system");
  document.body.classList.toggle("reduce-motion",!!appSettings.reduceMotion);
@@ -449,6 +481,7 @@ function syncSettingsControls(){
  document.getElementById("showPins").checked=!!appSettings.showPins;
  document.getElementById("startAtCanberra").checked=!!appSettings.startAtCanberra;
  document.getElementById("appTheme").value=appSettings.theme;
+ document.getElementById("appStyle").value=appSettings.appStyle||"forest";
  document.getElementById("textSize").value=appSettings.textSize;
  document.getElementById("reduceMotion").checked=!!appSettings.reduceMotion;
  document.getElementById("confirmActions").checked=!!appSettings.confirmActions;
@@ -458,6 +491,7 @@ function saveSettings(){
  appSettings.showPins=document.getElementById("showPins").checked;
  appSettings.startAtCanberra=document.getElementById("startAtCanberra").checked;
  appSettings.theme=document.getElementById("appTheme").value;
+ appSettings.appStyle=document.getElementById("appStyle").value;
  appSettings.textSize=document.getElementById("textSize").value;
  appSettings.reduceMotion=document.getElementById("reduceMotion").checked;
  appSettings.confirmActions=document.getElementById("confirmActions").checked;
@@ -468,7 +502,7 @@ function saveSettings(){
 }
 function resetAppSettings(){
  if(!confirm("Restore the default app preferences? Your saved places and photos will not be deleted."))return;
- appSettings={mapStyle:"street",showPins:true,startAtCanberra:true,theme:"system",textSize:"normal",reduceMotion:false,confirmActions:true};
+ appSettings={mapStyle:"street",showPins:true,startAtCanberra:true,theme:"system",appStyle:"forest",textSize:"normal",reduceMotion:false,confirmActions:true};
  localStorage.setItem("ce_settings",JSON.stringify(appSettings));syncSettingsControls();applyAppearance();
  if(map)map.setView([-35.28,149.13],10);setMapStyle(appSettings.mapStyle);renderMap();
 }
@@ -497,6 +531,7 @@ async function importMyData(event){
    const s=data.settings;appSettings={...appSettings,...s};
    appSettings.mapStyle=["street","voyager","satellite"].includes(s.mapStyle)?s.mapStyle:"street";
    appSettings.theme=["system","dark","light"].includes(s.theme)?s.theme:"system";
+   appSettings.appStyle=["forest","ocean","sunset","slate"].includes(s.appStyle)?s.appStyle:"forest";
    appSettings.textSize=["small","normal","large"].includes(s.textSize)?s.textSize:"normal";
    appSettings.showPins=s.showPins!==false;appSettings.startAtCanberra=s.startAtCanberra!==false;
    appSettings.reduceMotion=s.reduceMotion===true;appSettings.confirmActions=s.confirmActions!==false;
