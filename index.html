@@ -540,12 +540,14 @@ function syncSettingsControls(){
  document.getElementById("confirmActions").checked=!!appSettings.confirmActions;
 }
 function saveSettings(){
+ const previousAppStyle=appSettings.appStyle||"forest";
  appSettings.mapStyle=document.getElementById("mapStyle").value;
  appSettings.showPins=document.getElementById("showPins").checked;
  appSettings.startAtCanberra=document.getElementById("startAtCanberra").checked;
  appSettings.theme=document.getElementById("appTheme").value;
  appSettings.appStyle=document.getElementById("appStyle").value;
  if(appSettings.appStyle==="cyberpunk")appSettings.mapStyle="voyager";
+ else if(previousAppStyle==="cyberpunk"&&appSettings.mapStyle==="voyager")appSettings.mapStyle="street";
  document.getElementById("mapStyle").value=appSettings.mapStyle;
  appSettings.textSize=document.getElementById("textSize").value;
  appSettings.reduceMotion=document.getElementById("reduceMotion").checked;
