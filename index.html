@@ -352,10 +352,10 @@ body[data-app-style="genshin"] footer{color:#c0c9c5}
 <div class="setting-row"><div><label>Reset app preferences</label><small>Restore the default appearance and map options</small></div><button class="secondary" type="button" onclick="resetAppSettings()">Reset</button></div>
 <div class="setting-row"><div><label>App information</label><small>Canberra Explorer · Version 2.0½</small></div><button class="secondary" type="button" onclick="showAppInfo()">About</button></div>
 <div id="logoutEntry" class="setting-row"><div><label>Sign out</label><small>Return to the sign-in screen on this device</small></div><button class="secondary" onclick="logoutFromApp()">Log out</button></div>
-<div id="adminEntry" class="setting-row" hidden><div><label>🔒 Admin tools</label><small>Private controls for the verified administrator</small></div><button class="secondary" onclick="toggleAdminPanel()">Open admin</button></div>
+<div id="adminEntry" class="setting-row"><div><label>🔒 Admin tools</label><small>Local admin panel · password required</small></div><button class="secondary" onclick="toggleAdminPanel()">Open admin</button></div>
 <section id="adminPanel" hidden style="margin:12px 0;padding:14px;border:1px solid #dc2330;border-radius:12px;background:#171717;color:#fff">
 <h3 style="color:#fff;margin:0 0 8px">Canberra Explorer Admin</h3>
-<p style="font-size:12px;color:#ddd">Owner control centre · Admin access only</p>
+<p style="font-size:12px;color:#ddd">Local admin screen · unlocked for this app session only. Shared Firebase changes remain restricted to the verified owner account.</p>
 <div class="admin-modules" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:8px;margin:12px 0">
 <button class="secondary" onclick="showAdminModule('users')">👥 Users</button>
 <button class="secondary" onclick="showAdminModule('locations')">📍 Locations</button>
@@ -568,18 +568,26 @@ function toggleMapFullscreen(){
  setTimeout(()=>{if(map)map.invalidateSize();},220);
 }
 function openOfflineMap(){if(window.CanberraNative&&typeof CanberraNative.openOfflineMap==="function"){const features=all().filter(p=>p.lat!==null&&p.lat!==undefined&&p.lat!==""&&p.lon!==null&&p.lon!==undefined&&p.lon!==""&&Number.isFinite(Number(p.lat))&&Number.isFinite(Number(p.lon))&&Math.abs(Number(p.lat))<=90&&Math.abs(Number(p.lon))<=180).map(p=>({type:"Feature",geometry:{type:"Point",coordinates:[Number(p.lon),Number(p.lat)]},properties:{name:p.name,status:p.status||"Research lead"}}));CanberraNative.openOfflineMap(JSON.stringify({type:"FeatureCollection",features}));}else{alert("Offline area downloads are available in the installed Android app.");}}
+let adminPanelUnlocked=false;
+let adminPasswordFailed=false;
 function refreshAdminVisibility(){
- const allowed=!!(window.CanberraNative&&typeof CanberraNative.isAdminAccount==="function"&&CanberraNative.isAdminAccount()===true);
  const entry=document.getElementById("adminEntry");
  const panel=document.getElementById("adminPanel");
- if(entry)entry.hidden=!allowed;
- if(!allowed&&panel)panel.hidden=true;
+ if(entry)entry.hidden=false;
+ if(panel&&!adminPanelUnlocked)panel.hidden=true;
+}
+function isVerifiedOwnerAdmin(){
+ return !!(window.CanberraNative&&typeof CanberraNative.isAdminAccount==="function"&&CanberraNative.isAdminAccount()===true);
 }
 let adminCallbackSequence=0;
 function adminCallbackName(){return "ceAdminCallback_"+(++adminCallbackSequence);}
 function loadAdminUsers(){
- if(!window.CanberraNative||typeof CanberraNative.loadAdminUsers!=="function")return;
  const status=document.getElementById("adminUserStatus");
+ if(!isVerifiedOwnerAdmin()){
+  if(status)status.textContent="Online user management is restricted to the verified owner account. This local password does not grant shared Firebase permissions.";
+  return;
+ }
+ if(!window.CanberraNative||typeof CanberraNative.loadAdminUsers!=="function")return;
  if(status)status.textContent="Loading registered users…";
  const callback=adminCallbackName();
  window[callback]=raw=>{
@@ -646,7 +654,28 @@ function saveAdminAnnouncementDraft(){
 function toggleAdminPanel(){
  refreshAdminVisibility();
  const panel=document.getElementById("adminPanel");
- if(panel&&!document.getElementById("adminEntry").hidden){panel.hidden=!panel.hidden;if(!panel.hidden)loadAdminUsers();}
+ if(!panel)return;
+ if(!adminPanelUnlocked){
+  if(adminPasswordFailed){alert("Admin access is locked after the one allowed incorrect attempt. Close and reopen the app to try again.");return;}
+  const entered=window.prompt("Enter the admin password to unlock Canberra Explorer:");
+  if(entered===null)return;
+  if(entered!=="Genesis"){
+   adminPasswordFailed=true;
+   alert("Incorrect password. Admin access is now locked for this app session. Close and reopen the app to try again.");
+   return;
+  }
+  adminPanelUnlocked=true;
+  const entry=document.getElementById("adminEntry");
+  if(entry){const small=entry.querySelector("small");if(small)small.textContent="Unlocked for this app session. Closing the app locks it again.";}
+ }
+ panel.hidden=!panel.hidden;
+ if(!panel.hidden){
+  if(isVerifiedOwnerAdmin())loadAdminUsers();
+  else{
+   const status=document.getElementById("adminUserStatus");
+   if(status)status.textContent="Local admin screen unlocked. Shared account controls remain restricted to the verified owner account.";
+  }
+ }
 }
 function logoutFromApp(){
  if(!window.CanberraNative||typeof CanberraNative.signOut!=="function"){alert("Sign out is available in the installed Android app.");return;}
