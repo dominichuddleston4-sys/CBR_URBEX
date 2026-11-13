@@ -82,11 +82,51 @@ body.settings-open>#settingsPanel{display:block!important;position:fixed;inset:0
 <div id="adminEntry" class="setting-row" hidden><div><label>🔒 Admin tools</label><small>Private controls for the verified administrator</small></div><button class="secondary" onclick="toggleAdminPanel()">Open admin</button></div>
 <section id="adminPanel" hidden style="margin:12px 0;padding:14px;border:1px solid #dc2330;border-radius:12px;background:#171717;color:#fff">
 <h3 style="color:#fff;margin:0 0 8px">Canberra Explorer Admin</h3>
-<p style="font-size:12px;color:#ddd">Verified administrator controls · Free Firebase plan</p>
+<p style="font-size:12px;color:#ddd">Owner control centre · Admin access only</p>
+<div class="admin-modules" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:8px;margin:12px 0">
+<button class="secondary" onclick="showAdminModule('users')">👥 Users</button>
+<button class="secondary" onclick="showAdminModule('locations')">📍 Locations</button>
+<button class="secondary" onclick="showAdminModule('photos')">📷 Photos</button>
+<button class="secondary" onclick="showAdminModule('reports')">🛡 Reports &amp; safety</button>
+<button class="secondary" onclick="showAdminModule('overview')">📊 App overview</button>
+<button class="secondary" onclick="showAdminModule('management')">📢 App management</button>
+</div>
+<div id="adminModule-users" class="admin-module">
+<h4>👥 User management</h4>
 <div id="adminUserStatus" style="font-size:13px;color:#ddd;margin:10px 0">Loading registered users…</div>
 <div id="adminUserList"></div>
-<p style="font-size:11px;color:#ffb4b4;margin:12px 0">A block prevents access inside this app when the device checks its account status. Sign-out requests take effect at the next check. This does not disable a Google account.</p>
+<p style="font-size:11px;color:#ffb4b4;margin:12px 0">Blocking and sign-out controls apply inside this app only; they do not disable a Google account.</p>
 <button class="secondary" onclick="loadAdminUsers()">Refresh users</button>
+</div>
+<div id="adminModule-locations" class="admin-module" hidden>
+<h4>📍 Location management</h4>
+<p style="font-size:12px;color:#ddd">Review the location leads currently loaded on this device. The current website stores personal additions locally; approving or editing shared location records needs a connected server-side admin service.</p>
+<div id="adminLocationSummary" style="font-size:13px;color:#ddd;margin:10px 0"></div>
+<button class="secondary" onclick="showAdminLocations()">Refresh location summary</button>
+<button class="secondary" onclick="exportMyData()">Export location backup</button>
+</div>
+<div id="adminModule-photos" class="admin-module" hidden>
+<h4>📷 Photo moderation</h4>
+<p style="font-size:12px;color:#ddd">Open a location's Photos gallery from its lead card. In the installed Android app, pending uploads can be approved or removed there when the native photo moderation service is available.</p>
+<p style="font-size:11px;color:#ffb4b4">A central all-location approval queue is not connected yet.</p>
+</div>
+<div id="adminModule-reports" class="admin-module" hidden>
+<h4>🛡 Reports &amp; safety</h4>
+<p style="font-size:12px;color:#ddd">Use reports to flag private, unsafe, inaccurate or duplicate information. A central report inbox and review actions require a secure shared report service and are not connected yet.</p>
+<p style="font-size:11px;color:#ffb4b4">Do not publish precise access details for private, restricted or hazardous sites.</p>
+</div>
+<div id="adminModule-overview" class="admin-module" hidden>
+<h4>📊 App overview</h4>
+<div id="adminStats" style="font-size:13px;color:#ddd;line-height:1.8"></div>
+<p style="font-size:11px;color:#aaa">These are counts from the data loaded on this device, not live server-wide analytics.</p>
+</div>
+<div id="adminModule-management" class="admin-module" hidden>
+<h4>📢 App management</h4>
+<label for="adminAnnouncement" style="display:block;font-size:12px;color:#ddd;margin:8px 0">Announcement draft</label>
+<textarea id="adminAnnouncement" rows="3" maxlength="500" placeholder="Write an update for explorers…"></textarea>
+<button class="secondary" onclick="saveAdminAnnouncementDraft()">Save draft on this device</button>
+<p id="adminAnnouncementStatus" style="font-size:11px;color:#aaa">Publishing announcements to all users needs a shared admin service and is not connected yet.</p>
+</div>
 </section>
 <div class="actions"><button class="secondary" onclick="fitAllPins()">Show all pins</button><button class="secondary" onclick="exportMyData()">Export backup</button><button class="secondary" onclick="document.getElementById('backupFile').click()">Restore backup</button><button class="secondary" onclick="clearMyData()">Clear my saved data</button></div><input id="backupFile" type="file" accept="application/json,.json" hidden onchange="importMyData(event)">
 <p class="mapnote" style="margin:10px 0 0">Your saved places and settings are stored in this browser on this device. Export your additions before clearing browser data.</p>
@@ -289,6 +329,29 @@ function changeAdminFlag(uid,field,value){
   loadAdminUsers();
  };
  CanberraNative.setAdminUserFlag(uid,field,value,callback);
+}
+function showAdminModule(name){
+ document.querySelectorAll("#adminPanel .admin-module").forEach(el=>el.hidden=true);
+ const target=document.getElementById("adminModule-"+name);if(target)target.hidden=false;
+ if(name==="users")loadAdminUsers();
+ if(name==="locations")showAdminLocations();
+ if(name==="overview")showAdminStats();
+}
+function showAdminLocations(){
+ const host=document.getElementById("adminLocationSummary");if(!host)return;
+ const entries=all();const customCount=entries.filter(p=>p.custom).length;
+ const coordCount=entries.filter(p=>p.lat!==null&&p.lat!==undefined&&p.lat!==""&&p.lon!==null&&p.lon!==undefined&&p.lon!=="").length;
+ host.textContent=entries.length+" leads loaded · "+customCount+" personal additions on this device · "+coordCount+" entries with coordinates.";
+}
+function showAdminStats(){
+ const host=document.getElementById("adminStats");if(!host)return;
+ const entries=all();const coordCount=entries.filter(p=>p.lat!==null&&p.lat!==undefined&&p.lat!==""&&p.lon!==null&&p.lon!==undefined&&p.lon!=="").length;
+ host.innerHTML="<b>Research leads:</b> "+entries.length+"<br><b>Saved places on this device:</b> "+saved.length+"<br><b>Personal additions:</b> "+custom.length+"<br><b>Entries with coordinates:</b> "+coordCount;
+}
+function saveAdminAnnouncementDraft(){
+ const value=document.getElementById("adminAnnouncement").value.trim();
+ try{localStorage.setItem("ce_admin_announcement_draft",value);document.getElementById("adminAnnouncementStatus").textContent="Draft saved on this device only. It has not been published to other users.";}
+ catch(e){document.getElementById("adminAnnouncementStatus").textContent="Could not save this draft on this device.";}
 }
 function toggleAdminPanel(){
  refreshAdminVisibility();
