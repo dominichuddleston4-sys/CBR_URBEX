@@ -21,7 +21,45 @@ footer{padding:22px 16px;text-align:center;color:#78877b;font-size:11px}
 .empty{color:var(--muted);padding:25px;text-align:center;border:1px dashed var(--line);border-radius:12px}
 #mapShell{position:relative;margin:10px 0 16px;border:1px solid var(--line);border-radius:15px;overflow:hidden;background:#e8e6df}#map{height:430px;width:100%;background:#e8e6df}.mapbar{position:absolute;z-index:800;top:12px;left:12px;right:12px;display:flex;gap:7px;flex-wrap:wrap;pointer-events:none}.mapbar button{pointer-events:auto;background:#fff;color:#202124;border:1px solid #dadce0;border-radius:22px;padding:9px 13px;box-shadow:0 2px 7px #0003;font-size:12px;font-weight:700}.mapbar button:active{background:#e8f0fe}.mapnote{font-size:11px;color:var(--muted);margin:-7px 0 14px}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#fff;color:#202124;border-radius:10px}.leaflet-popup-content a{color:#1967d2;font-weight:700}.leaflet-container{font:13px Roboto,Arial,sans-serif}.leaflet-control-zoom a{color:#202124!important}.leaflet-control-attribution{font-size:10px!important}#mapShell.fullscreen{position:fixed;inset:0;z-index:9999;margin:0;border:0;border-radius:0}#mapShell.fullscreen #map{height:100%;height:100dvh}#mapShell.fullscreen .mapbar{top:max(12px,env(safe-area-inset-top));left:12px}#mapShell.fullscreen #closeMap{display:inline-block}#closeMap{display:none}#settingsPanel{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:15px;margin:12px 0 18px}#settingsPanel[hidden]{display:none}.setting-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid var(--line)}.setting-row:last-child{border-bottom:0}.setting-row label{font-size:13px;color:var(--white)}.setting-row small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.setting-row select{max-width:180px}#settingsPanel h3{margin:0 0 6px}#settingsPanel .actions{margin-top:12px}
 #updateBanner{display:none;background:#1d2b1d;border:1px solid var(--green);border-radius:12px;padding:13px;margin:12px 0;color:var(--white)}#updateBanner strong{color:var(--green)}#updateBanner p{font-size:12px;color:var(--muted);margin:5px 0 10px}#updateBanner .actions{display:flex;gap:8px;flex-wrap:wrap}
-#galleryPanel{display:none;position:fixed;inset:0;z-index:10010;background:#080d09f5;overflow:auto;padding:max(18px,env(safe-area-inset-top)) 14px max(24px,env(safe-area-inset-bottom))}#galleryPanel .gallery-inner{max-width:760px;margin:0 auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}#galleryPhotos{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin-top:14px}#galleryPhotos figure{margin:0;background:#0b100d;border:1px solid var(--line);border-radius:10px;overflow:hidden}#galleryPhotos img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}#galleryPhotos figcaption{font-size:11px;color:var(--muted);padding:8px}#galleryPhotos button{font-size:11px;padding:7px;margin:0 5px 7px}.gallery-note{font-size:12px;color:var(--muted);line-height:1.5}#galleryPanel input{margin:6px 0 10px}</style><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"><link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#101510"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Canberra Explorer"><link rel="apple-touch-icon" href="./icon-192.png"><link rel="icon" href="./icon.svg" type="image/svg+xml"></head>
+#galleryPanel{display:none;position:fixed;inset:0;z-index:10010;background:#080d09f5;overflow:auto;padding:max(18px,env(safe-area-inset-top)) 14px max(24px,env(safe-area-inset-bottom))}#galleryPanel .gallery-inner{max-width:760px;margin:0 auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}#galleryPhotos{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin-top:14px}#galleryPhotos figure{margin:0;background:#0b100d;border:1px solid var(--line);border-radius:10px;overflow:hidden}#galleryPhotos img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}#galleryPhotos figcaption{font-size:11px;color:var(--muted);padding:8px}#galleryPhotos button{font-size:11px;padding:7px;margin:0 5px 7px}.gallery-note{font-size:12px;color:var(--muted);line-height:1.5}#galleryPanel input{margin:6px 0 10px}
+/* 2.0½ visual refresh: consistent mobile app surfaces */
+:root{--bg:#09110f;--panel:#121e1a;--line:#263b33;--green:#a6f36b;--muted:#a8bbb1;--white:#f4faf6;--accent:#54d6bd}
+body{background:radial-gradient(ellipse at 50% -15%,#1b3b30 0,transparent 48%),var(--bg);letter-spacing:.05px}
+header{padding:26px 18px 20px;background:linear-gradient(145deg,#18382d 0%,#10221c 58%,#0b1411 100%);border-bottom:1px solid #315344}
+.brand{display:inline-flex;align-items:center;gap:8px;color:var(--green);font-size:11px;letter-spacing:2.2px}
+.brand:before{content:"";width:9px;height:9px;border-radius:3px;background:var(--green);box-shadow:0 0 14px #a6f36b88}
+h1{font-size:clamp(25px,7vw,32px);letter-spacing:-.7px}
+header p{font-size:13px;line-height:1.5}
+main{padding:16px 14px 28px}
+.notice{background:linear-gradient(120deg,#1b3028,#14221c);border-color:#365b47;border-radius:15px}
+button,.btn{border-radius:12px;min-height:42px;transition:transform .12s ease,filter .12s ease}
+button:active,.btn:active{transform:scale(.98);filter:brightness(.94)}
+button.secondary,.btn.secondary{background:#1a2b24;border-color:#355044;color:#e7f4eb}
+input,textarea,select{border-radius:12px;background:#0d1914;border-color:#2b4338}
+input:focus,textarea:focus,select:focus{outline:2px solid #54d6bd66;border-color:var(--accent)}
+.tabs{padding:5px;background:#101c17;border:1px solid #263b33;border-radius:14px}
+.tabs button{flex:1;padding:10px 12px;background:transparent;color:#b8c9c0}
+.tabs button.active{background:var(--green);color:#102016;box-shadow:0 2px 10px #a6f36b22}
+.grid{gap:12px}
+.place{border-radius:16px;padding:16px;background:linear-gradient(150deg,#17251f,#111b16);border-color:#2b4036;box-shadow:0 8px 22px #0002}
+.place h3{font-size:17px;letter-spacing:-.2px}
+.place p{font-size:13px;line-height:1.6}
+.tag{color:var(--accent);letter-spacing:1px}
+#mapShell{border-radius:17px;border-color:#2d493d;box-shadow:0 8px 24px #0003}
+#settingsPanel,#addPanel{border-radius:16px;background:linear-gradient(150deg,#17251f,#111b16);border-color:#2b4036}
+#galleryPanel .gallery-inner{border-radius:18px;background:#132019;border-color:#355044}
+footer{padding-bottom:max(26px,env(safe-area-inset-bottom))}
+@media(max-width:520px){
+ header{padding:22px 16px 17px}
+ main{padding:13px 12px 24px}
+ #map{height:360px}
+ .searchrow{gap:6px}
+ .searchrow button{padding:10px 12px;white-space:nowrap}
+ .actions button,.actions a{min-height:38px}
+ .place{padding:14px}
+}
+@media(prefers-reduced-motion:reduce){button,.btn{transition:none}}
+</style><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"><link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#101510"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Canberra Explorer"><link rel="apple-touch-icon" href="./icon-192.png"><link rel="icon" href="./icon.svg" type="image/svg+xml"></head>
 <body>
 <header><div class="brand">CANBERRA EXPLORER</div><h1>Canberra Explorer</h1><p>Abandoned places, local history &amp; field notes</p></header>
 <main>
