@@ -297,6 +297,42 @@ body[data-app-style="genshin"] #appBottomNav .navMenuItems button{color:#4c6256}
 body[data-app-style="genshin"] #appBottomNav .navMenuItems button.active{background:#e5ead8;color:#397b68}
 body[data-app-style="genshin"] footer{color:#81765e}
 
+
+/* Genshin Impact colour palette: deep Teyvat blue, teal, ivory and warm gold */
+body[data-app-style="genshin"]{
+ --bg:#172b3a;--panel:#233d4b;--line:#b99a5c;--green:#65c8b2;--muted:#c0c9c5;--white:#f6f0df;--accent:#83dfcf;
+ background:radial-gradient(ellipse at 50% -15%,#356b70 0,transparent 48%),linear-gradient(160deg,#1b3544,#142633 72%,#182d3a);color:#f6f0df
+}
+body[data-app-style="genshin"] header{background:linear-gradient(120deg,#254d5a 0%,#1b3545 52%,#172b3a 100%);border-color:#c5a45e;box-shadow:0 5px 24px #07141e88}
+body[data-app-style="genshin"] h1,body[data-app-style="genshin"] .place h3,body[data-app-style="genshin"] #settingsPanel h3{color:#f6edda;text-shadow:0 1px 2px #07141e}
+body[data-app-style="genshin"] .brand,body[data-app-style="genshin"] .tag{color:#83dfcf}
+body[data-app-style="genshin"] header p,body[data-app-style="genshin"] .place p,body[data-app-style="genshin"] .setting-row label{color:#d0d8d2}
+body[data-app-style="genshin"] .notice{background:linear-gradient(110deg,#284b55,#203947);border-color:#b99a5c;border-left:4px solid #d6b66d;color:#f6f0df}
+body[data-app-style="genshin"] .place,body[data-app-style="genshin"] #settingsPanel,body[data-app-style="genshin"] #addPanel{background:linear-gradient(145deg,#294957,#1e3543);border-color:#b99a5c;box-shadow:0 6px 18px #07141e77,inset 0 0 0 2px #ffffff0b}
+body[data-app-style="genshin"] button:not(.secondary),body[data-app-style="genshin"] .btn:not(.secondary),body[data-app-style="genshin"] .tabs button.active{background:linear-gradient(180deg,#e5ca87,#b99550);border:1px solid #f0d99b;color:#203744;box-shadow:0 2px 9px #07141e77}
+body[data-app-style="genshin"] button.secondary,body[data-app-style="genshin"] .btn.secondary{background:#294a56;border:1px solid #7db7aa;color:#f4efdf}
+body[data-app-style="genshin"] input,body[data-app-style="genshin"] textarea,body[data-app-style="genshin"] select{background:#172f3d;border-color:#779e99;color:#f6f0df}
+body[data-app-style="genshin"] input:focus,body[data-app-style="genshin"] textarea:focus,body[data-app-style="genshin"] select:focus{outline:2px solid #83dfcf88;border-color:#83dfcf}
+body[data-app-style="genshin"] .tabs{background:#1a3442;border-color:#9d895e}
+body[data-app-style="genshin"] .tabs button{color:#d5ded7}
+body[data-app-style="genshin"] #mapShell{border-color:#c5a45e;box-shadow:0 0 20px #07141e88}
+body[data-app-style="genshin"][data-map-style="voyager"] #map .leaflet-tile-pane{filter:saturate(.86) hue-rotate(8deg) contrast(1.02) brightness(.91)}
+body[data-app-style="genshin"][data-map-style="voyager"] #map .leaflet-overlay-pane path{stroke:#58bca9!important;stroke-width:3!important;filter:drop-shadow(0 0 2px #f5e7bd)}
+body[data-app-style="genshin"][data-map-style="voyager"] #map .leaflet-popup-content-wrapper,body[data-app-style="genshin"][data-map-style="voyager"] #map .leaflet-popup-tip{background:#203b49;color:#f6f0df;border:1px solid #c5a45e}
+body[data-app-style="genshin"][data-map-style="voyager"] #map .leaflet-popup-content a{color:#83dfcf}
+body[data-app-style="genshin"][data-map-style="voyager"] #map .leaflet-control-zoom a{background:#203b49;color:#e7c77d!important;border-color:#c5a45e}
+body[data-app-style="genshin"][data-map-style="voyager"] #map .leaflet-control-attribution{background:#203b49dd;color:#e6dfcb}
+body[data-app-style="genshin"] #genshinMapHud{background:linear-gradient(110deg,#203d4beF,#294d56ef);color:#f6f0df;border-color:#c5a45e;border-left-color:#e0bd70}
+body[data-app-style="genshin"] #genshinMapHud strong{color:#83dfcf}
+body[data-app-style="genshin"] #genshinMapHud span,body[data-app-style="genshin"] #genshinMapHud i{color:#e4cf9c}
+body[data-app-style="genshin"] #galleryPanel{background:#102331f5}
+body[data-app-style="genshin"] #galleryPanel .gallery-inner,body[data-app-style="genshin"] #galleryPhotos figure{background:#203b49;border-color:#b99a5c}
+body[data-app-style="genshin"] #galleryPhotos figcaption,body[data-app-style="genshin"] .gallery-note{color:#d0d8d2}
+body[data-app-style="genshin"] #appBottomNav .navMenuToggle,body[data-app-style="genshin"] #appBottomNav .navMenuItems{background:#203b49;color:#e7c77d;border-color:#b99a5c}
+body[data-app-style="genshin"] #appBottomNav .navMenuItems button{color:#f6f0df}
+body[data-app-style="genshin"] #appBottomNav .navMenuItems button.active{background:#315c63;color:#83dfcf}
+body[data-app-style="genshin"] footer{color:#c0c9c5}
+
 </style><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"><link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#101510"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Canberra Explorer"><link rel="apple-touch-icon" href="./icon-192.png"><link rel="icon" href="./icon.svg" type="image/svg+xml"></head>
 <body>
 <header><div class="brand">CANBERRA EXPLORER</div><h1>Canberra Explorer</h1><p>Abandoned places, local history &amp; field notes</p></header>
