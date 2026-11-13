@@ -382,7 +382,7 @@ function initMap(){
  };
  const detailKey="detailed"+(appSettings.appStyle||"forest").charAt(0).toUpperCase()+(appSettings.appStyle||"forest").slice(1);
  const chosen=appSettings.mapStyle==="voyager"?baseLayers[detailKey]:baseLayers[appSettings.mapStyle];(chosen||baseLayers.street).addTo(map);
- L.control.layers({"Street map":baseLayers.street,"Detailed map — "+(appSettings.appStyle||"forest"):chosen||baseLayers.detailedForest,"Satellite":baseLayers.satellite},{},{collapsed:true}).addTo(map);
+ L.control.layers({"Street map":baseLayers.street,["Detailed map — "+(appSettings.appStyle||"forest")]:chosen||baseLayers.detailedForest,"Satellite":baseLayers.satellite},{},{collapsed:true}).addTo(map);
  map.on("locationfound",e=>{
   if(userMarker)map.removeLayer(userMarker);if(userAccuracy)map.removeLayer(userAccuracy);
   userAccuracy=L.circle(e.latlng,{radius:e.accuracy,color:"#2878d0",weight:1,fillOpacity:.08}).addTo(map);
