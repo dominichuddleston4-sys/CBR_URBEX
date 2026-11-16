@@ -242,7 +242,12 @@ public class OfflineMapActivity extends Activity {
             status.setText("Waiting for a GPS location fix…");
             String provider = manager.isProviderEnabled(LocationManager.GPS_PROVIDER)
                 ? LocationManager.GPS_PROVIDER : LocationManager.NETWORK_PROVIDER;
-            manager.requestSingleUpdate(provider, location -> calculateOfflineRoute(location), Looper.getMainLooper());
+            manager.requestSingleUpdate(provider, new android.location.LocationListener() {
+                @Override public void onLocationChanged(Location location) { calculateOfflineRoute(location); }
+                @Override public void onProviderEnabled(String name) { }
+                @Override public void onProviderDisabled(String name) { }
+                @Override public void onStatusChanged(String name, int status, android.os.Bundle extras) { }
+            }, Looper.getMainLooper());
         } catch (SecurityException error) {
             status.setText("Location permission is required for offline directions.");
         } catch (Exception error) {
