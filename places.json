@@ -46,5 +46,21 @@
     "notes": "The Department of Infrastructure vacated the building in 2026 during its office consolidation. The eight-level, approximately 16,413 m² office building was listed for sale with vacant possession and potential for adaptive reuse or redevelopment. Included as a large closed building of interest, not as an accessible urbex site. View from public footpaths only; do not enter. Sources: https://region.com.au/adaptive-reuse-on-cards-for-infrastructures-perfectly-positioned-former-home/1003732/ ; https://www.colliers.com.au/en-au/properties/a-commanding-cbd-asset-poised-for-repositioning/aus-111-alinga-street-city-act-2601/ ; https://www.inkl.com/news/infrastructure-house-hits-market-as-department-consolidation-begins",
     "lat": -35.2783141,
     "lon": 149.13001543
+  },
+  {
+    "name": "Ginninderra Village — Former Village Buildings",
+    "area": "11 O'Hanlon Place, Nicholls ACT 2913 — privately owned site; public visitor areas only",
+    "status": "Former village precinct — six buildings offered with vacant possession; current occupancy to be rechecked",
+    "notes": "The historic Ginninderra Village site comprises six single-level buildings totalling about 800 m², including the heritage-listed schoolhouse and residence. A commercial listing stated that none of the buildings were occupied and that the property was offered with vacant possession. The wider Gold Creek precinct remains an active visitor destination, so this entry refers only to the listed Ginninderra Village property, not the whole precinct. The latest listing does not prove the site is still vacant today; treat as a research lead and check current access/status before visiting. Privately owned: no entry without permission. Sources: https://www.realcommercial.com.au/for-sale/property-ginninderra-village-11-o-hanlon-place-nicholls-act-2913-505000064 ; https://property.ljhooker.com.au/commercial-nicholls-act-hotel-leisure-11-o-hanlon-place-48ahxw ; https://www.canberratracks.act.gov.au/heritage-trails/track-5-gungahlin/ginninderra-village",
+    "lat": -35.186,
+    "lon": 149.092
+  },
+  {
+    "name": "Former Hellenic Club in the City",
+    "area": "13 Moore Street, Canberra City ACT 2601 — public footpaths only",
+    "status": "Closed former club venue — future tenancy / reuse status unconfirmed",
+    "notes": "The Hellenic Club's City venue closed in May 2026. The premises have been marketed as a fitted hospitality venue for lease, so this is recorded as a closed former venue rather than confirmed abandoned or vacant. Building remains at the address according to current business/property listings. View from public footpaths only; do not enter. Check for a new tenant before treating it as abandoned. Sources: https://www.abc.net.au/news/2026-04-30/hellenic-club-city-venue-closing/ ; https://www.hellenicclub.com.au/ ; https://www.realcommercial.com.au/",
+    "lat": -35.2803,
+    "lon": 149.1291
   }
 ]
