@@ -190,18 +190,6 @@ public class MainActivity extends Activity {
                 runOnUiThread(() -> startActivity(intent));
             }
 
-
-            @JavascriptInterface public void openOfflineDirections(String placesGeoJson, String placeName, double latitude, double longitude, String area, String mode) {
-                Intent intent = new Intent(MainActivity.this, OfflineMapActivity.class);
-                if (placesGeoJson != null && placesGeoJson.length() <= 2000000) intent.putExtra("places_geojson", placesGeoJson);
-                intent.putExtra("route_destination_name", placeName == null ? "" : placeName.substring(0, Math.min(200, placeName.length())));
-                intent.putExtra("route_destination_lat", latitude);
-                intent.putExtra("route_destination_lon", longitude);
-                intent.putExtra("route_destination_area", area == null ? "" : area.substring(0, Math.min(200, area.length())));
-                intent.putExtra("route_mode", "walking".equals(mode) ? "walking" : "driving");
-                runOnUiThread(() -> startActivity(intent));
-            }
-
             @JavascriptInterface public void openPhotoPicker(String locationId, String caption, String callbackId) {
                 if (!validCallback(callbackId) || !validLocationId(locationId)) return;
                 if (firebaseAuth == null || firebaseAuth.getCurrentUser() == null) {
