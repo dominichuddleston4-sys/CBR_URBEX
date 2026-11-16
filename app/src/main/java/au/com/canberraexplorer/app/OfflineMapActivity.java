@@ -77,7 +77,12 @@ public class OfflineMapActivity extends Activity {
         root.addView(heading);
 
         TextView intro = new TextView(this);
-        intro.setText("Download Canberra areas while online, then reopen this map without internet. Save multiple areas, one download at a time. Each area is capped at 3,000 tiles and 50 MB. Only saved locations with coordinates appear as pins; unverified leads remain in the list.");
+        String routeName = getIntent().getStringExtra("route_destination_name");
+        String routeMode = getIntent().getStringExtra("route_mode");
+        boolean hasRouteTarget = routeName != null && !routeName.trim().isEmpty();
+        intro.setText(hasRouteTarget
+            ? "Offline " + ("walking".equals(routeMode) ? "walking" : "driving") + " destination: " + routeName + ". The map will centre on this place. Offline route calculation is not enabled yet; download the map area and stay on public roads."
+            : "Download Canberra areas while online, then reopen this map without internet. Save multiple areas, one download at a time. Each area is capped at 3,000 tiles and 50 MB. Only saved locations with coordinates appear as pins; unverified leads remain in the list.");
         intro.setTextColor(Color.LTGRAY);
         intro.setTextSize(13);
         intro.setPadding(16, 0, 16, 10);
@@ -126,8 +131,12 @@ public class OfflineMapActivity extends Activity {
         mapView.getMapAsync(map -> {
             String placesGeoJson = getIntent().getStringExtra("places_geojson");
             map.setStyle(new Style.Builder().fromUri(STYLE_URL), style -> addPlacePins(style, placesGeoJson));
+            double destinationLat = getIntent().getDoubleExtra("route_destination_lat", 0);
+            double destinationLon = getIntent().getDoubleExtra("route_destination_lon", 0);
+            boolean validDestination = hasRouteTarget && Math.abs(destinationLat) <= 90 && Math.abs(destinationLon) <= 180 && (destinationLat != 0 || destinationLon != 0);
             map.setCameraPosition(new CameraPosition.Builder()
-                .target(new LatLng(-35.28, 149.13)).zoom(10.0).build());
+                .target(validDestination ? new LatLng(destinationLat, destinationLon) : new LatLng(-35.28, 149.13))
+                .zoom(validDestination ? 15.0 : 10.0).build());
         });
         refreshOfflineStatus();
     }
