@@ -41,7 +41,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:21.3.0'
     implementation 'org.maplibre.gl:android-sdk:13.5.4'
     // On-device Valhalla engine for offline driving and pedestrian routes.
-    implementation 'io.github.rallista:valhalla-mobile:0.6.1'
+    implementation 'io.github.rallista:valhalla-mobile:0.6.4'
     implementation 'io.github.rallista:valhalla-models:0.5.2'
     implementation 'io.github.rallista:valhalla-models-config:0.5.2'
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'
