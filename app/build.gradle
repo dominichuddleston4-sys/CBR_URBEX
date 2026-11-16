@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId 'au.com.canberraexplorer.app'
-        minSdk 23
+        minSdk 24
         targetSdk 35
         versionCode = (project.findProperty('appVersionCode') ?: '2').toString().toInteger()
         versionName = (project.findProperty('appVersionName') ?: '0.2.0').toString()
@@ -40,5 +40,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore'
     implementation 'com.google.android.gms:play-services-auth:21.3.0'
     implementation 'org.maplibre.gl:android-sdk:13.5.4'
+    // On-device Valhalla engine for offline driving and pedestrian routes.
+    implementation 'io.github.rallista:valhalla-mobile:0.6.1'
+    implementation 'io.github.rallista:valhalla-models:0.5.2'
+    implementation 'io.github.rallista:valhalla-models-config:0.5.2'
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 }
