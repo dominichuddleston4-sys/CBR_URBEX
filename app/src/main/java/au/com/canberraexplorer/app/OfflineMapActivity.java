@@ -136,7 +136,6 @@ public class OfflineMapActivity extends Activity {
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(map -> {
             nativeMap = map;
-            map.getUiSettings().setZoomControlsEnabled(true);
             map.getUiSettings().setCompassEnabled(true);
             String placesGeoJson = getIntent().getStringExtra("places_geojson");
             map.setStyle(new Style.Builder().fromUri(STYLE_URL), style -> addPlacePins(style, placesGeoJson));
