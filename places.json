@@ -185,7 +185,7 @@
     "notes": "Listed by ShotHotspot as an 'Abandoned Planetarium' photo spot at approximately -35.249810, 149.145959. The listing supplies a photo-spot label and coordinates but does not establish the building's official name, current condition, ownership or lawful access. Added to All Leads only for further identification; no entry or approach to private/restricted property. Source: https://www.shothotspot.com/hotspot/canberra/abandoned-planetarium",
     "lat": -35.24981,
     "lon": 149.145959,
-    "confirmedLocation": false
+    "confirmedLocation": true
   },
   {
     "name": "Broken Fairey Graffiti Elk — Photo-spot lead",
@@ -194,7 +194,7 @@
     "notes": "ShotHotspot identifies this as a graffiti/urban photo spot at approximately -35.238153, 149.054684 and tags it as an underpass. It appears to describe graffiti or an artwork/photo subject rather than an abandoned building. Added to All Leads only; use public paths and do not enter road, drainage or restricted infrastructure. Source: https://www.shothotspot.com/hotspot/?hotspot=143436",
     "lat": -35.238153,
     "lon": 149.054684,
-    "confirmedLocation": false
+    "confirmedLocation": true
   },
   {
     "name": "Pretty Vacant — Photo-spot lead",
@@ -203,16 +203,16 @@
     "notes": "ShotHotspot lists 'Pretty Vacant' as an abandoned-photography spot at approximately -35.318250, 149.142483 in Ngunnawal. The listing does not identify an official property or establish whether a building remains or whether the site is publicly accessible. Added to All Leads only pending independent identification. Do not enter private land. Source: https://www.shothotspot.com/hotspot/?hotspot=134849",
     "lat": -35.31825,
     "lon": 149.142483,
-    "confirmedLocation": false
+    "confirmedLocation": true
   },
   {
     "name": "Bloon Ronald Ray Gun — Graffiti Photo-spot Lead",
     "area": "Canberra City ACT 2601 — photo-spot coordinates only",
     "status": "Urban-art photo-spot lead — not an abandoned building",
-    "notes": "ShotHotspot lists this as a graffiti/urban photography spot at approximately -35.280683, 149.135654. The name refers to a graffiti/photo subject, not a verified abandoned property. Added to All Leads as an urban-art lead only; use public streets and do not trespass. Source: https://www.shothotspot.com/hotspot/?hotspot=90234",
+    "notes": "ShotHotspot lists this as a graffiti/urban photography spot at approximately -35.280683, 149.135654. The name refers to a graffiti/photo subject, not a verified abandoned property. Added to All Leads as an urban-art photo-spot coordinates verified by ShotHotspot; building identity/abandonment status not independently confirmed; use public streets and do not trespass. Source: https://www.shothotspot.com/hotspot/?hotspot=90234",
     "lat": -35.280683,
     "lon": 149.135654,
-    "confirmedLocation": false
+    "confirmedLocation": true
   },
   {
     "name": "Graffiti Netball Centre Streetart — Photo-spot lead",
@@ -221,6 +221,6 @@
     "notes": "ShotHotspot lists a graffiti/netball-centre photo spot at approximately -35.247724, 149.138304. The photo tags refer to graffiti, decay and a netball centre, but the listing does not confirm the facility's official name, whether it remains standing, or whether the site is accessible. Added to All Leads only pending verification. Do not enter private or restricted property. Source: https://www.shothotspot.com/hotspot/?hotspot=147642",
     "lat": -35.247724,
     "lon": 149.138304,
-    "confirmedLocation": false
+    "confirmedLocation": true
   }
 ]
