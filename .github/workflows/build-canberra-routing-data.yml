@@ -1,6 +1,9 @@
 name: Build Canberra offline routing data
 
 on:
+  push:
+    paths:
+      - '.github/workflows/build-canberra-routing-data.yml'
   workflow_dispatch:
 
 permissions:
