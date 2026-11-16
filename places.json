@@ -30,5 +30,21 @@
     "notes": "Former Kaleen Indoor Sports Centre, also known as Kaleen Indoor Recreation Centre. The historic address is 16 Georgina Crescent, Kaleen ACT 2617. The centre closed on 2 October 2026 and the site owner planned demolition and redevelopment with residential buildings and a smaller indoor sports facility. This is a former-site entry for local history and mapping only; do not enter the property or any demolition / construction area. View only from public space. Sources: https://region.com.au/petitions-couldnt-save-kaleen-indoor-sports-centre-now-it-prepares-for-demolition/1000010/ ; https://www.sport.act.gov.au/__data/assets/pdf_file/0017/811331/ACT-Indoor-Facilities-Combined-Document.pdf Map pin uses the published address coordinates; pin marks the former site, not an invitation to enter.",
     "lat": -35.2212157,
     "lon": 149.1023104
+  },
+  {
+    "name": "Former Vikings Chisholm Club",
+    "area": "12 Benham Street, Chisholm ACT 2905 — view from public streets only; private property",
+    "status": "Permanently closed — vacant former club building; sale or lease listing",
+    "notes": "The former Vikings Chisholm Club closed in January 2026. Commercial property listings describe the approximately 2,000 m² building as vacant and offered for sale or lease, with 116 car spaces. This is a former club / community facility and a strong match for the app. The pin is approximate to the published street address; view only from public areas and do not enter the privately owned site. Sources: https://region.com.au/rare-opportunity-former-vikings-chisholm-club-listed-for-sale-or-lease/960338/ ; https://www.commercialrealestate.com.au/property/12-benham-street-chisholm-act-2905-2020778297",
+    "lat": -35.41348,
+    "lon": 149.1277
+  },
+  {
+    "name": "Infrastructure House",
+    "area": "111 Alinga Street, City ACT 2601 — public footpaths only",
+    "status": "Former government office — vacant possession offered; future reuse or redevelopment proposed",
+    "notes": "The Department of Infrastructure vacated the building in 2026 during its office consolidation. The eight-level, approximately 16,413 m² office building was listed for sale with vacant possession and potential for adaptive reuse or redevelopment. Included as a large closed building of interest, not as an accessible urbex site. View from public footpaths only; do not enter. Sources: https://region.com.au/adaptive-reuse-on-cards-for-infrastructures-perfectly-positioned-former-home/1003732/ ; https://www.colliers.com.au/en-au/properties/a-commanding-cbd-asset-poised-for-repositioning/aus-111-alinga-street-city-act-2601/ ; https://www.inkl.com/news/infrastructure-house-hits-market-as-department-consolidation-begins",
+    "lat": -35.2783141,
+    "lon": 149.13001543
   }
 ]
