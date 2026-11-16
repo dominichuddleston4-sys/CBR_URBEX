@@ -43,6 +43,7 @@ input:focus,textarea:focus,select:focus{outline:2px solid #54d6bd66;border-color
 .tabs button.active{background:var(--green);color:#102016;box-shadow:0 2px 10px #a6f36b22}
 .grid{gap:12px}
 .place{border-radius:16px;padding:16px;background:linear-gradient(150deg,#17251f,#111b16);border-color:#2b4036;box-shadow:0 8px 22px #0002}
+body.compact-cards .place{padding:10px 12px;border-radius:11px;box-shadow:none}body.compact-cards .place p{margin:5px 0 8px;line-height:1.4}body.compact-cards .place h3{font-size:15px}
 .place h3{font-size:17px;letter-spacing:-.2px}
 .place p{font-size:13px;line-height:1.6}
 .tag{color:var(--accent);letter-spacing:1px}
@@ -369,6 +370,9 @@ body[data-app-style="genshin"] footer{color:#c0c9c5}
 <div class="setting-row"><div><label for="textSize">Text size</label><small>Make app text easier to read</small></div><select id="textSize" onchange="saveSettings()"><option value="small">Small</option><option value="normal">Standard</option><option value="large">Large</option></select></div>
 <div class="setting-row"><div><label for="reduceMotion">Reduce animations</label><small>Use fewer moving effects</small></div><input id="reduceMotion" type="checkbox" onchange="saveSettings()" style="width:22px;height:22px"></div>
 <div class="setting-row"><div><label for="confirmActions">Confirm before clearing data</label><small>Ask before deleting saved places and additions</small></div><input id="confirmActions" type="checkbox" checked onchange="saveSettings()" style="width:22px;height:22px"></div>
+<div class="setting-row"><div><label for="showConnection">Show connection status</label><small>Display whether the app is online or offline</small></div><input id="showConnection" type="checkbox" checked onchange="saveSettings()" style="width:22px;height:22px"></div>
+<div class="setting-row"><div><label for="compactCards">Compact place cards</label><small>Fit more location information on the screen</small></div><input id="compactCards" type="checkbox" onchange="saveSettings()" style="width:22px;height:22px"></div>
+<div class="setting-row"><div><label for="hapticFeedback">Button vibration</label><small>Use a short vibration when supported by your device</small></div><input id="hapticFeedback" type="checkbox" onchange="saveSettings()" style="width:22px;height:22px"></div>
 <div class="setting-row"><div><label>Reset app preferences</label><small>Restore the default appearance and map options</small></div><button class="secondary" type="button" onclick="resetAppSettings()">Reset</button></div>
 <div class="setting-row"><div><label>App information</label><small>Canberra Explorer · Version 2.0½</small></div><button class="secondary" type="button" onclick="showAppInfo()">About</button></div>
 <div id="logoutEntry" class="setting-row"><div><label>Sign out</label><small>Return to the sign-in screen on this device</small></div><button class="secondary" onclick="logoutFromApp()">Log out</button></div>
@@ -499,13 +503,13 @@ const seed=[
 {"name":"Unidentified red building (KML label: the red one)","area":"Canberra / ACT (KML import)","lat":-35.3527101,"lon":149.2266549,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
 {"name":"Unidentified house (original KML label was non-descriptive)","area":"Canberra / ACT (KML import)","lat":-35.2354334,"lon":149.1549683,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},];
 let custom=JSON.parse(localStorage.getItem("cbr_custom")||"[]"),saved=JSON.parse(localStorage.getItem("cbr_saved")||"[]"),tab="all";
-let appSettings={mapStyle:"street",showPins:true,startAtCanberra:true,theme:"system",appStyle:"forest",textSize:"normal",reduceMotion:false,confirmActions:true};
+let appSettings={mapStyle:"street",showPins:true,startAtCanberra:true,theme:"system",appStyle:"forest",textSize:"normal",reduceMotion:false,confirmActions:true,showConnection:true,compactCards:false,hapticFeedback:false};
 try{appSettings={...appSettings,...JSON.parse(localStorage.getItem("ce_settings")||"{}")};}catch(e){}
 if(!["street","voyager","satellite"].includes(appSettings.mapStyle))appSettings.mapStyle="street";
 if(!["system","dark","light"].includes(appSettings.theme))appSettings.theme="system";
 if(!["forest","ocean","sunset","slate","cyberpunk","gta5","genshin"].includes(appSettings.appStyle))appSettings.appStyle="forest";
 if(!["small","normal","large"].includes(appSettings.textSize))appSettings.textSize="normal";
-appSettings.showPins=appSettings.showPins!==false;appSettings.startAtCanberra=appSettings.startAtCanberra!==false;appSettings.reduceMotion=appSettings.reduceMotion===true;appSettings.confirmActions=appSettings.confirmActions!==false;
+appSettings.showPins=appSettings.showPins!==false;appSettings.startAtCanberra=appSettings.startAtCanberra!==false;appSettings.reduceMotion=appSettings.reduceMotion===true;appSettings.confirmActions=appSettings.confirmActions!==false;appSettings.showConnection=appSettings.showConnection!==false;appSettings.compactCards=appSettings.compactCards===true;appSettings.hapticFeedback=appSettings.hapticFeedback===true;
 let map=null,markers=[];
 const all=()=>[...seed,...custom];
 function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -717,6 +721,8 @@ function applyAppearance(){
  document.body.classList.toggle("light-theme",appSettings.theme==="light");
  document.body.classList.toggle("system-light",appSettings.theme==="system");
  document.body.classList.toggle("reduce-motion",!!appSettings.reduceMotion);
+ document.body.classList.toggle("compact-cards",!!appSettings.compactCards);
+ const connection=document.getElementById("connectionStatus");if(connection)connection.hidden=appSettings.showConnection===false;
  document.body.dataset.textSize=appSettings.textSize||"normal";
  if(map)setMapStyle(appSettings.mapStyle||"street");
 }
@@ -729,6 +735,9 @@ function syncSettingsControls(){
  document.getElementById("textSize").value=appSettings.textSize;
  document.getElementById("reduceMotion").checked=!!appSettings.reduceMotion;
  document.getElementById("confirmActions").checked=!!appSettings.confirmActions;
+ document.getElementById("showConnection").checked=appSettings.showConnection!==false;
+ document.getElementById("compactCards").checked=!!appSettings.compactCards;
+ document.getElementById("hapticFeedback").checked=!!appSettings.hapticFeedback;
 }
 function saveSettings(){
  const previousAppStyle=appSettings.appStyle||"forest";
@@ -743,6 +752,9 @@ function saveSettings(){
  appSettings.textSize=document.getElementById("textSize").value;
  appSettings.reduceMotion=document.getElementById("reduceMotion").checked;
  appSettings.confirmActions=document.getElementById("confirmActions").checked;
+ appSettings.showConnection=document.getElementById("showConnection").checked;
+ appSettings.compactCards=document.getElementById("compactCards").checked;
+ appSettings.hapticFeedback=document.getElementById("hapticFeedback").checked;
  localStorage.setItem("ce_settings",JSON.stringify(appSettings));
  applyAppearance();
  if(appSettings.startAtCanberra&&map)map.setView([-35.28,149.13],10);
@@ -813,6 +825,7 @@ function addPlace(){let name=document.getElementById("newName").value.trim(),are
 function updateHomeStats(){const entries=all();const pins=entries.filter(p=>p.lat!==null&&p.lat!==undefined&&p.lat!==""&&p.lon!==null&&p.lon!==undefined&&p.lon!=="").length;document.getElementById("statPlaces").textContent=entries.length;document.getElementById("statSaved").textContent=saved.length;document.getElementById("statPins").textContent=pins;document.getElementById("savedCount").textContent=saved.length;}
 function updateConnectionStatus(){const el=document.getElementById("connectionStatus");const online=navigator.onLine;el.classList.toggle("offline",!online);el.querySelector("span:last-child").textContent=online?"Online · map updates available":"Offline · saved information still available";}
 window.addEventListener("online",updateConnectionStatus);window.addEventListener("offline",updateConnectionStatus);updateConnectionStatus();
+document.addEventListener("click",event=>{if(!appSettings.hapticFeedback||!navigator.vibrate)return;if(event.target.closest("button,.btn"))navigator.vibrate(12);});
 document.getElementById("search").addEventListener("input",render);
 const statusFilter=document.getElementById("statusFilter");
 [...new Set(all().map(p=>p.status||"Research lead"))].sort((a,b)=>a.localeCompare(b)).forEach(status=>{const option=document.createElement("option");option.value=status;option.textContent=status;statusFilter.appendChild(option);});
