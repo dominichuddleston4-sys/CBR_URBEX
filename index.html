@@ -353,6 +353,79 @@ body[data-app-style="genshin"] footer{color:#c0c9c5}
 .home-stat span{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tab-count{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;margin-left:3px;padding:0 5px;border-radius:10px;background:#263b30;color:var(--green);font-size:10px}
 @media(max-width:360px){.home-stats{gap:6px}.home-stat{padding:10px 7px}.home-stat strong{font-size:18px}.home-stat span{font-size:9px}}
+
+/* Additional whole-app styles: Arctic Frost, Crimson Night and Retro Arcade */
+body[data-app-style="arctic"]{--bg:#eaf4f8;--panel:#f8fcff;--line:#b9d5e2;--green:#168dbb;--muted:#587486;--white:#203847;--accent:#45c5df;background:radial-gradient(ellipse at 50% -15%,#c6edf7 0,transparent 55%),#eaf4f8;color:#203847}
+body[data-app-style="arctic"] header{background:linear-gradient(145deg,#d7f1f8,#eff9fc 62%,#dcecf4);border-color:#b9dce8;box-shadow:0 5px 22px #4b9ab51c}
+body[data-app-style="arctic"] .brand,body[data-app-style="arctic"] .tag{color:#087da9}
+body[data-app-style="arctic"] header p,body[data-app-style="arctic"] .place p,body[data-app-style="arctic"] .setting-row label{color:#587486}
+body[data-app-style="arctic"] .notice{background:linear-gradient(110deg,#d9f2f8,#f4fbfd);border-color:#acd9e6;color:#315365;box-shadow:inset 3px 0 #45c5df}
+body[data-app-style="arctic"] .place,body[data-app-style="arctic"] #settingsPanel,body[data-app-style="arctic"] #addPanel,body[data-app-style="arctic"] #galleryPanel .gallery-inner{background:linear-gradient(150deg,#fbfeff,#eaf5f9);border-color:#b9d5e2;box-shadow:0 7px 20px #477d9018}
+body[data-app-style="arctic"] .place h3,body[data-app-style="arctic"] #settingsPanel h3{color:#24495b}
+body[data-app-style="arctic"] button:not(.secondary),body[data-app-style="arctic"] .btn:not(.secondary),body[data-app-style="arctic"] .tabs button.active{background:linear-gradient(135deg,#58cde4,#268fbf);color:#fff;box-shadow:0 2px 10px #168dbb33}
+body[data-app-style="arctic"] button.secondary,body[data-app-style="arctic"] .btn.secondary{background:#e2f1f6;border:1px solid #b9d5e2;color:#28556a}
+body[data-app-style="arctic"] input,body[data-app-style="arctic"] textarea,body[data-app-style="arctic"] select{background:#f8fcff;border-color:#b9d5e2;color:#203847}
+body[data-app-style="arctic"] input:focus,body[data-app-style="arctic"] textarea:focus,body[data-app-style="arctic"] select:focus{outline:2px solid #45c5df77;border-color:#168dbb}
+body[data-app-style="arctic"] .tabs{background:#e0eff4;border-color:#b9d5e2}
+body[data-app-style="arctic"] .tabs button{background:transparent;color:#426779}
+body[data-app-style="arctic"] #mapShell{border-color:#9ccbdc;box-shadow:0 0 18px #45c5df22}
+body[data-app-style="arctic"] #appBottomNav .navMenuToggle{background:#f8fcff;color:#168dbb;border-color:#b9d5e2}
+body[data-app-style="arctic"] #appBottomNav .navMenuItems{background:#f8fcff;border-color:#b9d5e2}
+body[data-app-style="arctic"] #appBottomNav .navMenuItems button{color:#294b5c}
+body[data-app-style="arctic"] #appBottomNav .navMenuItems button.active{background:#d9f2f8;color:#087da9}
+body[data-app-style="arctic"] #updateBanner{background:#e3f5fa;border-color:#45c5df;color:#203847}
+body[data-app-style="arctic"] #updateBanner strong{color:#087da9}
+body[data-app-style="arctic"].settings-open>main>#settingsPanel,body[data-app-style="arctic"].settings-open>main>#settingsPanel .settings-top{background:#eaf4f8!important}
+body[data-app-style="arctic"][data-map-style="voyager"] #map .leaflet-tile-pane{filter:saturate(.82) hue-rotate(8deg) brightness(1.04)}
+body[data-app-style="arctic"] #map .leaflet-popup-content-wrapper,body[data-app-style="arctic"] #map .leaflet-popup-tip{background:#f8fcff;color:#203847}
+
+body[data-app-style="crimson"]{--bg:#160d12;--panel:#26141c;--line:#56303d;--green:#ff5575;--muted:#c6a7b1;--white:#fff0f3;--accent:#ff9a65;background:radial-gradient(ellipse at 50% -15%,#57202e 0,transparent 52%),#160d12}
+body[data-app-style="crimson"] header{background:linear-gradient(145deg,#692536,#351722 62%,#160d12);border-color:#754052;box-shadow:0 5px 24px #0008}
+body[data-app-style="crimson"] .brand,body[data-app-style="crimson"] .tag{color:#ff7891;text-shadow:0 0 9px #ff557533}
+body[data-app-style="crimson"] .notice{background:linear-gradient(110deg,#47202d,#28151d);border-color:#754052;color:#ffe4ea;box-shadow:inset 3px 0 #ff5575}
+body[data-app-style="crimson"] .place,body[data-app-style="crimson"] #settingsPanel,body[data-app-style="crimson"] #addPanel,body[data-app-style="crimson"] #galleryPanel .gallery-inner{background:linear-gradient(145deg,#321b25,#21121a);border-color:#56303d;box-shadow:0 7px 22px #0007}
+body[data-app-style="crimson"] .place h3,body[data-app-style="crimson"] #settingsPanel h3{color:#fff0f3}
+body[data-app-style="crimson"] button:not(.secondary),body[data-app-style="crimson"] .btn:not(.secondary),body[data-app-style="crimson"] .tabs button.active{background:linear-gradient(135deg,#ff7188,#d83d61);color:#fff;box-shadow:0 0 12px #ff557533}
+body[data-app-style="crimson"] button.secondary,body[data-app-style="crimson"] .btn.secondary{background:#351b26;border:1px solid #754052;color:#ffe5eb}
+body[data-app-style="crimson"] input,body[data-app-style="crimson"] textarea,body[data-app-style="crimson"] select{background:#1d1017;border-color:#56303d;color:#fff0f3}
+body[data-app-style="crimson"] input:focus,body[data-app-style="crimson"] textarea:focus,body[data-app-style="crimson"] select:focus{outline:2px solid #ff557577;border-color:#ff5575}
+body[data-app-style="crimson"] .tabs{background:#21121a;border-color:#56303d}
+body[data-app-style="crimson"] .tabs button{background:transparent;color:#d8b9c2}
+body[data-app-style="crimson"] #mapShell{border-color:#a3415c;box-shadow:0 0 18px #ff557522}
+body[data-app-style="crimson"] #appBottomNav .navMenuToggle{background:#351b26;color:#ff7891;border-color:#754052}
+body[data-app-style="crimson"] #appBottomNav .navMenuItems{background:#21121a;border-color:#754052}
+body[data-app-style="crimson"] #appBottomNav .navMenuItems button{color:#ffe5eb}
+body[data-app-style="crimson"] #appBottomNav .navMenuItems button.active{background:#47202d;color:#ff7891}
+body[data-app-style="crimson"] #updateBanner{background:#321b25;border-color:#ff5575}
+body[data-app-style="crimson"] #updateBanner strong{color:#ff7891}
+body[data-app-style="crimson"].settings-open>main>#settingsPanel,body[data-app-style="crimson"].settings-open>main>#settingsPanel .settings-top{background:#160d12!important}
+body[data-app-style="crimson"][data-map-style="voyager"] #map .leaflet-tile-pane{filter:sepia(.12) saturate(1.5) hue-rotate(320deg) brightness(.83)}
+body[data-app-style="crimson"] #map .leaflet-popup-content-wrapper,body[data-app-style="crimson"] #map .leaflet-popup-tip{background:#26141c;color:#fff0f3;border:1px solid #754052}
+
+body[data-app-style="retro"]{--bg:#17102b;--panel:#241943;--line:#493477;--green:#ffcf4a;--muted:#c2b4df;--white:#fff7e8;--accent:#ff70c5;background:radial-gradient(ellipse at 50% -15%,#58358a 0,transparent 52%),#17102b}
+body[data-app-style="retro"] header{background:linear-gradient(145deg,#4b2b78,#2d1d50 60%,#17102b);border-color:#704ca2;box-shadow:0 5px 24px #ff70c51c}
+body[data-app-style="retro"] .brand,body[data-app-style="retro"] .tag{color:#ffcf4a;text-shadow:0 0 9px #ffcf4a55}
+body[data-app-style="retro"] .notice{background:linear-gradient(110deg,#38245d,#241943);border-color:#704ca2;color:#fff2d4;box-shadow:inset 3px 0 #ff70c5}
+body[data-app-style="retro"] .place,body[data-app-style="retro"] #settingsPanel,body[data-app-style="retro"] #addPanel,body[data-app-style="retro"] #galleryPanel .gallery-inner{background:linear-gradient(145deg,#302052,#21183b);border-color:#493477;box-shadow:0 7px 22px #0007}
+body[data-app-style="retro"] .place h3,body[data-app-style="retro"] #settingsPanel h3{color:#fff7e8}
+body[data-app-style="retro"] button:not(.secondary),body[data-app-style="retro"] .btn:not(.secondary),body[data-app-style="retro"] .tabs button.active{background:linear-gradient(135deg,#ffcf4a,#ff70c5);color:#24133d;box-shadow:0 0 13px #ff70c533}
+body[data-app-style="retro"] button.secondary,body[data-app-style="retro"] .btn.secondary{background:#302052;border:1px solid #704ca2;color:#fff0dc}
+body[data-app-style="retro"] input,body[data-app-style="retro"] textarea,body[data-app-style="retro"] select{background:#1b1233;border-color:#60438e;color:#fff7e8}
+body[data-app-style="retro"] input:focus,body[data-app-style="retro"] textarea:focus,body[data-app-style="retro"] select:focus{outline:2px solid #ff70c577;border-color:#ff70c5}
+body[data-app-style="retro"] .tabs{background:#21183b;border-color:#493477}
+body[data-app-style="retro"] .tabs button{background:transparent;color:#d6c9ef}
+body[data-app-style="retro"] #mapShell{border-color:#704ca2;box-shadow:0 0 18px #ff70c522}
+body[data-app-style="retro"] #appBottomNav .navMenuToggle{background:#302052;color:#ffcf4a;border-color:#704ca2}
+body[data-app-style="retro"] #appBottomNav .navMenuItems{background:#21183b;border-color:#704ca2}
+body[data-app-style="retro"] #appBottomNav .navMenuItems button{color:#fff0dc}
+body[data-app-style="retro"] #appBottomNav .navMenuItems button.active{background:#38245d;color:#ffcf4a}
+body[data-app-style="retro"] #updateBanner{background:#302052;border-color:#ff70c5}
+body[data-app-style="retro"] #updateBanner strong{color:#ffcf4a}
+body[data-app-style="retro"].settings-open>main>#settingsPanel,body[data-app-style="retro"].settings-open>main>#settingsPanel .settings-top{background:#17102b!important}
+body[data-app-style="retro"][data-map-style="voyager"] #map .leaflet-tile-pane{filter:sepia(.12) saturate(1.6) hue-rotate(235deg) brightness(.82)}
+body[data-app-style="retro"] #map .leaflet-popup-content-wrapper,body[data-app-style="retro"] #map .leaflet-popup-tip{background:#241943;color:#fff7e8;border:1px solid #704ca2}
+body[data-app-style="retro"] #map .leaflet-popup-content a{color:#ffcf4a}
+
 </style><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" onerror="this.onerror=null;this.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'"><link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#101510"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Canberra Explorer"><link rel="apple-touch-icon" href="./icon-192.png"><link rel="icon" href="./icon.svg" type="image/svg+xml"></head>
 <body>
 <header><div class="brand">CANBERRA EXPLORER</div><h1>Canberra Explorer</h1><p>Abandoned places, local history &amp; field notes</p><div id="connectionStatus" class="connection-status" role="status" aria-live="polite"><span class="connection-dot"></span><span>Checking connection…</span></div></header>
@@ -365,7 +438,7 @@ body[data-app-style="genshin"] footer{color:#c0c9c5}
 <div class="setting-row"><div><label for="mapStyle">Map appearance</label><small>Choose street, detailed or satellite imagery</small></div><select id="mapStyle" onchange="saveSettings()"><option value="street">Street map</option><option value="voyager">Detailed map</option><option value="satellite">Satellite</option></select></div>
 <div class="setting-row"><div><label for="showPins">Show location pins</label><small>Show or hide all saved map markers</small></div><input id="showPins" type="checkbox" checked onchange="saveSettings()" style="width:22px;height:22px"></div>
 <div class="setting-row"><div><label for="startAtCanberra">Start map at Canberra</label><small>Return to Canberra when opening the map</small></div><input id="startAtCanberra" type="checkbox" checked onchange="saveSettings()" style="width:22px;height:22px"></div>
-<div class="setting-row"><div><label for="appStyle">Whole app style</label><small>Change the colours and overall look of every screen</small></div><select id="appStyle" onchange="saveSettings()"><option value="forest">Forest green</option><option value="ocean">Ocean blue</option><option value="sunset">Warm sunset</option><option value="slate">Midnight violet</option><option value="cyberpunk">Cyberpunk neon</option><option value="gta5">GTA 5 — Los Santos</option><option value="genshin">Genshin Impact — Teyvat style</option></select></div>
+<div class="setting-row"><div><label for="appStyle">Whole app style</label><small>Change the colours and overall look of every screen</small></div><select id="appStyle" onchange="saveSettings()"><option value="forest">Forest green</option><option value="ocean">Ocean blue</option><option value="sunset">Warm sunset</option><option value="slate">Midnight violet</option><option value="cyberpunk">Cyberpunk neon</option><option value="gta5">GTA 5 — Los Santos</option><option value="genshin">Genshin Impact — Teyvat style</option><option value="arctic">Arctic frost</option><option value="crimson">Crimson night</option><option value="retro">Retro arcade</option></select></div>
 <div class="setting-row"><div><label for="appTheme">App theme</label><small>Choose dark, light or match your device</small></div><select id="appTheme" onchange="saveSettings()"><option value="system">Device setting</option><option value="dark">Dark</option><option value="light">Light</option></select></div>
 <div class="setting-row"><div><label for="textSize">Text size</label><small>Make app text easier to read</small></div><select id="textSize" onchange="saveSettings()"><option value="small">Small</option><option value="normal">Standard</option><option value="large">Large</option></select></div>
 <div class="setting-row"><div><label for="reduceMotion">Reduce animations</label><small>Use fewer moving effects</small></div><input id="reduceMotion" type="checkbox" onchange="saveSettings()" style="width:22px;height:22px"></div>
@@ -508,7 +581,7 @@ let appSettings={mapStyle:"street",showPins:true,startAtCanberra:true,theme:"sys
 try{appSettings={...appSettings,...JSON.parse(localStorage.getItem("ce_settings")||"{}")};}catch(e){}
 if(!["street","voyager","satellite"].includes(appSettings.mapStyle))appSettings.mapStyle="street";
 if(!["system","dark","light"].includes(appSettings.theme))appSettings.theme="system";
-if(!["forest","ocean","sunset","slate","cyberpunk","gta5","genshin"].includes(appSettings.appStyle))appSettings.appStyle="forest";
+if(!["forest","ocean","sunset","slate","cyberpunk","gta5","genshin","arctic","crimson","retro"].includes(appSettings.appStyle))appSettings.appStyle="forest";
 if(!["small","normal","large"].includes(appSettings.textSize))appSettings.textSize="normal";
 appSettings.showPins=appSettings.showPins!==false;appSettings.startAtCanberra=appSettings.startAtCanberra!==false;appSettings.reduceMotion=appSettings.reduceMotion===true;appSettings.confirmActions=appSettings.confirmActions!==false;appSettings.showConnection=appSettings.showConnection!==false;appSettings.compactCards=appSettings.compactCards===true;appSettings.hapticFeedback=appSettings.hapticFeedback===true;
 let map=null,markers=[];
@@ -523,7 +596,10 @@ function renderMap(){
   const cyberpunk=appSettings.appStyle==="cyberpunk";
   const gta5=appSettings.appStyle==="gta5";
   const genshin=appSettings.appStyle==="genshin";
-  const marker=L.circleMarker([lat,lon],cyberpunk?{radius:9,color:"#00f0ff",weight:2,fillColor:"#fcee0a",fillOpacity:1}:gta5?{radius:9,color:"#fff1c2",weight:2,fillColor:"#f0a52b",fillOpacity:1}:genshin?{radius:9,color:"#fff5d6",weight:2,fillColor:"#4f9b78",fillOpacity:1}:{radius:8,color:"#fff",weight:2,fillColor:"#16833b",fillOpacity:1}).addTo(map);
+  const arctic=appSettings.appStyle==="arctic";
+  const crimson=appSettings.appStyle==="crimson";
+  const retro=appSettings.appStyle==="retro";
+  const marker=L.circleMarker([lat,lon],cyberpunk?{radius:9,color:"#00f0ff",weight:2,fillColor:"#fcee0a",fillOpacity:1}:gta5?{radius:9,color:"#fff1c2",weight:2,fillColor:"#f0a52b",fillOpacity:1}:genshin?{radius:9,color:"#fff5d6",weight:2,fillColor:"#4f9b78",fillOpacity:1}:arctic?{radius:9,color:"#ffffff",weight:2,fillColor:"#39bde8",fillOpacity:1}:crimson?{radius:9,color:"#ffe2e8",weight:2,fillColor:"#e43d59",fillOpacity:1}:retro?{radius:9,color:"#fff1a8",weight:2,fillColor:"#ff7b36",fillOpacity:1}:{radius:8,color:"#fff",weight:2,fillColor:"#16833b",fillOpacity:1}).addTo(map);
   marker.bindPopup("<b>"+esc(p.name)+"</b><br>"+esc(p.area||"Canberra / ACT")+"<br><small>"+esc(p.status||"Research lead")+" · location and access not independently verified</small><br><a target=\"_blank\" rel=\"noopener\" href=\"https://www.google.com/maps/dir/?api=1&destination="+lat+","+lon+"\">Directions ↗</a>");
   marker._placeName=p.name;markers.push(marker);
  });
