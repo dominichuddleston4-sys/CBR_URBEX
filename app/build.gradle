@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace 'au.com.canberraexplorer.app'
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         applicationId 'au.com.canberraexplorer.app'
