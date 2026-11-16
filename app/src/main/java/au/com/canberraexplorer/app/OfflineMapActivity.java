@@ -1,11 +1,6 @@
 package au.com.canberraexplorer.app;
 
 import android.app.Activity;
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
-import android.os.Looper;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.graphics.Color;
@@ -26,7 +21,6 @@ import org.maplibre.android.geometry.LatLngBounds;
 import org.maplibre.android.maps.MapView;
 import org.maplibre.android.maps.Style;
 import org.maplibre.android.style.layers.CircleLayer;
-import org.maplibre.android.style.layers.LineLayer;
 import org.maplibre.android.style.layers.SymbolLayer;
 import org.maplibre.android.style.layers.PropertyFactory;
 import org.maplibre.android.style.sources.GeoJsonSource;
@@ -52,12 +46,6 @@ public class OfflineMapActivity extends Activity {
     private TextView status;
     private Spinner regionPicker;
     private OfflineRegion activeRegion;
-    private org.maplibre.android.maps.MapLibreMap activeMap;
-    private Style activeStyle;
-    private double routeDestinationLat;
-    private double routeDestinationLon;
-    private String routeMode = "driving";
-    private static final int ROUTE_LOCATION_PERMISSION = 7001;
 
     private static final String[] REGIONS = {
         "Central ACT", "North ACT", "South ACT", "West ACT", "East ACT"
@@ -89,15 +77,7 @@ public class OfflineMapActivity extends Activity {
         root.addView(heading);
 
         TextView intro = new TextView(this);
-        String routeName = getIntent().getStringExtra("route_destination_name");
-        routeMode = getIntent().getStringExtra("route_mode");
-        if (routeMode == null) routeMode = "driving";
-        routeDestinationLat = getIntent().getDoubleExtra("route_destination_lat", 0);
-        routeDestinationLon = getIntent().getDoubleExtra("route_destination_lon", 0);
-        boolean hasRouteTarget = routeName != null && !routeName.trim().isEmpty();
-        intro.setText(hasRouteTarget
-            ? "Offline " + ("walking".equals(routeMode) ? "walking" : "driving") + " destination: " + routeName + ". Download the separate routing pack while online, then use GPS for written offline directions. No voice prompts."
-            : "Download Canberra map areas and the separate road-and-footpath routing pack while online. Once saved, offline routes use GPS and written instructions. No voice prompts.");
+        intro.setText("Download Canberra areas while online, then reopen this map without internet. Save multiple areas, one download at a time. Each area is capped at 3,000 tiles and 50 MB. Only saved locations with coordinates appear as pins; unverified leads remain in the list.");
         intro.setTextColor(Color.LTGRAY);
         intro.setTextSize(13);
         intro.setPadding(16, 0, 16, 10);
@@ -130,20 +110,6 @@ public class OfflineMapActivity extends Activity {
             LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
         controls.addView(buttons);
 
-        LinearLayout routingButtons = new LinearLayout(this);
-        routingButtons.setGravity(Gravity.CENTER);
-        Button downloadRouting = new Button(this);
-        downloadRouting.setText("Download routing data");
-        downloadRouting.setOnClickListener(v -> downloadRoutingData());
-        Button startRoute = new Button(this);
-        startRoute.setText("Start offline directions");
-        startRoute.setOnClickListener(v -> beginOfflineRoute());
-        routingButtons.addView(downloadRouting, new LinearLayout.LayoutParams(0,
-            LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-        routingButtons.addView(startRoute, new LinearLayout.LayoutParams(0,
-            LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-        controls.addView(routingButtons);
-
         status = new TextView(this);
         status.setTextColor(Color.WHITE);
         status.setTextSize(12);
@@ -158,199 +124,12 @@ public class OfflineMapActivity extends Activity {
         setContentView(root);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(map -> {
-            activeMap = map;
             String placesGeoJson = getIntent().getStringExtra("places_geojson");
-            map.setStyle(new Style.Builder().fromUri(STYLE_URL), style -> {
-                activeStyle = style;
-                addPlacePins(style, placesGeoJson);
-            });
-            boolean validDestination = hasRouteTarget && Math.abs(routeDestinationLat) <= 90 && Math.abs(routeDestinationLon) <= 180 && (routeDestinationLat != 0 || routeDestinationLon != 0);
+            map.setStyle(new Style.Builder().fromUri(STYLE_URL), style -> addPlacePins(style, placesGeoJson));
             map.setCameraPosition(new CameraPosition.Builder()
-                .target(validDestination ? new LatLng(routeDestinationLat, routeDestinationLon) : new LatLng(-35.28, 149.13))
-                .zoom(validDestination ? 15.0 : 10.0).build());
+                .target(new LatLng(-35.28, 149.13)).zoom(10.0).build());
         });
         refreshOfflineStatus();
-    }
-
-
-    private void downloadRoutingData() {
-        if (OfflineRoutingPackManager.isInstalled(this)) {
-            status.setText("Canberra offline driving and walking routing data is already installed.");
-            return;
-        }
-        status.setText("Downloading Canberra road and footpath data… keep the app open and connected.");
-        new Thread(() -> OfflineRoutingPackManager.downloadAndInstall(
-            getApplicationContext(), new OfflineRoutingPackManager.Listener() {
-                @Override public void onProgress(long downloaded, long total) {
-                    runOnUiThread(() -> status.setText(total > 0
-                        ? "Downloading routing data: " + (downloaded / (1024 * 1024))
-                            + " / " + (total / (1024 * 1024)) + " MB"
-                        : "Downloading routing data: " + (downloaded / (1024 * 1024)) + " MB"));
-                }
-                @Override public void onComplete() {
-                    runOnUiThread(() -> status.setText("Offline routing data installed. Driving and walking routes can now be calculated without internet."));
-                }
-                @Override public void onError(String message) {
-                    runOnUiThread(() -> status.setText("Routing data download failed: " + message));
-                }
-            })).start();
-    }
-
-    private void beginOfflineRoute() {
-        if (routeDestinationLat == 0 && routeDestinationLon == 0) {
-            status.setText("Open Drive or Walk on a saved place first so the app knows the destination.");
-            return;
-        }
-        if (!OfflineRoutingPackManager.isInstalled(this)) {
-            status.setText("Download the Canberra routing data first while online.");
-            return;
-        }
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-            && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[] { Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION }, ROUTE_LOCATION_PERMISSION);
-            return;
-        }
-        obtainLocationAndRoute();
-    }
-
-    @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == ROUTE_LOCATION_PERMISSION) {
-            boolean granted = false;
-            for (int result : grantResults) if (result == PackageManager.PERMISSION_GRANTED) granted = true;
-            if (granted) obtainLocationAndRoute();
-            else status.setText("Location permission is needed to calculate your route from the phone's GPS.");
-        }
-    }
-
-    private void obtainLocationAndRoute() {
-        try {
-            LocationManager manager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            Location best = null;
-            String[] providers = { LocationManager.GPS_PROVIDER, LocationManager.NETWORK_PROVIDER, LocationManager.PASSIVE_PROVIDER };
-            for (String provider : providers) {
-                try {
-                    Location candidate = manager.getLastKnownLocation(provider);
-                    if (candidate != null && (best == null || candidate.getTime() > best.getTime())) best = candidate;
-                } catch (Exception ignored) { }
-            }
-            if (best != null && System.currentTimeMillis() - best.getTime() < 600000L) {
-                calculateOfflineRoute(best);
-                return;
-            }
-            status.setText("Waiting for a GPS location fix…");
-            String provider = manager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-                ? LocationManager.GPS_PROVIDER : LocationManager.NETWORK_PROVIDER;
-            manager.requestSingleUpdate(provider, new android.location.LocationListener() {
-                @Override public void onLocationChanged(Location location) { calculateOfflineRoute(location); }
-                @Override public void onProviderEnabled(String name) { }
-                @Override public void onProviderDisabled(String name) { }
-                @Override public void onStatusChanged(String name, int status, android.os.Bundle extras) { }
-            }, Looper.getMainLooper());
-        } catch (SecurityException error) {
-            status.setText("Location permission is required for offline directions.");
-        } catch (Exception error) {
-            status.setText("Could not get a GPS fix. Turn on Location and try again.");
-        }
-    }
-
-    private void calculateOfflineRoute(Location origin) {
-        status.setText("Calculating offline " + routeMode + " route…");
-        new Thread(() -> {
-            try {
-                JSONObject route = OfflineRoutingEngine.calculateRoute(this,
-                    origin.getLatitude(), origin.getLongitude(),
-                    routeDestinationLat, routeDestinationLon, routeMode);
-                runOnUiThread(() -> {
-                    drawOfflineRoute(route.optString("shape", ""));
-                    showWrittenInstructions(route);
-                    status.setText("Offline route calculated. Follow the written instructions; voice guidance is disabled.");
-                });
-            } catch (Exception error) {
-                runOnUiThread(() -> status.setText("Could not calculate offline route: "
-                    + (error.getMessage() == null ? "Check that routing data covers your area." : error.getMessage())));
-            }
-        }).start();
-    }
-
-    private void showWrittenInstructions(JSONObject route) {
-        StringBuilder text = new StringBuilder();
-        JSONObject summary = route.optJSONObject("summary");
-        if (summary != null) {
-            text.append(String.format(java.util.Locale.getDefault(),
-                "Distance: %.1f km\\nEstimated time: %.0f min\\n\\n",
-                summary.optDouble("length", 0), summary.optDouble("time", 0) / 60.0));
-        }
-        org.json.JSONArray steps = route.optJSONArray("instructions");
-        if (steps != null) {
-            for (int i = 0; i < steps.length(); i++) {
-                JSONObject step = steps.optJSONObject(i);
-                if (step == null) continue;
-                text.append(i + 1).append(". ").append(step.optString("text", "Continue"));
-                double distance = step.optDouble("distanceKm", 0);
-                if (distance > 0) text.append(String.format(java.util.Locale.getDefault(), " (%.2f km)", distance));
-                text.append("\\n\\n");
-            }
-        }
-        if (text.length() == 0) text.append("The route was found, but no written manoeuvres were returned.");
-        new AlertDialog.Builder(this).setTitle("Offline directions — " + routeMode)
-            .setMessage(text.toString()).setPositiveButton("Close", null).show();
-    }
-
-    private void drawOfflineRoute(String encodedShape) {
-        if (activeStyle == null || encodedShape == null || encodedShape.isEmpty()) return;
-        try {
-            org.json.JSONArray coordinates = new org.json.JSONArray();
-            java.util.List<LatLng> points = decodePolyline6(encodedShape);
-            if (points.size() < 2) throw new IllegalStateException("The route geometry was empty.");
-            LatLngBounds.Builder bounds = new LatLngBounds.Builder();
-            for (LatLng point : points) {
-                org.json.JSONArray coordinate = new org.json.JSONArray();
-                coordinate.put(point.getLongitude()).put(point.getLatitude());
-                coordinates.put(coordinate);
-                bounds.include(point);
-            }
-            JSONObject geometry = new JSONObject().put("type", "LineString").put("coordinates", coordinates);
-            JSONObject feature = new JSONObject().put("type", "Feature")
-                .put("properties", new JSONObject()).put("geometry", geometry);
-            JSONObject collection = new JSONObject().put("type", "FeatureCollection")
-                .put("features", new org.json.JSONArray().put(feature));
-            GeoJsonSource source = (GeoJsonSource) activeStyle.getSource("ce-route-source");
-            if (source == null) {
-                activeStyle.addSource(new GeoJsonSource("ce-route-source", collection.toString()));
-                LineLayer line = new LineLayer("ce-route-line", "ce-route-source");
-                line.setProperties(PropertyFactory.lineColor("#35D66F"),
-                    PropertyFactory.lineWidth(5f), PropertyFactory.lineOpacity(0.95f));
-                activeStyle.addLayer(line);
-            } else source.setGeoJson(collection.toString());
-            if (activeMap != null) activeMap.animateCamera(
-                org.maplibre.android.camera.CameraUpdateFactory.newLatLngBounds(bounds.build(), 60), 500);
-        } catch (Exception error) {
-            status.setText("Route calculated, but the route line could not be drawn: " + error.getMessage());
-        }
-    }
-
-    private java.util.List<LatLng> decodePolyline6(String encoded) {
-        java.util.ArrayList<LatLng> points = new java.util.ArrayList<>();
-        int index = 0, lat = 0, lon = 0;
-        while (index < encoded.length()) {
-            int[] a = decodePolylineValue(encoded, index); lat += a[0]; index = a[1];
-            int[] b = decodePolylineValue(encoded, index); lon += b[0]; index = b[1];
-            points.add(new LatLng(lat / 1000000.0, lon / 1000000.0));
-        }
-        return points;
-    }
-
-    private int[] decodePolylineValue(String encoded, int start) {
-        int result = 0, shift = 0, index = start, value;
-        do {
-            value = encoded.charAt(index++) - 63;
-            result |= (value & 0x1f) << shift;
-            shift += 5;
-        } while (value >= 0x20 && index < encoded.length());
-        int delta = (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
-        return new int[] { delta, index };
     }
 
     private void configureMapNetwork() {
