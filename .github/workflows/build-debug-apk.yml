@@ -24,7 +24,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: '21'
 
       # GitHub-hosted Ubuntu runners already include Android SDK command-line tools.
       # Avoid android-actions/setup-android requesting the obsolete "tools" package.
