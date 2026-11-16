@@ -75,10 +75,10 @@ jobs:
           curl --fail --location --retry 3 --retry-delay 2 \
             https://download.bbbike.org/osm/bbbike/Canberra/Canberra.osm.pbf \
             --output .offline-routing/Canberra.osm.pbf
-          docker pull ghcr.io/valhalla/valhalla:latest
+          docker pull ghcr.io/valhalla/valhalla-scripted:3.9.1
           docker run --rm --entrypoint /bin/sh \
             -v "$PWD/.offline-routing:/data" \
-            ghcr.io/valhalla/valhalla:latest -c '
+            ghcr.io/valhalla/valhalla-scripted:3.9.1 -c '
               set -e
               mkdir -p /data/tiles
               valhalla_build_config \
@@ -90,6 +90,39 @@ jobs:
               valhalla_build_admins -c /data/valhalla.json /data/Canberra.osm.pbf
               valhalla_build_tiles -c /data/valhalla.json /data/Canberra.osm.pbf
               valhalla_build_extract -c /data/valhalla.json -v
+              valhalla_service /data/valhalla.json 1 >/data/valhalla-service.log 2>&1 &
+              service_pid=$!
+              trap "kill $service_pid 2>/dev/null || true" EXIT
+              python3 - <<'PY'
+              import json, time, urllib.request
+              for attempt in range(60):
+                  try:
+                      urllib.request.urlopen("http://127.0.0.1:8002/status", timeout=2).read()
+                      break
+                  except Exception:
+                      if attempt == 59:
+                          raise RuntimeError("Valhalla service did not start; see valhalla-service.log")
+                      time.sleep(1)
+              for costing in ("auto", "pedestrian"):
+                  payload = {
+                      "locations": [
+                          {"lat": -35.28, "lon": 149.13, "type": "break"},
+                          {"lat": -35.30, "lon": 149.14, "type": "break"}
+                      ],
+                      "costing": costing,
+                      "units": "kilometers",
+                      "directions_options": {"units": "kilometers"}
+                  }
+                  request = urllib.request.Request(
+                      "http://127.0.0.1:8002/route",
+                      data=json.dumps(payload).encode(),
+                      headers={"Content-Type": "application/json"}
+                  )
+                  result = json.loads(urllib.request.urlopen(request, timeout=30).read())
+                  if not result.get("trip", {}).get("legs", [{}])[0].get("shape"):
+                      raise RuntimeError("No " + costing + " road route returned: " + json.dumps(result)[:1000])
+                  print(costing + " offline route smoke test passed")
+              PY
             '
           test -s .offline-routing/valhalla_tiles.tar
           test -s .offline-routing/admin.sqlite
