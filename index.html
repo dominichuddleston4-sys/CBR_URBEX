@@ -353,6 +353,45 @@ body[data-app-style="genshin"] footer{color:#c0c9c5}
 .home-stat span{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tab-count{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;margin-left:3px;padding:0 5px;border-radius:10px;background:#263b30;color:var(--green);font-size:10px}
 @media(max-width:360px){.home-stats{gap:6px}.home-stat{padding:10px 7px}.home-stat strong{font-size:18px}.home-stat span{font-size:9px}}
+
+/* 2.0½ visual refresh: consistent mobile app surfaces */
+:root{--bg:#09110f;--panel:#121e1a;--line:#263b33;--green:#a6f36b;--muted:#a8bbb1;--white:#f4faf6;--accent:#54d6bd}
+body{background:radial-gradient(ellipse at 50% -15%,#1b3b30 0,transparent 48%),var(--bg);letter-spacing:.05px}
+header{padding:26px 18px 20px;background:linear-gradient(145deg,#18382d 0%,#10221c 58%,#0b1411 100%);border-bottom:1px solid #315344}
+.brand{display:inline-flex;align-items:center;gap:8px;color:var(--green);font-size:11px;letter-spacing:2.2px}
+.brand:before{content:"";width:9px;height:9px;border-radius:3px;background:var(--green);box-shadow:0 0 14px #a6f36b88}
+h1{font-size:clamp(25px,7vw,32px);letter-spacing:-.7px}
+header p{font-size:13px;line-height:1.5}
+main{padding:16px 14px 28px}
+.notice{background:linear-gradient(120deg,#1b3028,#14221c);border-color:#365b47;border-radius:15px}
+button,.btn{border-radius:12px;min-height:42px;transition:transform .12s ease,filter .12s ease}
+button:active,.btn:active{transform:scale(.98);filter:brightness(.94)}
+button.secondary,.btn.secondary{background:#1a2b24;border-color:#355044;color:#e7f4eb}
+input,textarea,select{border-radius:12px;background:#0d1914;border-color:#2b4338}
+input:focus,textarea:focus,select:focus{outline:2px solid #54d6bd66;border-color:var(--accent)}
+.tabs{padding:5px;background:#101c17;border:1px solid #263b33;border-radius:14px}
+.tabs button{flex:1;padding:10px 12px;background:transparent;color:#b8c9c0}
+.tabs button.active{background:var(--green);color:#102016;box-shadow:0 2px 10px #a6f36b22}
+.grid{gap:12px}
+.place{border-radius:16px;padding:16px;background:linear-gradient(150deg,#17251f,#111b16);border-color:#2b4036;box-shadow:0 8px 22px #0002}
+.place h3{font-size:17px;letter-spacing:-.2px}
+.place p{font-size:13px;line-height:1.6}
+.tag{color:var(--accent);letter-spacing:1px}
+#mapShell{border-radius:17px;border-color:#2d493d;box-shadow:0 8px 24px #0003}
+#settingsPanel,#addPanel{border-radius:16px;background:linear-gradient(150deg,#17251f,#111b16);border-color:#2b4036}
+#galleryPanel .gallery-inner{border-radius:18px;background:#132019;border-color:#355044}
+footer{padding-bottom:max(26px,env(safe-area-inset-bottom))}
+@media(max-width:520px){
+ header{padding:22px 16px 17px}
+ main{padding:13px 12px 24px}
+ #map{height:360px}
+ .searchrow{gap:6px}
+ .searchrow button{padding:10px 12px;white-space:nowrap}
+ .actions button,.actions a{min-height:38px}
+ .place{padding:14px}
+}
+@media(prefers-reduced-motion:reduce){button,.btn{transition:none}}
+
 </style><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"><link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#101510"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Canberra Explorer"><link rel="apple-touch-icon" href="./icon-192.png"><link rel="icon" href="./icon.svg" type="image/svg+xml"></head>
 <body>
 <header><div class="brand">CANBERRA EXPLORER</div><h1>Canberra Explorer</h1><p>Abandoned places, local history &amp; field notes</p><div id="connectionStatus" class="connection-status" role="status" aria-live="polite"><span class="connection-dot"></span><span>Checking connection…</span></div></header>
