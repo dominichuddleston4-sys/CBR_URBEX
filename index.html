@@ -523,7 +523,7 @@ function renderMap(){
   const gta5=appSettings.appStyle==="gta5";
   const genshin=appSettings.appStyle==="genshin";
   const marker=L.circleMarker([lat,lon],cyberpunk?{radius:9,color:"#00f0ff",weight:2,fillColor:"#fcee0a",fillOpacity:1}:gta5?{radius:9,color:"#fff1c2",weight:2,fillColor:"#f0a52b",fillOpacity:1}:genshin?{radius:9,color:"#fff5d6",weight:2,fillColor:"#4f9b78",fillOpacity:1}:{radius:8,color:"#fff",weight:2,fillColor:"#16833b",fillOpacity:1}).addTo(map);
-  marker.bindPopup("<b>"+esc(p.name)+"</b><br>"+esc(p.area||"Canberra / ACT")+"<br><small>"+esc(p.status||"Research lead")+" · location and access not independently verified</small><br><button type=\\"button\\" onclick=\\"focusPlace(decodeURIComponent(&quot;"+encodeURIComponent(p.name)+"&quot;))\\">Show on map</button> <a class=\\"btn\\" target=\\"_blank\\" rel=\\"noopener\\" href=\\"https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(p.lat!==null&&p.lat!==undefined&&p.lat!==""&&p.lon!==null&&p.lon!==undefined&&p.lon!==""?p.lat+","+p.lon:p.name+" "+(p.area||"Canberra ACT"))+"&travelmode=driving\\">Get directions ↗</a>");
+  marker.bindPopup("<b>"+esc(p.name)+"</b><br>"+esc(p.area||"Canberra / ACT")+"<br><small>"+esc(p.status||"Research lead")+" · location and access not independently verified</small><br><button type=\\"button\\" onclick=\\"focusPlace(decodeURIComponent(&quot;"+encodeURIComponent(p.name)+"&quot;))\\">Show on map</button> <a class=\\"btn\\" target=\\"_blank\\" rel=\\"noopener\\" onclick=\\"return getDirectionsForPlace(decodeURIComponent(&quot;"+encodeURIComponent(p.name)+"&quot;))\\" onclick="return getDirectionsForPlace('+JSON.stringify(p.name).replace(/"/g,'&quot;')+')" href=\\"https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(p.lat!==null&&p.lat!==undefined&&p.lat!==""&&p.lon!==null&&p.lon!==undefined&&p.lon!==""?p.lat+","+p.lon:p.name+" "+(p.area||"Canberra ACT"))+"&travelmode=driving\\">Get directions ↗</a>");
   marker._placeName=p.name;markers.push(marker);
  });
 }
@@ -576,6 +576,53 @@ function focusPlace(name){
  if(hasCoords){if(!appSettings.showPins){appSettings.showPins=true;document.getElementById("showPins").checked=true;localStorage.setItem("ce_settings",JSON.stringify(appSettings));renderMap();}map.setView([Number(p.lat),Number(p.lon)],16);const marker=markers.find(m=>m._placeName===name);if(marker)marker.openPopup();}
  else{map.setView([-35.28,149.13],11);document.getElementById("updateStatus").textContent=name+" has no verified coordinates yet, so it cannot be pinned or routed in the app.";}
 }
+function decodeOfflinePolyline6(encoded){
+ let index=0,lat=0,lng=0,points=[];
+ while(index<encoded.length){
+  let result=0,shift=0,b;
+  do{b=encoded.charCodeAt(index++)-63;result|=(b&31)<<shift;shift+=5;}while(b>=32&&index<encoded.length);
+  lat+=(result&1)?~(result>>1):(result>>1);
+  result=0;shift=0;
+  do{b=encoded.charCodeAt(index++)-63;result|=(b&31)<<shift;shift+=5;}while(b>=32&&index<encoded.length);
+  lng+=(result&1)?~(result>>1):(result>>1);
+  points.push([lat/1000000,lng/1000000]);
+ }
+ return points;
+}
+let offlineRouteRequest=0;
+function getDirectionsForPlace(name){
+ if(navigator.onLine)return true;
+ const p=all().find(x=>x.name===name);
+ const valid=p&&p.lat!==null&&p.lat!==undefined&&p.lat!==""&&p.lon!==null&&p.lon!==undefined&&p.lon!==""&&Number.isFinite(Number(p.lat))&&Number.isFinite(Number(p.lon));
+ if(!valid){document.getElementById("updateStatus").textContent="No verified coordinates are saved for "+name+". Offline directions are unavailable for this place.";return false;}
+ if(!window.CanberraNative||!window.CanberraNative.getOfflineRoute){document.getElementById("updateStatus").textContent="Offline road directions are available in the installed Canberra Explorer app.";return false;}
+ if(!navigator.geolocation){document.getElementById("updateStatus").textContent="GPS location is unavailable. Turn on Location to calculate an offline route.";return false;}
+ const costing=window.confirm("Choose OK for driving directions, or Cancel for walking directions.")?"auto":"pedestrian";
+ document.getElementById("updateStatus").textContent="Getting your GPS position and calculating an offline "+(costing==="auto"?"driving":"walking")+" route…";
+ navigator.geolocation.getCurrentPosition(position=>{
+  const id="offline-route-"+(++offlineRouteRequest);
+  window.CanberraNative.getOfflineRoute(position.coords.latitude,position.coords.longitude,Number(p.lat),Number(p.lon),costing,id);
+ },error=>{
+  document.getElementById("updateStatus").textContent=error&&error.code===1?"Allow location access to calculate offline directions.":"Could not get a GPS fix. Move somewhere with a clearer view of the sky and try again.";
+ },{enableHighAccuracy:true,timeout:20000,maximumAge:60000});
+ return false;
+}
+window.onNativeOfflineRoute=function(id,response,error){
+ const status=document.getElementById("updateStatus");
+ if(error){status.textContent="Offline route unavailable: "+error;return;}
+ try{
+  const data=JSON.parse(response||"{}"),trip=data.trip,leg=trip&&trip.legs&&trip.legs[0];
+  if(!leg||!leg.shape)throw new Error(data.message||"No road route was returned for these locations.");
+  const points=decodeOfflinePolyline6(leg.shape);
+  if(points.length<2)throw new Error("The offline engine returned an incomplete route.");
+  if(routeLayer&&map)map.removeLayer(routeLayer);
+  routeLayer=L.polyline(points,{color:"#9cff57",weight:6,opacity:.95}).addTo(map);
+  map.fitBounds(routeLayer.getBounds().pad(.16));
+  const summary=trip.summary||{},km=Number(summary.length||0),minutes=Math.max(1,Math.round(Number(summary.time||0)/60));
+  const instructions=(leg.maneuvers||[]).map((m,i)=>(i+1)+". "+(m.instruction||"Continue")).join("\n");
+  status.textContent="Offline road route ready · "+km.toFixed(1)+" km · about "+minutes+" min\n"+instructions;
+ }catch(e){status.textContent="Offline route unavailable: "+(e.message||"The road route could not be displayed.");}
+};
 function showInAppDirections(name){
  const p=all().find(x=>x.name===name);if(!p||!map)return;
  const valid=p.lat!==null&&p.lat!==undefined&&p.lat!==""&&p.lon!==null&&p.lon!==""&&Number.isFinite(Number(p.lat))&&Number.isFinite(Number(p.lon));
