@@ -68,6 +68,37 @@ jobs:
           test -s "$RUNNER_TEMP/canberra-explorer-release.jks"
           echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/canberra-explorer-release.jks" >> "$GITHUB_ENV"
 
+      - name: Build bundled Canberra offline routing data
+        run: |
+          set -euo pipefail
+          mkdir -p .offline-routing app/src/main/assets
+          curl --fail --location --retry 3 --retry-delay 2 \
+            https://download.bbbike.org/osm/bbbike/Canberra/Canberra.osm.pbf \
+            --output .offline-routing/Canberra.osm.pbf
+          docker pull ghcr.io/valhalla/valhalla:latest
+          docker run --rm --entrypoint /bin/sh \
+            -v "$PWD/.offline-routing:/data" \
+            ghcr.io/valhalla/valhalla:latest -c '
+              set -e
+              mkdir -p /data/tiles
+              valhalla_build_config \
+                --mjolnir-tile-dir /data/tiles \
+                --mjolnir-tile-extract /data/valhalla_tiles.tar \
+                --mjolnir-timezone /data/tz_world.sqlite \
+                --mjolnir-admin /data/admin.sqlite > /data/valhalla.json
+              valhalla_build_timezones > /data/tz_world.sqlite
+              valhalla_build_admins -c /data/valhalla.json /data/Canberra.osm.pbf
+              valhalla_build_tiles -c /data/valhalla.json /data/Canberra.osm.pbf
+              valhalla_build_extract -c /data/valhalla.json -v
+            '
+          test -s .offline-routing/valhalla_tiles.tar
+          test -s .offline-routing/admin.sqlite
+          test -s .offline-routing/tz_world.sqlite
+          cp .offline-routing/valhalla_tiles.tar app/src/main/assets/
+          cp .offline-routing/admin.sqlite app/src/main/assets/
+          cp .offline-routing/tz_world.sqlite app/src/main/assets/
+          du -h app/src/main/assets/valhalla_tiles.tar app/src/main/assets/admin.sqlite app/src/main/assets/tz_world.sqlite
+
       - name: Build signed release APK
         env:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
