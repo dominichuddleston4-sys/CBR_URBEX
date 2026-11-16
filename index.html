@@ -598,7 +598,7 @@ function getPlaceDirections(name,lat,lon,area,mode){
  const destination=hasCoords?Number(lat)+","+Number(lon):name+" "+area+" Canberra ACT";
  if(navigator.onLine){
   const url="https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(destination)+"&travelmode="+(mode==="walking"?"walking":"driving");
-  window.open(url,"_blank","noopener");return;
+  window.location.href=url;return;
  }
  if(window.CanberraNative&&typeof CanberraNative.openOfflineDirections==="function"){
   const features=all().filter(p=>p.lat!==null&&p.lat!==undefined&&p.lat!==""&&p.lon!==null&&p.lon!==undefined&&p.lon!==""&&Number.isFinite(Number(p.lat))&&Number.isFinite(Number(p.lon))).map(p=>({type:"Feature",geometry:{type:"Point",coordinates:[Number(p.lon),Number(p.lat)]},properties:{name:p.name,status:p.status||"Research lead"}}));
