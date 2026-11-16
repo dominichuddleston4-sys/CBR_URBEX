@@ -3,6 +3,8 @@ package au.com.canberraexplorer.app;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.location.Location;
+import android.location.LocationManager;
 import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
@@ -16,6 +18,8 @@ import android.widget.Toast;
 import org.json.JSONObject;
 import org.maplibre.android.MapLibre;
 import org.maplibre.android.camera.CameraPosition;
+import org.maplibre.android.camera.CameraUpdateFactory;
+import org.maplibre.android.maps.MapLibreMap;
 import org.maplibre.android.geometry.LatLng;
 import org.maplibre.android.geometry.LatLngBounds;
 import org.maplibre.android.maps.MapView;
@@ -46,6 +50,8 @@ public class OfflineMapActivity extends Activity {
     private TextView status;
     private Spinner regionPicker;
     private OfflineRegion activeRegion;
+    private MapLibreMap nativeMap;
+    private static final int LOCATION_PERMISSION_REQUEST = 73;
 
     private static final String[] REGIONS = {
         "Central ACT", "North ACT", "South ACT", "West ACT", "East ACT"
@@ -77,7 +83,7 @@ public class OfflineMapActivity extends Activity {
         root.addView(heading);
 
         TextView intro = new TextView(this);
-        intro.setText("Download Canberra areas while online, then reopen this map without internet. Save multiple areas, one download at a time. Each area is capped at 3,000 tiles and 50 MB. Only saved locations with coordinates appear as pins; unverified leads remain in the list.");
+        intro.setText("Download Canberra areas while online, then reopen saved map tiles without internet. Save multiple areas, one download at a time. Each area is capped at 3,000 tiles and 50 MB. GPS positioning works without mobile data when your phone can get a satellite fix. Offline driving and walking routes use the road data bundled in this test build. A GPS fix and verified destination coordinates are required. Road data © OpenStreetMap contributors. Only saved locations with coordinates appear as pins; unverified leads remain in the list.");
         intro.setTextColor(Color.LTGRAY);
         intro.setTextSize(13);
         intro.setPadding(16, 0, 16, 10);
@@ -110,6 +116,11 @@ public class OfflineMapActivity extends Activity {
             LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
         controls.addView(buttons);
 
+        Button myLocation = new Button(this);
+        myLocation.setText("◎ My GPS location");
+        myLocation.setOnClickListener(v -> showMyLocation());
+        controls.addView(myLocation);
+
         status = new TextView(this);
         status.setTextColor(Color.WHITE);
         status.setTextSize(12);
@@ -124,6 +135,8 @@ public class OfflineMapActivity extends Activity {
         setContentView(root);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(map -> {
+            nativeMap = map;
+            map.getUiSettings().setCompassEnabled(true);
             String placesGeoJson = getIntent().getStringExtra("places_geojson");
             map.setStyle(new Style.Builder().fromUri(STYLE_URL), style -> addPlacePins(style, placesGeoJson));
             map.setCameraPosition(new CameraPosition.Builder()
@@ -264,6 +277,51 @@ public class OfflineMapActivity extends Activity {
                     runOnUiThread(() -> status.setText("Could not start download: " + error));
                 }
             });
+    }
+
+
+    private void showMyLocation() {
+        if (checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != android.content.pm.PackageManager.PERMISSION_GRANTED
+            && checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] {
+                android.Manifest.permission.ACCESS_FINE_LOCATION,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+            }, LOCATION_PERMISSION_REQUEST);
+            return;
+        }
+        if (nativeMap == null) {
+            status.setText("The map is still loading. Try again in a moment.");
+            return;
+        }
+        try {
+            LocationManager manager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            Location best = null;
+            for (String provider : manager.getProviders(true)) {
+                Location candidate = manager.getLastKnownLocation(provider);
+                if (candidate != null && (best == null || candidate.getTime() > best.getTime())) best = candidate;
+            }
+            if (best == null) {
+                status.setText("No recent GPS fix yet. Move outdoors and try again. GPS can work without mobile data.");
+                return;
+            }
+            nativeMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(best.getLatitude(), best.getLongitude()), 15.0));
+            status.setText("Showing your last known GPS position. Accuracy: about " + Math.round(best.getAccuracy()) + " m.");
+        } catch (SecurityException error) {
+            status.setText("Location permission is needed to show your position.");
+        } catch (Exception error) {
+            status.setText("Could not read GPS location. Check that Location is enabled on your phone.");
+        }
+    }
+
+    @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST) {
+            boolean granted = false;
+            for (int result : grantResults) if (result == android.content.pm.PackageManager.PERMISSION_GRANTED) granted = true;
+            if (granted) showMyLocation();
+            else status.setText("Location permission was not granted. You can still browse saved offline map areas.");
+        }
     }
 
     private void refreshOfflineStatus() {

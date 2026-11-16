@@ -58,6 +58,16 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import com.squareup.moshi.Moshi;
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory;
+import com.valhalla.valhalla.Valhalla;
+import com.valhalla.valhalla.config.ValhallaConfigFactory;
+import com.valhalla.config.models.ValhallaConfig;
 
 public class MainActivity extends Activity {
     private static final int LOCATION_REQUEST = 42;
@@ -78,6 +88,8 @@ public class MainActivity extends Activity {
     private volatile boolean updateCheckRunning = false;
     private DownloadManager downloadManager;
     private BroadcastReceiver downloadReceiver;
+    private final ExecutorService offlineRouteExecutor = Executors.newSingleThreadExecutor();
+    private Valhalla offlineValhalla;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,6 +200,26 @@ public class MainActivity extends Activity {
                 Intent intent = new Intent(MainActivity.this, OfflineMapActivity.class);
                 if (placesGeoJson != null && placesGeoJson.length() <= 2000000) intent.putExtra("places_geojson", placesGeoJson);
                 runOnUiThread(() -> startActivity(intent));
+            }
+
+            @JavascriptInterface public void getOfflineRoute(double startLat, double startLon,
+                    double endLat, double endLon, String costing, String callbackId) {
+                if (callbackId == null || !callbackId.matches("[A-Za-z0-9_-]{1,64}")) return;
+                if (!validRouteCoordinate(startLat, startLon) || !validRouteCoordinate(endLat, endLon)) {
+                    sendOfflineRouteCallback(callbackId, null, "A valid GPS position and verified destination are required.");
+                    return;
+                }
+                final String routeCosting = "pedestrian".equals(costing) ? "pedestrian" : "auto";
+                offlineRouteExecutor.execute(() -> {
+                    try {
+                        String response = calculateOfflineRoute(startLat, startLon, endLat, endLon, routeCosting);
+                        sendOfflineRouteCallback(callbackId, response, null);
+                    } catch (Exception error) {
+                        String message = error.getMessage();
+                        if (message == null || message.trim().isEmpty()) message = "Offline route calculation failed.";
+                        sendOfflineRouteCallback(callbackId, null, message);
+                    }
+                });
             }
 
             @JavascriptInterface public void openPhotoPicker(String locationId, String caption, String callbackId) {
@@ -364,6 +396,82 @@ public class MainActivity extends Activity {
         webView.loadUrl(getString(R.string.app_web_url));
     }
 
+
+    private boolean validRouteCoordinate(double lat, double lon) {
+        return Double.isFinite(lat) && Double.isFinite(lon)
+            && lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180;
+    }
+
+    private void sendOfflineRouteCallback(String callbackId, String response, String error) {
+        if (webView == null || callbackId == null) return;
+        String js = "window.onNativeOfflineRoute && window.onNativeOfflineRoute("
+            + JSONObject.quote(callbackId) + ","
+            + (response == null ? "null" : JSONObject.quote(response)) + ","
+            + (error == null ? "null" : JSONObject.quote(error)) + ");";
+        runOnUiThread(() -> {
+            if (webView != null) webView.evaluateJavascript(js, null);
+        });
+    }
+
+    private synchronized String calculateOfflineRoute(double startLat, double startLon,
+            double endLat, double endLon, String costing) throws Exception {
+        if (offlineValhalla == null) {
+            File dataDir = new File(getFilesDir(), "valhalla");
+            if (!dataDir.exists() && !dataDir.mkdirs()) throw new IllegalStateException("Could not prepare offline routing storage.");
+            File tiles = new File(dataDir, "valhalla_tiles.tar");
+            File admins = new File(dataDir, "admin.sqlite");
+            File timezones = new File(dataDir, "tz_world.sqlite");
+            copyRoutingAssetIfNeeded("valhalla_tiles.tar", tiles);
+            copyRoutingAssetIfNeeded("admin.sqlite", admins);
+            copyRoutingAssetIfNeeded("tz_world.sqlite", timezones);
+
+            InputStream defaults = Valhalla.class.getResourceAsStream("/com/valhalla/valhalla/default.json");
+            if (defaults == null) throw new IllegalStateException("The offline routing configuration is missing.");
+            String configJson;
+            try (InputStream input = defaults; ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+                byte[] buffer = new byte[16384];
+                int count;
+                while ((count = input.read(buffer)) != -1) output.write(buffer, 0, count);
+                configJson = output.toString("UTF-8");
+            }
+            configJson = configJson
+                .replace("\"tile_dir\": \"/data/valhalla\"", "\"tile_dir\": \"" + jsonPath(dataDir.getAbsolutePath()) + "\"")
+                .replace("\"tile_extract\": \"/data/valhalla/tiles.tar\"", "\"tile_extract\": \"" + jsonPath(tiles.getAbsolutePath()) + "\"")
+                .replace("\"admin\": \"/data/valhalla/admin.sqlite\"", "\"admin\": \"" + jsonPath(admins.getAbsolutePath()) + "\"")
+                .replace("\"timezone\": \"/data/valhalla/tz_world.sqlite\"", "\"timezone\": \"" + jsonPath(timezones.getAbsolutePath()) + "\"");
+            Moshi moshi = new Moshi.Builder().add(new KotlinJsonAdapterFactory()).build();
+            ValhallaConfig config = ValhallaConfigFactory.INSTANCE.fromJson(configJson, moshi);
+            offlineValhalla = new Valhalla(this, config);
+        }
+
+        JSONArray locations = new JSONArray();
+        locations.put(new JSONObject().put("lat", startLat).put("lon", startLon).put("type", "break"));
+        locations.put(new JSONObject().put("lat", endLat).put("lon", endLon).put("type", "break"));
+        JSONObject request = new JSONObject()
+            .put("locations", locations)
+            .put("costing", costing)
+            .put("units", "kilometers")
+            .put("directions_options", new JSONObject().put("units", "kilometers"));
+        return offlineValhalla.routeRaw(request.toString());
+    }
+
+    private void copyRoutingAssetIfNeeded(String assetName, File destination) throws Exception {
+        if (destination.isFile() && destination.length() > 0) return;
+        try (InputStream input = getAssets().open(assetName);
+             FileOutputStream output = new FileOutputStream(destination)) {
+            byte[] buffer = new byte[32768];
+            int count;
+            while ((count = input.read(buffer)) != -1) output.write(buffer, 0, count);
+            output.getFD().sync();
+        } catch (Exception error) {
+            destination.delete();
+            throw new IllegalStateException("This test build does not contain the Canberra offline road data (" + assetName + "). Rebuild the test APK with the routing-data step enabled.", error);
+        }
+    }
+
+    private String jsonPath(String path) {
+        return path.replace("\\", "\\\\").replace("\"", "\\\"");
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -609,6 +717,11 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        offlineRouteExecutor.shutdownNow();
+        if (offlineValhalla != null) {
+            try { offlineValhalla.close(); } catch (Exception ignored) { }
+            offlineValhalla = null;
+        }
         if (downloadReceiver != null) {
             try { unregisterReceiver(downloadReceiver); } catch (Exception ignored) { }
         }

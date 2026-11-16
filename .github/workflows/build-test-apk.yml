@@ -3,7 +3,7 @@ name: Build and publish Canberra Explorer APK
 on:
   workflow_dispatch:
   push:
-    branches: [main, feature/2.0-completion, feature/2.0.5-photo-galleries, feature/iphone-matched-android-ui, release/2-0-half-iphone-menu]
+    branches: [main, feature/2.0-completion, feature/2.0.5-photo-galleries, feature/iphone-matched-android-ui, release/2-0-half-iphone-menu, feature/offline-improvements-test]
     paths:
       - 'app/**'
       - 'build.gradle'
@@ -49,12 +49,12 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: '21'
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.9'
+          gradle-version: '8.11.1'
 
       - name: Prepare permanent signing key
         env:
@@ -68,6 +68,70 @@ jobs:
           test -s "$RUNNER_TEMP/canberra-explorer-release.jks"
           echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/canberra-explorer-release.jks" >> "$GITHUB_ENV"
 
+      - name: Build bundled Canberra offline routing data
+        run: |
+          set -euo pipefail
+          mkdir -p .offline-routing app/src/main/assets
+          curl --fail --location --retry 3 --retry-delay 2 \
+            https://download.bbbike.org/osm/bbbike/Canberra/Canberra.osm.pbf \
+            --output .offline-routing/Canberra.osm.pbf
+          docker pull ghcr.io/valhalla/valhalla-scripted:3.9.1
+          docker run --rm --entrypoint /bin/sh \
+            -v "$PWD/.offline-routing:/data" \
+            ghcr.io/valhalla/valhalla-scripted:3.9.1 -c '
+              set -e
+              mkdir -p /data/tiles
+              valhalla_build_config \
+                --mjolnir-tile-dir /data/tiles \
+                --mjolnir-tile-extract /data/valhalla_tiles.tar \
+                --mjolnir-timezone /data/tz_world.sqlite \
+                --mjolnir-admin /data/admin.sqlite > /data/valhalla.json
+              valhalla_build_timezones > /data/tz_world.sqlite
+              valhalla_build_admins -c /data/valhalla.json /data/Canberra.osm.pbf
+              valhalla_build_tiles -c /data/valhalla.json /data/Canberra.osm.pbf
+              valhalla_build_extract -c /data/valhalla.json -v
+              valhalla_service /data/valhalla.json 1 >/data/valhalla-service.log 2>&1 &
+              service_pid=$!
+              trap "kill $service_pid 2>/dev/null || true" EXIT
+              python3 - <<PY
+          import json, time, urllib.request
+          for attempt in range(60):
+              try:
+                  urllib.request.urlopen("http://127.0.0.1:8002/status", timeout=2).read()
+                  break
+              except Exception:
+                  if attempt == 59:
+                      raise RuntimeError("Valhalla service did not start; see valhalla-service.log")
+                  time.sleep(1)
+          for costing in ("auto", "pedestrian"):
+              payload = {
+                  "locations": [
+                      {"lat": -35.28, "lon": 149.13, "type": "break"},
+                      {"lat": -35.30, "lon": 149.14, "type": "break"}
+                  ],
+                  "costing": costing,
+                  "units": "kilometers",
+                  "directions_options": {"units": "kilometers"}
+              }
+              request = urllib.request.Request(
+                  "http://127.0.0.1:8002/route",
+                  data=json.dumps(payload).encode(),
+                  headers={"Content-Type": "application/json"}
+              )
+              result = json.loads(urllib.request.urlopen(request, timeout=30).read())
+              if not result.get("trip", {}).get("legs", [{}])[0].get("shape"):
+                  raise RuntimeError("No " + costing + " road route returned: " + json.dumps(result)[:1000])
+              print(costing + " offline route smoke test passed")
+          PY
+            '
+          test -s .offline-routing/valhalla_tiles.tar
+          test -s .offline-routing/admin.sqlite
+          test -s .offline-routing/tz_world.sqlite
+          cp .offline-routing/valhalla_tiles.tar app/src/main/assets/
+          cp .offline-routing/admin.sqlite app/src/main/assets/
+          cp .offline-routing/tz_world.sqlite app/src/main/assets/
+          du -h app/src/main/assets/valhalla_tiles.tar app/src/main/assets/admin.sqlite app/src/main/assets/tz_world.sqlite
+
       - name: Build signed release APK
         env:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
@@ -75,7 +139,7 @@ jobs:
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
           APP_VERSION_CODE: ${{ github.run_number }}
           APP_VERSION_NAME: ${{ github.ref == 'refs/heads/main' && '2.0½' || (github.ref == 'refs/heads/feature/2.0.5-photo-galleries' && '2.0½-test' || (github.ref == 'refs/heads/release/2-0-half-iphone-menu' && '2.0½-release-test' || (github.ref == 'refs/heads/feature/iphone-matched-android-ui' && '2.0½-iphone-test' || format('1.{0}', github.run_number)))) }}
-          APP_WEB_URL: ${{ github.ref == 'refs/heads/feature/2.0.5-photo-galleries' && 'https://deploy-preview-7--cbrurbex.netlify.app/' || (github.ref == 'refs/heads/feature/iphone-matched-android-ui' && 'https://deploy-preview-10--cbrurbex.netlify.app/' || (github.ref == 'refs/heads/release/2-0-half-iphone-menu' && 'https://deploy-preview-11--cbrurbex.netlify.app/' || 'https://dominichuddleston4-sys.github.io/CBR_URBEX/')) }}
+          APP_WEB_URL: ${{ github.ref == 'refs/heads/feature/2.0.5-photo-galleries' && 'https://deploy-preview-7--cbrurbex.netlify.app/' || (github.ref == 'refs/heads/feature/iphone-matched-android-ui' && 'https://deploy-preview-10--cbrurbex.netlify.app/' || (github.ref == 'refs/heads/release/2-0-half-iphone-menu' && 'https://deploy-preview-11--cbrurbex.netlify.app/' || (github.ref == 'refs/heads/feature/offline-improvements-test' && 'https://deploy-preview-14--cbrurbex.netlify.app/' || 'https://dominichuddleston4-sys.github.io/CBR_URBEX/'))) }}
         run: |
           gradle --no-daemon --stacktrace --info -PappVersionCode="$APP_VERSION_CODE" -PappVersionName="$APP_VERSION_NAME" -PappWebUrl="$APP_WEB_URL" assembleRelease
           mkdir -p release
