@@ -12,10 +12,10 @@
     "notes": "Distinctive three-pod, space-age office complex built between 1977 and 1981 and later used by Woden TAFE. The buildings have been empty since mid-2025. In September 2026, reporting on an ACT Legislative Assembly hearing said the Government was considering selling the site and that major refurbishment would be costly. This is a street-view research stop only: do not enter the buildings or grounds, which may be unsafe or restricted. Confirm current redevelopment status before visiting. Source: https://region.com.au/government-wants-to-offload-heritage-listed-woden-landmark-eyes-adaptive-reuse/996239/"
   },
   {
-    "name": "91A Wakefield Gardens — Vacant Government Building",
+    "name": "91A Wakefield Gardens — Former Site (Demolished)",
     "area": "91A Wakefield Gardens, Ainslie ACT 2602 — view from the public street only.",
-    "status": "Long-term vacant government building — not fit for occupation",
-    "notes": "An obscure former government property reported vacant for more than 20 years. An ACT Government answer to a 2025 Estimates question said the building was not fit for occupation because of hazardous materials including asbestos and lead paint, and that a future use was being assessed. The building itself was described as being in very poor condition and unlikely to be reusable. Do not enter or approach the structure; view only from public space. Source: https://www.parliament.act.gov.au/__data/assets/pdf_file/0009/2902266/QON-215-Answer-iCBR-Planning-Property-at-Wakefield-Gardens-LEE.pdf"
+    "status": "Demolished — former vacant government building site; no standing building",
+    "notes": "The former government building at 91A Wakefield Gardens was demolished. ACT Government information confirms demolition has been completed and landscaping is planned/underway. Keep this entry for historical map context only; there is no abandoned building remaining at this address. Do not treat the site as an urbex destination. Sources: https://www.cityservices.act.gov.au/Infrastructure-Projects/city-inner-north-and-inner-south/landscape-improvements-at-91a-wakefield-gardens ; https://yoursayconversations.act.gov.au/shaping-future-91a-wakefield-gardens-ainslie"
   },
   {
     "name": "Former CSIRO Forestry Site",
@@ -80,5 +80,23 @@
     "area": "60 Chandler Street, Belconnen ACT 2617 — public paths only; this entry refers to Wing 3, not the entire complex.",
     "status": "Former government office wing — reported vacant; other parts of Cameron Offices remain in use or have been adaptively reused",
     "notes": "Cameron Offices is a large heritage-listed office complex with multiple wings. ACT Heritage background material for the 2026 provisional registration process describes Wing 3 as vacant, while other surviving wings have been reused, including for student accommodation. This is a partial-vacancy research entry, not a claim that the entire complex is abandoned or unusable. View from public areas only; do not enter buildings or private grounds. Source: https://www.legislation.act.gov.au/ni/2026-436/"
+  },
+  {
+    "name": "Former Canberra City Bowls Club — Braddon Former Site",
+    "area": "Block 16 Section 25, Braddon ACT — former bowls club site near Elder Street; view from public roads only.",
+    "status": "Former bowls club site — club facilities demolished in 2020; vacant land, redevelopment proposals considered",
+    "notes": "The Canberra City / former Braddon Bowls Club closed in 2018. The ACT Government confirmed that the club facilities were demolished in 2020 and the site was vacant. Planning inquiries in 2026 considered proposed redevelopment, but this is a former-site record, not a standing abandoned building. Do not enter the privately controlled land or any work area. Sources: https://www.hansard.act.gov.au/hansard/11th-assembly/2026/PDF/tP260915.pdf ; https://region.com.au/committee-rejects-rezoning-plan-for-former-braddon-bowls-site/998733/"
+  },
+  {
+    "name": "Former Causeway Childcare Centre — Kingston Former Site",
+    "area": "Causeway, Kingston ACT — former childcare centre adjacent to Causeway Hall; view from public streets only.",
+    "status": "Former childcare facility — demolition commenced in 2025; current completion / standing status not independently confirmed",
+    "notes": "The former Causeway Childcare Centre was identified for demolition as part of works in the East Lake / Causeway area. ACT Government parliamentary answers in 2025 reported that demolition of the childcare centre and Newcastle House had commenced. This entry records the former facility and demolition history only; do not assume a building remains or enter any construction/remediation area. No map pin supplied because the exact current footprint and status have not been confirmed. Sources: https://www.cmtedd.act.gov.au/__data/assets/pdf_file/0019/3022192/2025-423-.pdf ; https://www.parliament.act.gov.au/__data/assets/pdf_file/0005/2904575/QON-378-Answer-Suburban-Land-Agency-East-Lake-Demolition-of-Buildings-RATTENBURY.pdf"
+  },
+  {
+    "name": "Former Newcastle House / Weights and Measures Building — Kingston Former Site",
+    "area": "Eyre Street, Causeway / Kingston ACT — former ACT Weights and Measures building; view from public streets only.",
+    "status": "Former government building — fire-damaged in 2025; demolition commenced in 2025; current completion / standing status not independently confirmed",
+    "notes": "The former Newcastle House / ACT Weights and Measures building was reported vacant and fire-damaged in August 2025. ACT Government parliamentary answers later stated that demolition had commenced. This is a former-site record only, not confirmation that an intact abandoned building remains. Do not enter the site or any demolition/remediation area. No map pin supplied because the exact current footprint and status have not been confirmed. Sources: https://region.com.au/suspicious-dumpster-fire-damages-abandoned-building-in-kingston/ ; https://www.cmtedd.act.gov.au/__data/assets/pdf_file/0019/3022192/2025-423-.pdf ; https://www.parliament.act.gov.au/__data/assets/pdf_file/0005/2904575/QON-378-Answer-Suburban-Land-Agency-East-Lake-Demolition-of-Buildings-RATTENBURY.pdf"
   }
 ]
