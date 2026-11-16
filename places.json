@@ -3,7 +3,8 @@
     "name": "Old Canberra Brickworks (Yarralumla Brickworks)",
     "area": "Yarralumla — Section 102, Block 1; public-road vicinity via Denman Street",
     "status": "Disused historic industrial site — access not confirmed; permission required",
-    "notes": "Historic brickworks established in 1913, production began in 1916 and ceased in 1976. ACT heritage-listed. An ACT Government transport report describes the site as not in operation and notes access was provided off Denman Street; this is not permission to enter and the site may be redeveloped or restricted. View only from public roads unless the land manager confirms lawful public access. No precise pin supplied because visitor access is not confirmed. Checked 12 Nov 2026. Sources: https://www.act.gov.au/__data/assets/pdf_file/0009/1945872/canberra-brickworks-precinct-conservation-management-plan-2021-volume-1.pdf ; https://www.legislation.act.gov.au/DownloadFile/di/2021-195/current/PDF/2021-195.PDF ; https://dafinder.blob.core.windows.net/dadocuments/DOCs/TRAFFICREPORT-202342069-01.pdf"
+    "notes": "Historic brickworks established in 1913, production began in 1916 and ceased in 1976. ACT heritage-listed. An ACT Government transport report describes the site as not in operation and notes access was provided off Denman Street; this is not permission to enter and the site may be redeveloped or restricted. View only from public roads unless the land manager confirms lawful public access. No precise pin supplied because visitor access is not confirmed. Checked 12 Nov 2026. Sources: https://www.act.gov.au/__data/assets/pdf_file/0009/1945872/canberra-brickworks-precinct-conservation-management-plan-2021-volume-1.pdf ; https://www.legislation.act.gov.au/DownloadFile/di/2021-195/current/PDF/2021-195.PDF ; https://dafinder.blob.core.windows.net/dadocuments/DOCs/TRAFFICREPORT-202342069-01.pdf",
+    "confirmedLocation": true
   },
   {
     "name": "Callam Offices (Former Woden TAFE Complex)",
@@ -11,19 +12,22 @@
     "status": "Closed / vacant government office and education complex — redevelopment plans under consideration",
     "notes": "Distinctive three-pod, space-age office complex built between 1977 and 1981 and later used by Woden TAFE. The buildings have been empty since mid-2025. In September 2026, reporting on an ACT Legislative Assembly hearing said the Government was considering selling the site and that major refurbishment would be costly. This is a street-view research stop only: do not enter the buildings or grounds, which may be unsafe or restricted. Confirm current redevelopment status before visiting. Source: https://region.com.au/government-wants-to-offload-heritage-listed-woden-landmark-eyes-adaptive-reuse/996239/",
     "lat": -35.34314,
-    "lon": 149.08903
+    "lon": 149.08903,
+    "confirmedLocation": true
   },
   {
     "name": "91A Wakefield Gardens — Former Site (Demolished)",
     "area": "91A Wakefield Gardens, Ainslie ACT 2602 — view from the public street only.",
     "status": "Demolished — former vacant government building site; no standing building",
-    "notes": "The former government building at 91A Wakefield Gardens was demolished. ACT Government information confirms demolition has been completed and landscaping is planned/underway. Keep this entry for historical map context only; there is no abandoned building remaining at this address. Do not treat the site as an urbex destination. Sources: https://www.cityservices.act.gov.au/Infrastructure-Projects/city-inner-north-and-inner-south/landscape-improvements-at-91a-wakefield-gardens ; https://yoursayconversations.act.gov.au/shaping-future-91a-wakefield-gardens-ainslie"
+    "notes": "The former government building at 91A Wakefield Gardens was demolished. ACT Government information confirms demolition has been completed and landscaping is planned/underway. Keep this entry for historical map context only; there is no abandoned building remaining at this address. Do not treat the site as an urbex destination. Sources: https://www.cityservices.act.gov.au/Infrastructure-Projects/city-inner-north-and-inner-south/landscape-improvements-at-91a-wakefield-gardens ; https://yoursayconversations.act.gov.au/shaping-future-91a-wakefield-gardens-ainslie",
+    "confirmedLocation": true
   },
   {
     "name": "Former CSIRO Forestry Site",
     "area": "Former CSIRO campus, Yarralumla ACT — use public roads only; some buildings may still be occupied.",
     "status": "Former research campus — largely vacated, some private offices remain",
-    "notes": "A lesser-known former research and forestry campus. The CSIRO vacated the Yarralumla site in 2022 as it consolidated facilities in Canberra, although the National Capital Authority says small private-sector offices continue to occupy some buildings. Included as a former-use / changing-site lead, not a confirmed fully abandoned location. Do not enter buildings or private grounds. Source: https://www.nca.gov.au/planning/public-consultations/national-capital-plan-draft-amendment-97-block-7-section-4-yarralumla"
+    "notes": "A lesser-known former research and forestry campus. The CSIRO vacated the Yarralumla site in 2022 as it consolidated facilities in Canberra, although the National Capital Authority says small private-sector offices continue to occupy some buildings. Included as a former-use / changing-site lead, not a confirmed fully abandoned location. Do not enter buildings or private grounds. Source: https://www.nca.gov.au/planning/public-consultations/national-capital-plan-draft-amendment-97-block-7-section-4-yarralumla",
+    "confirmedLocation": true
   },
   {
     "name": "Former Kaleen Indoor Sports Centre",
@@ -31,7 +35,8 @@
     "status": "Closed 2 October 2026 — former indoor sports facility; redevelopment / demolition planned",
     "notes": "Former Kaleen Indoor Sports Centre, also known as Kaleen Indoor Recreation Centre. The historic address is 16 Georgina Crescent, Kaleen ACT 2617. The centre closed on 2 October 2026 and the site owner planned demolition and redevelopment with residential buildings and a smaller indoor sports facility. This is a former-site entry for local history and mapping only; do not enter the property or any demolition / construction area. View only from public space. Sources: https://region.com.au/petitions-couldnt-save-kaleen-indoor-sports-centre-now-it-prepares-for-demolition/1000010/ ; https://www.sport.act.gov.au/__data/assets/pdf_file/0017/811331/ACT-Indoor-Facilities-Combined-Document.pdf Map pin uses the published address coordinates; pin marks the former site, not an invitation to enter.",
     "lat": -35.2212157,
-    "lon": 149.1023104
+    "lon": 149.1023104,
+    "confirmedLocation": true
   },
   {
     "name": "Former Vikings Chisholm Club",
@@ -39,7 +44,8 @@
     "status": "Permanently closed — vacant former club building; sale or lease listing",
     "notes": "The former Vikings Chisholm Club closed in January 2026. Commercial property listings describe the approximately 2,000 m² building as vacant and offered for sale or lease, with 116 car spaces. This is a former club / community facility and a strong match for the app. The pin is approximate to the published street address; view only from public areas and do not enter the privately owned site. Sources: https://region.com.au/rare-opportunity-former-vikings-chisholm-club-listed-for-sale-or-lease/960338/ ; https://www.commercialrealestate.com.au/property/12-benham-street-chisholm-act-2905-2020778297",
     "lat": -35.41348,
-    "lon": 149.1277
+    "lon": 149.1277,
+    "confirmedLocation": true
   },
   {
     "name": "Infrastructure House",
@@ -47,7 +53,8 @@
     "status": "Former government office — vacant possession offered; future reuse or redevelopment proposed",
     "notes": "The Department of Infrastructure vacated the building in 2026 during its office consolidation. The eight-level, approximately 16,413 m² office building was listed for sale with vacant possession and potential for adaptive reuse or redevelopment. Included as a large closed building of interest, not as an accessible urbex site. View from public footpaths only; do not enter. Sources: https://region.com.au/adaptive-reuse-on-cards-for-infrastructures-perfectly-positioned-former-home/1003732/ ; https://www.colliers.com.au/en-au/properties/a-commanding-cbd-asset-poised-for-repositioning/aus-111-alinga-street-city-act-2601/ ; https://www.inkl.com/news/infrastructure-house-hits-market-as-department-consolidation-begins",
     "lat": -35.2783141,
-    "lon": 149.13001543
+    "lon": 149.13001543,
+    "confirmedLocation": true
   },
   {
     "name": "Ginninderra Village — Former Village Buildings",
@@ -55,7 +62,8 @@
     "status": "Former village precinct — six buildings offered with vacant possession; current occupancy to be rechecked",
     "notes": "The historic Ginninderra Village site comprises six single-level buildings totalling about 800 m², including the heritage-listed schoolhouse and residence. A commercial listing stated that none of the buildings were occupied and that the property was offered with vacant possession. The wider Gold Creek precinct remains an active visitor destination, so this entry refers only to the listed Ginninderra Village property, not the whole precinct. The latest listing does not prove the site is still vacant today; treat as a research lead and check current access/status before visiting. Privately owned: no entry without permission. Sources: https://www.realcommercial.com.au/for-sale/property-ginninderra-village-11-o-hanlon-place-nicholls-act-2913-505000064 ; https://property.ljhooker.com.au/commercial-nicholls-act-hotel-leisure-11-o-hanlon-place-48ahxw ; https://www.canberratracks.act.gov.au/heritage-trails/track-5-gungahlin/ginninderra-village",
     "lat": -35.186,
-    "lon": 149.092
+    "lon": 149.092,
+    "confirmedLocation": true
   },
   {
     "name": "Former Hellenic Club in the City",
@@ -63,7 +71,8 @@
     "status": "Closed former club venue — future tenancy / reuse status unconfirmed",
     "notes": "The Hellenic Club's City venue closed in May 2026. The premises have been marketed as a fitted hospitality venue for lease, so this is recorded as a closed former venue rather than confirmed abandoned or vacant. Building remains at the address according to current business/property listings. View from public footpaths only; do not enter. Check for a new tenant before treating it as abandoned. Sources: https://www.hellenicclub.com.au/club-news/cityclubclosure ; https://region.com.au/hellenic-club-to-close-city-venue-to-focus-on-woden-expansion/956979/",
     "lat": -35.2767035,
-    "lon": 149.12829785
+    "lon": 149.12829785,
+    "confirmedLocation": true
   },
   {
     "name": "Former YMCA Auxiliary Hall",
@@ -71,37 +80,43 @@
     "status": "Disused community hall — no longer suitable for occupation; demolition application lodged November 2026, decision pending",
     "notes": "The former YMCA-leased community hall has reportedly not been used since 2013 and is in a state of disrepair. In November 2026 the ACT Government lodged development application 202645710 to demolish the hall and remediate the site. The application was open for public notification until 25 November 2026, so this entry records the building as standing pending the outcome and works. Do not enter; view only from public space. Sources: https://yra.org.au/latest-news/show/144 ; https://www.planningalerts.org.au/applications/3588249",
     "lat": -35.30691,
-    "lon": 149.10005
+    "lon": 149.10005,
+    "confirmedLocation": true
   },
   {
     "name": "City Health Building — Closed Lower Levels",
     "area": "1 Moore Street, Canberra City ACT 2601 — view from public footpaths only.",
     "status": "Partially closed due to asbestos contamination — ground floor and levels 1–2 closed indefinitely; upper levels partly reoccupied",
-    "notes": "Asbestos-containing material was identified in non-occupied areas in June 2026. Following remediation, some tenants were permitted to reoccupy levels 3, 4 and 5 from 7 September 2026. The ground floor, level 1 and level 2 remained closed indefinitely in the ACT Government's 1 September update. This is a partial-building closure, not a fully abandoned building. Do not enter restricted areas or approach work zones. Sources: https://www.cmtedd.act.gov.au/open_government/inform/act_government_media_releases/infrastructure-canberra/2026/update-on-city-health-building-at-1-moore-street2 ; https://region.com.au/city-health-buildings-upper-floors-cleared-of-asbestos/995035/"
+    "notes": "Asbestos-containing material was identified in non-occupied areas in June 2026. Following remediation, some tenants were permitted to reoccupy levels 3, 4 and 5 from 7 September 2026. The ground floor, level 1 and level 2 remained closed indefinitely in the ACT Government's 1 September update. This is a partial-building closure, not a fully abandoned building. Do not enter restricted areas or approach work zones. Sources: https://www.cmtedd.act.gov.au/open_government/inform/act_government_media_releases/infrastructure-canberra/2026/update-on-city-health-building-at-1-moore-street2 ; https://region.com.au/city-health-buildings-upper-floors-cleared-of-asbestos/995035/",
+    "confirmedLocation": true
   },
   {
     "name": "Cameron Offices — Wing 3",
     "area": "60 Chandler Street, Belconnen ACT 2617 — public paths only; this entry refers to Wing 3, not the entire complex.",
     "status": "Former government office wing — reported vacant; other parts of Cameron Offices remain in use or have been adaptively reused",
-    "notes": "Cameron Offices is a large heritage-listed office complex with multiple wings. ACT Heritage background material for the 2026 provisional registration process describes Wing 3 as vacant, while other surviving wings have been reused, including for student accommodation. This is a partial-vacancy research entry, not a claim that the entire complex is abandoned or unusable. View from public areas only; do not enter buildings or private grounds. Source: https://www.legislation.act.gov.au/ni/2026-436/"
+    "notes": "Cameron Offices is a large heritage-listed office complex with multiple wings. ACT Heritage background material for the 2026 provisional registration process describes Wing 3 as vacant, while other surviving wings have been reused, including for student accommodation. This is a partial-vacancy research entry, not a claim that the entire complex is abandoned or unusable. View from public areas only; do not enter buildings or private grounds. Source: https://www.legislation.act.gov.au/ni/2026-436/",
+    "confirmedLocation": true
   },
   {
     "name": "Former Canberra City Bowls Club — Braddon Former Site",
     "area": "Block 16 Section 25, Braddon ACT — former bowls club site near Elder Street; view from public roads only.",
     "status": "Former bowls club site — club facilities demolished in 2020; vacant land, redevelopment proposals considered",
-    "notes": "The Canberra City / former Braddon Bowls Club closed in 2018. The ACT Government confirmed that the club facilities were demolished in 2020 and the site was vacant. Planning inquiries in 2026 considered proposed redevelopment, but this is a former-site record, not a standing abandoned building. Do not enter the privately controlled land or any work area. Sources: https://www.hansard.act.gov.au/hansard/11th-assembly/2026/PDF/tP260915.pdf ; https://region.com.au/committee-rejects-rezoning-plan-for-former-braddon-bowls-site/998733/"
+    "notes": "The Canberra City / former Braddon Bowls Club closed in 2018. The ACT Government confirmed that the club facilities were demolished in 2020 and the site was vacant. Planning inquiries in 2026 considered proposed redevelopment, but this is a former-site record, not a standing abandoned building. Do not enter the privately controlled land or any work area. Sources: https://www.hansard.act.gov.au/hansard/11th-assembly/2026/PDF/tP260915.pdf ; https://region.com.au/committee-rejects-rezoning-plan-for-former-braddon-bowls-site/998733/",
+    "confirmedLocation": true
   },
   {
     "name": "Former Causeway Childcare Centre — Kingston Former Site",
     "area": "Causeway, Kingston ACT — former childcare centre adjacent to Causeway Hall; view from public streets only.",
     "status": "Former childcare facility — demolition commenced in 2025; current completion / standing status not independently confirmed",
-    "notes": "The former Causeway Childcare Centre was identified for demolition as part of works in the East Lake / Causeway area. ACT Government parliamentary answers in 2025 reported that demolition of the childcare centre and Newcastle House had commenced. This entry records the former facility and demolition history only; do not assume a building remains or enter any construction/remediation area. No map pin supplied because the exact current footprint and status have not been confirmed. Sources: https://www.cmtedd.act.gov.au/__data/assets/pdf_file/0019/3022192/2025-423-.pdf ; https://www.parliament.act.gov.au/__data/assets/pdf_file/0005/2904575/QON-378-Answer-Suburban-Land-Agency-East-Lake-Demolition-of-Buildings-RATTENBURY.pdf"
+    "notes": "The former Causeway Childcare Centre was identified for demolition as part of works in the East Lake / Causeway area. ACT Government parliamentary answers in 2025 reported that demolition of the childcare centre and Newcastle House had commenced. This entry records the former facility and demolition history only; do not assume a building remains or enter any construction/remediation area. No map pin supplied because the exact current footprint and status have not been confirmed. Sources: https://www.cmtedd.act.gov.au/__data/assets/pdf_file/0019/3022192/2025-423-.pdf ; https://www.parliament.act.gov.au/__data/assets/pdf_file/0005/2904575/QON-378-Answer-Suburban-Land-Agency-East-Lake-Demolition-of-Buildings-RATTENBURY.pdf",
+    "confirmedLocation": true
   },
   {
     "name": "Former Newcastle House / Weights and Measures Building — Kingston Former Site",
     "area": "Eyre Street, Causeway / Kingston ACT — former ACT Weights and Measures building; view from public streets only.",
     "status": "Former government building — fire-damaged in 2025; demolition commenced in 2025; current completion / standing status not independently confirmed",
-    "notes": "The former Newcastle House / ACT Weights and Measures building was reported vacant and fire-damaged in August 2025. ACT Government parliamentary answers later stated that demolition had commenced. This is a former-site record only, not confirmation that an intact abandoned building remains. Do not enter the site or any demolition/remediation area. No map pin supplied because the exact current footprint and status have not been confirmed. Sources: https://region.com.au/suspicious-dumpster-fire-damages-abandoned-building-in-kingston/ ; https://www.cmtedd.act.gov.au/__data/assets/pdf_file/0019/3022192/2025-423-.pdf ; https://www.parliament.act.gov.au/__data/assets/pdf_file/0005/2904575/QON-378-Answer-Suburban-Land-Agency-East-Lake-Demolition-of-Buildings-RATTENBURY.pdf"
+    "notes": "The former Newcastle House / ACT Weights and Measures building was reported vacant and fire-damaged in August 2025. ACT Government parliamentary answers later stated that demolition had commenced. This is a former-site record only, not confirmation that an intact abandoned building remains. Do not enter the site or any demolition/remediation area. No map pin supplied because the exact current footprint and status have not been confirmed. Sources: https://region.com.au/suspicious-dumpster-fire-damages-abandoned-building-in-kingston/ ; https://www.cmtedd.act.gov.au/__data/assets/pdf_file/0019/3022192/2025-423-.pdf ; https://www.parliament.act.gov.au/__data/assets/pdf_file/0005/2904575/QON-378-Answer-Suburban-Land-Agency-East-Lake-Demolition-of-Buildings-RATTENBURY.pdf",
+    "confirmedLocation": true
   },
   {
     "name": "Big Splash Waterpark — Closed / Derelict Aquatic Site",
@@ -109,42 +124,49 @@
     "status": "Waterpark closed since late 2023 — aquatic facilities remain derelict; site secured and future use unresolved",
     "notes": "Canberra's former outdoor waterpark has remained closed since late 2023. ABC reporting in September 2026 said it was unlikely to reopen for the 2026–27 summer season and that the ACT Government had commissioned an options analysis. On 1 November 2026 a temporary food stall operated briefly at the entrance to satisfy a permitted-use interpretation of the Crown lease; Access Canberra stated on 2 November that the lease was more likely than not compliant. This did not reopen the waterpark or its pools and slides. The site is privately controlled and secured; view only from public areas. Do not enter or approach gates/work areas. Sources: https://www.abc.net.au/news/2026-09-15/big-splash-will-not-open-summer-government-seeks-new-owner/107155462 ; https://www.cmtedd.act.gov.au/open_government/inform/act_government_media_releases/ce/2026/update-on-big-splash-following-1-november-deadline ; https://www.abc.net.au/news/2026-11-02/food-stall-canberra-big-splash-water-park-lease/107335556",
     "lat": -35.251,
-    "lon": 149.07
+    "lon": 149.07,
+    "confirmedLocation": true
   },
   {
     "name": "Canberra Indoor Rock Climbing — Former Mitchell Gym",
     "area": "38–40 Essington Street, Mitchell ACT 2911 — former tenancy; view from public street only.",
     "status": "Former indoor climbing gym — business closed February 2025; current building tenancy / use unconfirmed",
-    "notes": "Canberra Indoor Rock Climbing operated at its Mitchell Essington Street location from April 2023 before the owner announced closure in February 2025 after a lease-renewal issue. The climbing walls and equipment were being dismantled at the time. This entry records the former sporting venue only; it does not establish that the building is vacant or abandoned today. Check current tenancy before visiting. Do not enter private premises. Source: https://region.com.au/australias-longest-running-rock-climbing-facility-closes-after-25-years/847835/"
+    "notes": "Canberra Indoor Rock Climbing operated at its Mitchell Essington Street location from April 2023 before the owner announced closure in February 2025 after a lease-renewal issue. The climbing walls and equipment were being dismantled at the time. This entry records the former sporting venue only; it does not establish that the building is vacant or abandoned today. Check current tenancy before visiting. Do not enter private premises. Source: https://region.com.au/australias-longest-running-rock-climbing-facility-closes-after-25-years/847835/",
+    "confirmedLocation": true
   },
   {
     "name": "Former West Deakin Hellenic Bowling Club — Former Site",
     "area": "50 Kent Street, Deakin ACT 2600 — former bowling club site, now associated with the wider Deakin business precinct; public roads only.",
     "status": "Former bowling club — closed December 2014; site sold for redevelopment, not confirmed as an abandoned building",
-    "notes": "The West Deakin Hellenic Bowling Club closed in December 2014 after the site was sold to developers. ACT Government's 2021 strategic bowls review records the closure and sale; a 2019 development application sought to reposition the Crown lease and consolidate the block with adjoining Equinox Business Park. This is a historical former-club site, not a claim that the old clubhouse or greens remain. No precise map pin supplied because the original club footprint and surviving structures have not been verified. Sources: https://www.sport.act.gov.au/__data/assets/pdf_file/0011/1776431/RSM-Strategic-Facility-Review-of-Lawn-Bowls-in-the-ACT-Jun-2021.pdf ; https://www.commercialrealestate.com.au/news/development-application-lodged-for-canberras-west-deakin-hellenic-bowling-club-site-16538/"
+    "notes": "The West Deakin Hellenic Bowling Club closed in December 2014 after the site was sold to developers. ACT Government's 2021 strategic bowls review records the closure and sale; a 2019 development application sought to reposition the Crown lease and consolidate the block with adjoining Equinox Business Park. This is a historical former-club site, not a claim that the old clubhouse or greens remain. No precise map pin supplied because the original club footprint and surviving structures have not been verified. Sources: https://www.sport.act.gov.au/__data/assets/pdf_file/0011/1776431/RSM-Strategic-Facility-Review-of-Lawn-Bowls-in-the-ACT-Jun-2021.pdf ; https://www.commercialrealestate.com.au/news/development-application-lodged-for-canberras-west-deakin-hellenic-bowling-club-site-16538/",
+    "confirmedLocation": true
   },
   {
     "name": "Old Canberra National Capital Dragway — Historical Site",
     "area": "Former drag strip beside Pialligo Avenue near Canberra Airport / Fairbairn; exact former track footprint not verified.",
     "status": "Historic motorsport site — drag racing ceased around 1998; no confirmed standing buildings",
-    "notes": "The former National Capital Dragway operated from 1979 until around 1998 on a section of road near Canberra Airport. Historical motorsport reporting describes the old strip as a narrow, deteriorating tarmac surface. Later local reporting refers to the former drag strip area off Scherger Drive behind the airport. This entry is for motorsport history and general-area mapping only, not an abandoned building or confirmed public attraction. Airport and Fairbairn land may be restricted; do not enter fenced, operational or restricted areas. No precise pin supplied because the former strip footprint and current access are not verified. Sources: https://www.speedwayandroadracehistory.com/canberra-national-capitol-dragway.html ; https://region.com.au/scrap-next-stage-of-light-rail-to-build-motorsport-facility-in-honour-of-chic-henry-belco-party-says/745943/"
+    "notes": "The former National Capital Dragway operated from 1979 until around 1998 on a section of road near Canberra Airport. Historical motorsport reporting describes the old strip as a narrow, deteriorating tarmac surface. Later local reporting refers to the former drag strip area off Scherger Drive behind the airport. This entry is for motorsport history and general-area mapping only, not an abandoned building or confirmed public attraction. Airport and Fairbairn land may be restricted; do not enter fenced, operational or restricted areas. No precise pin supplied because the former strip footprint and current access are not verified. Sources: https://www.speedwayandroadracehistory.com/canberra-national-capitol-dragway.html ; https://region.com.au/scrap-next-stage-of-light-rail-to-build-motorsport-facility-in-honour-of-chic-henry-belco-party-says/745943/",
+    "confirmedLocation": true
   },
   {
     "name": "Canberra Services Club — Barton Former Site",
     "area": "51 Blackall Street, Barton ACT 2600 — former club site; view from public roads only.",
     "status": "Former community club — closed after fire in August 2025; building fully demolished by 2026",
-    "notes": "The Canberra Services Club's Barton premises suffered extensive kitchen-fire damage on 8 August 2025 and closed. The Club's official October 2026 update says the Barton building has since been fully demolished and the property is now a vacant site. This entry records the former venue and its history only; there is no standing abandoned building at this address. The Club is separately exploring future premises and development options, including its historic Griffith/Manuka site. Do not enter the vacant property or any redevelopment area; view only from public roads. Source: https://canberraclub.com.au/ ; https://region.com.au/kitchen-blaze-closes-canberra-services-club-until-further-notice/"
+    "notes": "The Canberra Services Club's Barton premises suffered extensive kitchen-fire damage on 8 August 2025 and closed. The Club's official October 2026 update says the Barton building has since been fully demolished and the property is now a vacant site. This entry records the former venue and its history only; there is no standing abandoned building at this address. The Club is separately exploring future premises and development options, including its historic Griffith/Manuka site. Do not enter the vacant property or any redevelopment area; view only from public roads. Source: https://canberraclub.com.au/ ; https://region.com.au/kitchen-blaze-closes-canberra-services-club-until-further-notice/",
+    "confirmedLocation": true
   },
   {
     "name": "Canberra's Garbage Incinerator — Yarralumla",
     "area": "Dunnrossil Drive, Westbourne Woods, Yarralumla ACT 2600 (near 71 Bentham Street); exact visitor access not confirmed.",
     "status": "Decommissioned historic industrial building — heritage-listed; not a confirmed public-access urbex site",
-    "notes": "Canberra's municipal garbage incinerator operated from 1939 to 1959 and survives as a distinctive industrial building designed by Eric Nicholls. It is heritage-listed and is within/adjacent to Royal Canberra Golf Club land. Treat this as a history/map reference only: do not enter golf-course property or approach restricted areas without permission. The ACT Government identifies the site at Dunnrossil Drive, Yarralumla; local map listings also associate it with 71 Bentham Street. No map pin added because the precise public viewing point and access are not confirmed. Sources: https://www.cmtedd.act.gov.au/open_government/inform/act_government_media_releases/vassarotti/2023/new-canberra-tracks-signs-in-lyneham-and-yarralumla ; https://www.legislation.act.gov.au/DownloadFile/ni/2011-495/current/PDF/2011-495.PDF ; https://www.yumpu.com/en/document/view/38304631/canberra-city-garbage-incinerator-australian-institute-of-architects"
+    "notes": "Canberra's municipal garbage incinerator operated from 1939 to 1959 and survives as a distinctive industrial building designed by Eric Nicholls. It is heritage-listed and is within/adjacent to Royal Canberra Golf Club land. Treat this as a history/map reference only: do not enter golf-course property or approach restricted areas without permission. The ACT Government identifies the site at Dunnrossil Drive, Yarralumla; local map listings also associate it with 71 Bentham Street. No map pin added because the precise public viewing point and access are not confirmed. Sources: https://www.cmtedd.act.gov.au/open_government/inform/act_government_media_releases/vassarotti/2023/new-canberra-tracks-signs-in-lyneham-and-yarralumla ; https://www.legislation.act.gov.au/DownloadFile/ni/2011-495/current/PDF/2011-495.PDF ; https://www.yumpu.com/en/document/view/38304631/canberra-city-garbage-incinerator-australian-institute-of-architects",
+    "confirmedLocation": true
   },
   {
     "name": "Former Commonwealth Bank Building — Bank House",
     "area": "187 London Circuit / 24 Ainslie Place, Canberra City ACT 2601 — public street frontage only.",
     "status": "Former bank — bank closed in 2020; subsequent building occupancy means it is not confirmed abandoned",
-    "notes": "The Commonwealth Bank branch closed in 2020. The six-level Bank House building remains standing at the corner of London Circuit and Ainslie Place. The current property manager's listing reports no vacancies, so this should be treated as a former-bank/history entry, not an abandoned building. Do not enter the building without an authorised appointment. No map pin added because an independently verified coordinate was not available in this check. Sources: https://www.evri.com.au/properties/187-london-circuit/ ; https://region.com.au/former-kingston-post-office-given-heritage-protection/695164/ ; https://hdp-au-prod-app-act-yoursay-files.s3.ap-southeast-2.amazonaws.com/5316/5455/9452/Background_Information_-_Former_Commonwealth_Bank_Building.pdf"
+    "notes": "The Commonwealth Bank branch closed in 2020. The six-level Bank House building remains standing at the corner of London Circuit and Ainslie Place. The current property manager's listing reports no vacancies, so this should be treated as a former-bank/history entry, not an abandoned building. Do not enter the building without an authorised appointment. No map pin added because an independently verified coordinate was not available in this check. Sources: https://www.evri.com.au/properties/187-london-circuit/ ; https://region.com.au/former-kingston-post-office-given-heritage-protection/695164/ ; https://hdp-au-prod-app-act-yoursay-files.s3.ap-southeast-2.amazonaws.com/5316/5455/9452/Background_Information_-_Former_Commonwealth_Bank_Building.pdf",
+    "confirmedLocation": true
   }
 ]
