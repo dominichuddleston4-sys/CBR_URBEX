@@ -43,6 +43,7 @@ input:focus,textarea:focus,select:focus{outline:2px solid #54d6bd66;border-color
 .tabs button.active{background:var(--green);color:#102016;box-shadow:0 2px 10px #a6f36b22}
 .grid{gap:12px}
 .place{border-radius:16px;padding:16px;background:linear-gradient(150deg,#17251f,#111b16);border-color:#2b4036;box-shadow:0 8px 22px #0002}
+body.compact-cards .place{padding:10px 12px;border-radius:11px;box-shadow:none}body.compact-cards .place p{margin:5px 0 8px;line-height:1.4}body.compact-cards .place h3{font-size:15px}
 .place h3{font-size:17px;letter-spacing:-.2px}
 .place p{font-size:13px;line-height:1.6}
 .tag{color:var(--accent);letter-spacing:1px}
@@ -333,11 +334,31 @@ body[data-app-style="genshin"] #appBottomNav .navMenuItems button{color:#f6f0df}
 body[data-app-style="genshin"] #appBottomNav .navMenuItems button.active{background:#315c63;color:#83dfcf}
 body[data-app-style="genshin"] footer{color:#c0c9c5}
 
+
+/* Compact browsing controls for faster location discovery */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.browse-tools{display:flex;gap:8px;flex-wrap:wrap;margin:-3px 0 14px}
+.browse-tools select{flex:1 1 145px;min-width:0;max-width:100%;padding:10px 11px;font-size:12px}
+.browse-tools button{font-size:12px;padding:9px 12px;min-height:40px}
+#count{font-variant-numeric:tabular-nums}
+@media(max-width:520px){.browse-tools{gap:6px}.browse-tools select{flex:1 1 calc(50% - 6px)}.browse-tools button{flex:1 1 100%}}
+
+/* Home overview and live connection indicator */
+.connection-status{display:inline-flex;align-items:center;gap:7px;margin-top:11px;padding:6px 10px;border:1px solid #42624f;border-radius:20px;background:#0b1b13aa;color:#dcebe1;font-size:11px;font-weight:700}
+.connection-dot{width:8px;height:8px;border-radius:50%;background:#a6f36b;box-shadow:0 0 8px #a6f36b66}
+.connection-status.offline{border-color:#806447;color:#f2d6b9}.connection-status.offline .connection-dot{background:#e9a35e;box-shadow:none}
+.home-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:0 0 14px}
+.home-stat{display:flex;flex-direction:column;gap:3px;padding:12px 10px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(145deg,var(--panel),#0e1712);min-width:0}
+.home-stat strong{font-size:21px;line-height:1.1;color:var(--green);font-variant-numeric:tabular-nums}
+.home-stat span{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tab-count{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;margin-left:3px;padding:0 5px;border-radius:10px;background:#263b30;color:var(--green);font-size:10px}
+@media(max-width:360px){.home-stats{gap:6px}.home-stat{padding:10px 7px}.home-stat strong{font-size:18px}.home-stat span{font-size:9px}}
 </style><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"><link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#101510"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Canberra Explorer"><link rel="apple-touch-icon" href="./icon-192.png"><link rel="icon" href="./icon.svg" type="image/svg+xml"></head>
 <body>
-<header><div class="brand">CANBERRA EXPLORER</div><h1>Canberra Explorer</h1><p>Abandoned places, local history &amp; field notes</p></header>
+<header><div class="brand">CANBERRA EXPLORER</div><h1>Canberra Explorer</h1><p>Abandoned places, local history &amp; field notes</p><div id="connectionStatus" class="connection-status" role="status" aria-live="polite"><span class="connection-dot"></span><span>Checking connection…</span></div></header>
 <main>
-<div style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px"><button id="installApp" class="secondary" type="button">⬇ Install / Add to Home Screen</button><button id="settingsToggle" class="secondary" onclick="toggleSettings()">⚙ Settings</button><button class="secondary" onclick="openOfflineMap()">⬇ Offline map</button><span style="font-size:12px;color:var(--muted);align-self:center">Android: menu ⋮ → Install app. iPhone/iPad: Safari Share ↑ → Add to Home Screen.</span></div><div class="notice"><strong>Field safety:</strong> Entries are research leads, not permission to enter. Some sites may be private, occupied, demolished, hazardous or protected. Check current ownership, access rules and safety before visiting. Do not trespass or disturb sites.</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px"><button id="installApp" class="secondary" type="button">⬇ Install / Add to Home Screen</button><button id="settingsToggle" class="secondary" onclick="toggleSettings()">⚙ Settings</button><button class="secondary" onclick="openOfflineMap()">⬇ Offline map</button><span style="font-size:12px;color:var(--muted);align-self:center">Android: menu ⋮ → Install app. iPhone/iPad: Safari Share ↑ → Add to Home Screen.</span></div>
+<section class="home-stats" aria-label="Your explorer overview"><div class="home-stat"><strong id="statPlaces">0</strong><span>Research leads</span></div><div class="home-stat"><strong id="statSaved">0</strong><span>Favourites</span></div><div class="home-stat"><strong id="statPins">0</strong><span>Map pins</span></div></section><div class="notice"><strong>Field safety:</strong> Entries are research leads, not permission to enter. Some sites may be private, occupied, demolished, hazardous or protected. Check current ownership, access rules and safety before visiting. Do not trespass or disturb sites.</div>
 <h2 style="font-size:18px;margin:18px 0 8px">Canberra map</h2><div id="mapShell"><div class="mapbar"><button onclick="locateMe()">◎ My location</button><button onclick="fitAllPins()">Show all pins</button><button onclick="toggleMapFullscreen()">⛶ Full screen</button><button id="closeMap" onclick="toggleMapFullscreen()">✕ Close</button></div><div id="map" aria-label="Interactive road map of Canberra with place pins"></div><div id="cyberMapHud" aria-hidden="true"><strong>NIGHT CITY // CANBERRA</strong><span>ACT SECTOR 01 · CITY GRID</span><i>NEON CARTOGRAPHY SYSTEM</i></div><div id="gtaMapHud" aria-hidden="true"><strong>LOS SANTOS // CANBERRA</strong><span>ACT · SAN ANDREAS STYLE GPS</span><i>MAP DATA · OPENSTREETMAP</i></div><div id="genshinMapHud" aria-hidden="true"><strong>✦ CANBERRA · Teyvat Atlas</strong><span>ADVENTURER’S GUILD · ACT REGION</span><i>REAL-WORLD MAP DATA · OPENSTREETMAP</i></div></div><p class="mapnote">Real street map with roads, suburb labels, parks and waterways. Switch between OpenStreetMap streets, a detailed street style and satellite imagery using the layer button. Map tiles need internet. Tap a pin for details; use My location to centre the map on your phone (permission required). Some directory leads have no confirmed coordinates and therefore appear only in the list. Imported locations are unverified and do not imply permission to enter.</p>
 <section id="settingsPanel" hidden aria-label="App settings">
 <div class="settings-top"><h2>Settings</h2><button class="secondary" type="button" onclick="toggleSettings()">✕ Close</button></div><p class="mapnote" style="margin:0 0 8px">Change how Canberra Explorer looks and manages information on this device.</p>
@@ -349,6 +370,9 @@ body[data-app-style="genshin"] footer{color:#c0c9c5}
 <div class="setting-row"><div><label for="textSize">Text size</label><small>Make app text easier to read</small></div><select id="textSize" onchange="saveSettings()"><option value="small">Small</option><option value="normal">Standard</option><option value="large">Large</option></select></div>
 <div class="setting-row"><div><label for="reduceMotion">Reduce animations</label><small>Use fewer moving effects</small></div><input id="reduceMotion" type="checkbox" onchange="saveSettings()" style="width:22px;height:22px"></div>
 <div class="setting-row"><div><label for="confirmActions">Confirm before clearing data</label><small>Ask before deleting saved places and additions</small></div><input id="confirmActions" type="checkbox" checked onchange="saveSettings()" style="width:22px;height:22px"></div>
+<div class="setting-row"><div><label for="showConnection">Show connection status</label><small>Display whether the app is online or offline</small></div><input id="showConnection" type="checkbox" checked onchange="saveSettings()" style="width:22px;height:22px"></div>
+<div class="setting-row"><div><label for="compactCards">Compact place cards</label><small>Fit more location information on the screen</small></div><input id="compactCards" type="checkbox" onchange="saveSettings()" style="width:22px;height:22px"></div>
+<div class="setting-row"><div><label for="hapticFeedback">Button vibration</label><small>Use a short vibration when supported by your device</small></div><input id="hapticFeedback" type="checkbox" onchange="saveSettings()" style="width:22px;height:22px"></div>
 <div class="setting-row"><div><label>Reset app preferences</label><small>Restore the default appearance and map options</small></div><button class="secondary" type="button" onclick="resetAppSettings()">Reset</button></div>
 <div class="setting-row"><div><label>App information</label><small>Canberra Explorer · Version 2.0½</small></div><button class="secondary" type="button" onclick="showAppInfo()">About</button></div>
 <div id="logoutEntry" class="setting-row"><div><label>Sign out</label><small>Return to the sign-in screen on this device</small></div><button class="secondary" onclick="logoutFromApp()">Log out</button></div>
@@ -406,6 +430,7 @@ body[data-app-style="genshin"] footer{color:#c0c9c5}
 </section>
 <p id="updateStatus" class="mapnote" aria-live="polite">Checking for the latest map updates…</p>
 <div class="searchrow"><input id="search" placeholder="Search places or notes…" aria-label="Search places"><button onclick="toggleAdd()">＋ Add</button></div>
+<div class="browse-tools" aria-label="Location list filters"><label class="sr-only" for="statusFilter">Filter by location type</label><select id="statusFilter" onchange="render()" aria-label="Filter by location type"><option value="">All location types</option></select><label class="sr-only" for="sortPlaces">Sort locations</label><select id="sortPlaces" onchange="render()" aria-label="Sort locations"><option value="name">Name A–Z</option><option value="name-desc">Name Z–A</option><option value="pinned">Map pins first</option></select><button class="secondary" type="button" onclick="clearFilters()">Clear filters</button></div>
 <div id="addPanel">
 <h3 style="margin:0">Add a place / research lead</h3>
 <label>Place name</label><input id="newName" placeholder="Name">
@@ -413,7 +438,7 @@ body[data-app-style="genshin"] footer{color:#c0c9c5}
 <label>Latitude (optional)</label><input id="newLat" type="number" step="any" placeholder="-35.28"><label>Longitude (optional)</label><input id="newLon" type="number" step="any" placeholder="149.13"><label>Notes (include source and verification status)</label><textarea id="newNotes" rows="3" placeholder="What did you find? Add source URL if available."></textarea>
 <div class="actions" style="margin-top:10px"><button onclick="addPlace()">Save on this device</button><button class="secondary" onclick="toggleAdd()">Cancel</button></div>
 </div>
-<div class="tabs"><button class="active" data-tab="all" onclick="setTab('all',this)">All leads</button><button data-tab="saved" onclick="setTab('saved',this)">★ Saved</button><button data-tab="mine" onclick="setTab('mine',this)">My additions</button></div>
+<div class="tabs"><button class="active" data-tab="all" onclick="setTab('all',this)">All leads</button><button data-tab="saved" onclick="setTab('saved',this)">★ Saved <span id="savedCount" class="tab-count">0</span></button><button data-tab="mine" onclick="setTab('mine',this)">My additions</button></div>
 <div id="count" style="font-size:12px;color:var(--muted);margin:0 0 10px"></div>
 <div id="places" class="grid"></div>
 </main>
@@ -478,13 +503,13 @@ const seed=[
 {"name":"Unidentified red building (KML label: the red one)","area":"Canberra / ACT (KML import)","lat":-35.3527101,"lon":149.2266549,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},
 {"name":"Unidentified house (original KML label was non-descriptive)","area":"Canberra / ACT (KML import)","lat":-35.2354334,"lon":149.1549683,"status":"Imported KML — unverified","notes":"Coordinates and label imported from the KML file supplied in this chat. This does not verify that the site is abandoned, publicly accessible, or safe to enter. Check current land ownership, site status and access rules."},];
 let custom=JSON.parse(localStorage.getItem("cbr_custom")||"[]"),saved=JSON.parse(localStorage.getItem("cbr_saved")||"[]"),tab="all";
-let appSettings={mapStyle:"street",showPins:true,startAtCanberra:true,theme:"system",appStyle:"forest",textSize:"normal",reduceMotion:false,confirmActions:true};
+let appSettings={mapStyle:"street",showPins:true,startAtCanberra:true,theme:"system",appStyle:"forest",textSize:"normal",reduceMotion:false,confirmActions:true,showConnection:true,compactCards:false,hapticFeedback:false};
 try{appSettings={...appSettings,...JSON.parse(localStorage.getItem("ce_settings")||"{}")};}catch(e){}
 if(!["street","voyager","satellite"].includes(appSettings.mapStyle))appSettings.mapStyle="street";
 if(!["system","dark","light"].includes(appSettings.theme))appSettings.theme="system";
 if(!["forest","ocean","sunset","slate","cyberpunk","gta5","genshin"].includes(appSettings.appStyle))appSettings.appStyle="forest";
 if(!["small","normal","large"].includes(appSettings.textSize))appSettings.textSize="normal";
-appSettings.showPins=appSettings.showPins!==false;appSettings.startAtCanberra=appSettings.startAtCanberra!==false;appSettings.reduceMotion=appSettings.reduceMotion===true;appSettings.confirmActions=appSettings.confirmActions!==false;
+appSettings.showPins=appSettings.showPins!==false;appSettings.startAtCanberra=appSettings.startAtCanberra!==false;appSettings.reduceMotion=appSettings.reduceMotion===true;appSettings.confirmActions=appSettings.confirmActions!==false;appSettings.showConnection=appSettings.showConnection!==false;appSettings.compactCards=appSettings.compactCards===true;appSettings.hapticFeedback=appSettings.hapticFeedback===true;
 let map=null,markers=[];
 const all=()=>[...seed,...custom];
 function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -696,6 +721,8 @@ function applyAppearance(){
  document.body.classList.toggle("light-theme",appSettings.theme==="light");
  document.body.classList.toggle("system-light",appSettings.theme==="system");
  document.body.classList.toggle("reduce-motion",!!appSettings.reduceMotion);
+ document.body.classList.toggle("compact-cards",!!appSettings.compactCards);
+ const connection=document.getElementById("connectionStatus");if(connection)connection.hidden=appSettings.showConnection===false;
  document.body.dataset.textSize=appSettings.textSize||"normal";
  if(map)setMapStyle(appSettings.mapStyle||"street");
 }
@@ -708,6 +735,9 @@ function syncSettingsControls(){
  document.getElementById("textSize").value=appSettings.textSize;
  document.getElementById("reduceMotion").checked=!!appSettings.reduceMotion;
  document.getElementById("confirmActions").checked=!!appSettings.confirmActions;
+ document.getElementById("showConnection").checked=appSettings.showConnection!==false;
+ document.getElementById("compactCards").checked=!!appSettings.compactCards;
+ document.getElementById("hapticFeedback").checked=!!appSettings.hapticFeedback;
 }
 function saveSettings(){
  const previousAppStyle=appSettings.appStyle||"forest";
@@ -722,6 +752,9 @@ function saveSettings(){
  appSettings.textSize=document.getElementById("textSize").value;
  appSettings.reduceMotion=document.getElementById("reduceMotion").checked;
  appSettings.confirmActions=document.getElementById("confirmActions").checked;
+ appSettings.showConnection=document.getElementById("showConnection").checked;
+ appSettings.compactCards=document.getElementById("compactCards").checked;
+ appSettings.hapticFeedback=document.getElementById("hapticFeedback").checked;
  localStorage.setItem("ce_settings",JSON.stringify(appSettings));
  applyAppearance();
  if(appSettings.startAtCanberra&&map)map.setView([-35.28,149.13],10);
@@ -784,12 +817,19 @@ function refreshLocationGallery(){const host=document.getElementById("galleryPho
 function chooseLocationPhoto(){if(!galleryNative()){document.getElementById("galleryStatus").textContent="Photo uploads require the signed-in Android app at this stage.";return;}const cb=galleryCallbackName();window[cb]=raw=>{delete window[cb];try{const r=JSON.parse(raw);document.getElementById("galleryStatus").textContent=r.message||"Photo picker closed.";if(r.ok)refreshLocationGallery();}catch(e){document.getElementById("galleryStatus").textContent="Could not read upload result.";}};window.CanberraNative.openPhotoPicker(activeGalleryId,document.getElementById("photoCaption").value,cb);}
 function reportGalleryPhoto(id){const reason=prompt("Why are you reporting this photo?");if(reason===null)return;const cb=galleryCallbackName();window[cb]=raw=>{delete window[cb];try{document.getElementById("galleryStatus").textContent=JSON.parse(raw).message||"Report sent.";}catch(e){}};window.CanberraNative.reportLocationPhoto(activeGalleryId,id,reason,cb);}
 function moderateGalleryPhoto(id,approve){const cb=galleryCallbackName();window[cb]=raw=>{delete window[cb];try{document.getElementById("galleryStatus").textContent=JSON.parse(raw).message||"Updated.";refreshLocationGallery();}catch(e){}};window.CanberraNative.moderateLocationPhoto(activeGalleryId,id,approve,cb);}
-function render(){let q=document.getElementById("search").value.toLowerCase();let items=all().filter(p=>(tab==="all"||(tab==="saved"&&saved.includes(p.name))||(tab==="mine"&&p.custom))&&[p.name,p.area,p.notes,p.status].join(" ").toLowerCase().includes(q));document.getElementById("count").textContent=items.length+" research leads";document.getElementById("places").innerHTML=items.length?items.map(p=>'<article class="place"><div class="tag">'+esc(p.status||"Personal note")+'</div><h3>'+esc(p.name)+'</h3><div style="font-size:12px;color:#c2d0c4">'+esc(p.area)+'</div><p>'+esc(p.notes)+'</p><div class="actions"><button class="secondary" onclick="toggleSaved('+JSON.stringify(p.name).replace(/"/g,'&quot;')+')">'+(saved.includes(p.name)?"★ Saved":"☆ Save")+'</button><button class="secondary" onclick="focusPlace('+JSON.stringify(p.name).replace(/"/g,'&quot;')+')">Show on map</button><button class="secondary" onclick="openGallery('+JSON.stringify(p.name).replace(/"/g,'&quot;')+')">📷 Photos</button><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(p.lat!==null&&p.lat!==undefined&&p.lat!==""&&p.lon!==null&&p.lon!==undefined&&p.lon!==""?p.lat+","+p.lon:p.name+" "+p.area+" Canberra ACT")+'&travelmode=driving">Get directions ↗</a></div></article>').join(""):'<div class="empty">No matching places. Try another search or add a research lead.</div>'}
+function render(){updateHomeStats();let q=document.getElementById("search").value.trim().toLowerCase();let type=document.getElementById("statusFilter").value;let sort=document.getElementById("sortPlaces").value;let items=all().filter(p=>(tab==="all"||(tab==="saved"&&saved.includes(p.name))||(tab==="mine"&&p.custom))&&(!type||(p.status||"Research lead")===type)&&[p.name,p.area,p.notes,p.status].join(" ").toLowerCase().includes(q));if(sort==="name")items.sort((a,b)=>a.name.localeCompare(b.name));else if(sort==="name-desc")items.sort((a,b)=>b.name.localeCompare(a.name));else if(sort==="pinned")items.sort((a,b)=>Number(b.lat!==null&&b.lat!==undefined&&b.lat!==""&&b.lon!==null&&b.lon!==undefined&&b.lon!=="")-Number(a.lat!==null&&a.lat!==undefined&&a.lat!==""&&a.lon!==null&&a.lon!==undefined&&a.lon!=="")||a.name.localeCompare(b.name));document.getElementById("count").textContent=items.length+" of "+all().length+" research leads";document.getElementById("places").innerHTML=items.length?items.map(p=>'<article class="place"><div class="tag">'+esc(p.status||"Personal note")+'</div><h3>'+esc(p.name)+'</h3><div style="font-size:12px;color:#c2d0c4">'+esc(p.area)+'</div><p>'+esc(p.notes)+'</p><div class="actions"><button class="secondary" onclick="toggleSaved('+JSON.stringify(p.name).replace(/"/g,'&quot;')+')">'+(saved.includes(p.name)?"★ Saved":"☆ Save")+'</button><button class="secondary" onclick="focusPlace('+JSON.stringify(p.name).replace(/"/g,'&quot;')+')">Show on map</button><button class="secondary" onclick="openGallery('+JSON.stringify(p.name).replace(/"/g,'&quot;')+')">📷 Photos</button><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(p.lat!==null&&p.lat!==undefined&&p.lat!==""&&p.lon!==null&&p.lon!==undefined&&p.lon!==""?p.lat+","+p.lon:p.name+" "+p.area+" Canberra ACT")+'&travelmode=driving">Get directions ↗</a></div></article>').join(""):'<div class="empty">No matching places. Try changing your search or filters.<br><button class="secondary" type="button" style="margin-top:12px" onclick="clearFilters()">Clear search and filters</button></div>'}
 function setTab(t,b){tab=t;document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");render()}
 function toggleSaved(n){saved=saved.includes(n)?saved.filter(x=>x!==n):[...saved,n];localStorage.setItem("cbr_saved",JSON.stringify(saved));render()}
 function toggleAdd(){let p=document.getElementById("addPanel");p.style.display=p.style.display==="block"?"none":"block"}
 function addPlace(){let name=document.getElementById("newName").value.trim(),area=document.getElementById("newArea").value.trim(),notes=document.getElementById("newNotes").value.trim(),lat=document.getElementById("newLat").value.trim(),lon=document.getElementById("newLon").value.trim();if(!name){alert("Please enter a place name.");return}if((lat==="")!==(lon==="")){alert("Enter both latitude and longitude, or leave both blank.");return}if(lat!==""&&(!Number.isFinite(Number(lat))||!Number.isFinite(Number(lon))||Math.abs(Number(lat))>90||Math.abs(Number(lon))>180)){alert("Those coordinates are not valid. Check latitude and longitude.");return}custom.push({name,area:area||"Canberra / ACT",notes:notes||"No notes added yet. Verify details and access.",status:"My addition",custom:true,lat:lat===""?null:Number(lat),lon:lon===""?null:Number(lon)});localStorage.setItem("cbr_custom",JSON.stringify(custom));renderMap();document.getElementById("newName").value="";document.getElementById("newArea").value="";document.getElementById("newNotes").value="";document.getElementById("newLat").value="";document.getElementById("newLon").value="";toggleAdd();tab="mine";document.querySelectorAll(".tabs button").forEach(x=>x.classList.toggle("active",x.dataset.tab==="mine"));render()}
+function updateHomeStats(){const entries=all();const pins=entries.filter(p=>p.lat!==null&&p.lat!==undefined&&p.lat!==""&&p.lon!==null&&p.lon!==undefined&&p.lon!=="").length;document.getElementById("statPlaces").textContent=entries.length;document.getElementById("statSaved").textContent=saved.length;document.getElementById("statPins").textContent=pins;document.getElementById("savedCount").textContent=saved.length;}
+function updateConnectionStatus(){const el=document.getElementById("connectionStatus");const online=navigator.onLine;el.classList.toggle("offline",!online);el.querySelector("span:last-child").textContent=online?"Online · map updates available":"Offline · saved information still available";}
+window.addEventListener("online",updateConnectionStatus);window.addEventListener("offline",updateConnectionStatus);updateConnectionStatus();
+document.addEventListener("click",event=>{if(!appSettings.hapticFeedback||!navigator.vibrate)return;if(event.target.closest("button,.btn"))navigator.vibrate(12);});
 document.getElementById("search").addEventListener("input",render);
+const statusFilter=document.getElementById("statusFilter");
+[...new Set(all().map(p=>p.status||"Research lead"))].sort((a,b)=>a.localeCompare(b)).forEach(status=>{const option=document.createElement("option");option.value=status;option.textContent=status;statusFilter.appendChild(option);});
+function clearFilters(){document.getElementById("search").value="";document.getElementById("statusFilter").value="";document.getElementById("sortPlaces").value="name";render();}
 syncSettingsControls();applyAppearance();
 render();
 function waitForLeaflet(){
