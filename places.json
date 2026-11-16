@@ -62,5 +62,23 @@
     "notes": "The Hellenic Club's City venue closed in May 2026. The premises have been marketed as a fitted hospitality venue for lease, so this is recorded as a closed former venue rather than confirmed abandoned or vacant. Building remains at the address according to current business/property listings. View from public footpaths only; do not enter. Check for a new tenant before treating it as abandoned. Sources: https://www.hellenicclub.com.au/club-news/cityclubclosure ; https://region.com.au/hellenic-club-to-close-city-venue-to-focus-on-woden-expansion/956979/",
     "lat": -35.2803,
     "lon": 149.1291
+  },
+  {
+    "name": "Former YMCA Auxiliary Hall",
+    "area": "Mueller Street, Yarralumla ACT — ACT Government parcel identified as Block 3, Sections 12 and 13, Section 53; view from public roads only.",
+    "status": "Disused community hall — no longer suitable for occupation; demolition application lodged November 2026, decision pending",
+    "notes": "The former YMCA-leased community hall has reportedly not been used since 2013 and is in a state of disrepair. In November 2026 the ACT Government lodged development application 202645710 to demolish the hall and remediate the site. The application was open for public notification until 25 November 2026, so this entry records the building as standing pending the outcome and works. Do not enter; view only from public space. Sources: https://yra.org.au/latest-news/show/144 ; https://www.planningalerts.org.au/applications/3588249"
+  },
+  {
+    "name": "City Health Building — Closed Lower Levels",
+    "area": "1 Moore Street, Canberra City ACT 2601 — view from public footpaths only.",
+    "status": "Partially closed due to asbestos contamination — ground floor and levels 1–2 closed indefinitely; upper levels partly reoccupied",
+    "notes": "Asbestos-containing material was identified in non-occupied areas in June 2026. Following remediation, some tenants were permitted to reoccupy levels 3, 4 and 5 from 7 September 2026. The ground floor, level 1 and level 2 remained closed indefinitely in the ACT Government's 1 September update. This is a partial-building closure, not a fully abandoned building. Do not enter restricted areas or approach work zones. Sources: https://www.cmtedd.act.gov.au/open_government/inform/act_government_media_releases/infrastructure-canberra/2026/update-on-city-health-building-at-1-moore-street2 ; https://region.com.au/city-health-buildings-upper-floors-cleared-of-asbestos/995035/"
+  },
+  {
+    "name": "Cameron Offices — Wing 3",
+    "area": "60 Chandler Street, Belconnen ACT 2617 — public paths only; this entry refers to Wing 3, not the entire complex.",
+    "status": "Former government office wing — reported vacant; other parts of Cameron Offices remain in use or have been adaptively reused",
+    "notes": "Cameron Offices is a large heritage-listed office complex with multiple wings. ACT Heritage background material for the 2026 provisional registration process describes Wing 3 as vacant, while other surviving wings have been reused, including for student accommodation. This is a partial-vacancy research entry, not a claim that the entire complex is abandoned or unusable. View from public areas only; do not enter buildings or private grounds. Source: https://www.legislation.act.gov.au/ni/2026-436/"
   }
 ]
