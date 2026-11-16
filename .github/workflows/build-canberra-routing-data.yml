@@ -1,0 +1,63 @@
+name: Build Canberra offline routing data
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-routing-pack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Install OSM tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y osmium-tool curl
+
+      - name: Download Canberra road and pedestrian network from OpenStreetMap
+        run: |
+          cat > query.txt <<'EOF'
+          [out:xml][timeout:240];
+          (
+            way["highway"](-35.95,148.72,-35.08,149.42);
+            relation["type"="restriction"](-35.95,148.72,-35.08,149.42);
+          );
+          (._;>;);
+          out body;
+          EOF
+          curl --fail --location --retry 5 --retry-all-errors --max-time 300 \
+            --get 'https://overpass-api.de/api/interpreter' \
+            --data-urlencode data@query.txt \
+            --output canberra.osm
+          test -s canberra.osm
+          osmium cat canberra.osm --output canberra.osm.pbf
+          test -s canberra.osm.pbf
+
+      - name: Build Valhalla driving and walking graph tiles
+        run: |
+          mkdir -p tiles
+          docker pull ghcr.io/valhalla/valhalla:latest
+          docker run --rm -v "$PWD:/data" --entrypoint /bin/sh \
+            ghcr.io/valhalla/valhalla:latest -lc '
+              valhalla_build_config \
+                --mjolnir-tile-dir /data/tiles \
+                --mjolnir-tile-extract /data/canberra-valhalla-tiles.tar \
+                --mjolnir-include-pedestrian true \
+                --mjolnir-include-driving true \
+                > /data/valhalla-build.json
+              valhalla_build_tiles -c /data/valhalla-build.json /data/canberra.osm.pbf
+              valhalla_build_extract -c /data/valhalla-build.json -v
+            '
+          test -s canberra-valhalla-tiles.tar
+          ls -lh canberra-valhalla-tiles.tar
+
+      - name: Publish Canberra routing data release asset
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: offline-routing-data
+          name: Canberra Explorer offline routing data
+          target_commitish: main
+          make_latest: false
+          files: canberra-valhalla-tiles.tar
