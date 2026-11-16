@@ -620,7 +620,7 @@ window.onNativeOfflineRoute=function(id,response,error){
   map.fitBounds(routeLayer.getBounds().pad(.16));
   const summary=trip.summary||{},km=Number(summary.length||0),minutes=Math.max(1,Math.round(Number(summary.time||0)/60));
   const instructions=(leg.maneuvers||[]).map((m,i)=>(i+1)+". "+(m.instruction||"Continue")).join("\n");
-  status.textContent="Offline road route ready · "+km.toFixed(1)+" km · about "+minutes+" min\n"+instructions;
+  status.textContent="Offline road route ready · "+km.toFixed(1)+" km · about "+minutes+" min · © OpenStreetMap contributors\n"+instructions;
  }catch(e){status.textContent="Offline route unavailable: "+(e.message||"The road route could not be displayed.");}
 };
 function showInAppDirections(name){
