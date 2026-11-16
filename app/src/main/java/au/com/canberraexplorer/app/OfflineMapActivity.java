@@ -83,7 +83,7 @@ public class OfflineMapActivity extends Activity {
         root.addView(heading);
 
         TextView intro = new TextView(this);
-        intro.setText("Download Canberra areas while online, then reopen saved map tiles without internet. Save multiple areas, one download at a time. Each area is capped at 3,000 tiles and 50 MB. GPS positioning works without mobile data when your phone can get a satellite fix. Offline route calculation is not included yet; Google Maps directions need internet. Only saved locations with coordinates appear as pins; unverified leads remain in the list.");
+        intro.setText("Download Canberra areas while online, then reopen saved map tiles without internet. Save multiple areas, one download at a time. Each area is capped at 3,000 tiles and 50 MB. GPS positioning works without mobile data when your phone can get a satellite fix. Offline driving and walking routes use the road data bundled in this test build. A GPS fix and verified destination coordinates are required. Road data © OpenStreetMap contributors. Only saved locations with coordinates appear as pins; unverified leads remain in the list.");
         intro.setTextColor(Color.LTGRAY);
         intro.setTextSize(13);
         intro.setPadding(16, 0, 16, 10);
