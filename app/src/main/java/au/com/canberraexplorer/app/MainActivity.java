@@ -383,16 +383,26 @@ public class MainActivity extends Activity {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
+                if (account == null || account.getIdToken() == null || account.getIdToken().isEmpty()) {
+                    Toast.makeText(this, "Google sign-in returned no ID token. Check the Firebase Web client ID.", Toast.LENGTH_LONG).show();
+                    showSignInScreen();
+                    return;
+                }
                 AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
                 firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, authTask -> {
-                    if (authTask.isSuccessful()) { loadMap(); registerCurrentUserAndCheckAccess(); checkForApkUpdate(); }
-                    else {
-                        Toast.makeText(this, "Google sign-in failed. Please try again.", Toast.LENGTH_LONG).show();
+                    if (authTask.isSuccessful()) {
+                        loadMap();
+                        registerCurrentUserAndCheckAccess();
+                        checkForApkUpdate();
+                    } else {
+                        String detail = authTask.getException() == null ? "Unknown Firebase error" : authTask.getException().getMessage();
+                        Toast.makeText(this, "Firebase sign-in failed: " + detail, Toast.LENGTH_LONG).show();
                         showSignInScreen();
                     }
                 });
             } catch (ApiException e) {
-                Toast.makeText(this, "Google sign-in was cancelled or failed. Please try again.", Toast.LENGTH_LONG).show();
+                String status = com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes.getStatusCodeString(e.getStatusCode());
+                Toast.makeText(this, "Google sign-in error " + e.getStatusCode() + " (" + status + "). Check this APK's SHA-1 in Firebase.", Toast.LENGTH_LONG).show();
                 showSignInScreen();
             }
             return;
