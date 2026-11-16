@@ -9,7 +9,9 @@
     "name": "Callam Offices (Former Woden TAFE Complex)",
     "area": "Callam Street, Phillip ACT 2606 — public street frontage only; use public footpaths.",
     "status": "Closed / vacant government office and education complex — redevelopment plans under consideration",
-    "notes": "Distinctive three-pod, space-age office complex built between 1977 and 1981 and later used by Woden TAFE. The buildings have been empty since mid-2025. In September 2026, reporting on an ACT Legislative Assembly hearing said the Government was considering selling the site and that major refurbishment would be costly. This is a street-view research stop only: do not enter the buildings or grounds, which may be unsafe or restricted. Confirm current redevelopment status before visiting. Source: https://region.com.au/government-wants-to-offload-heritage-listed-woden-landmark-eyes-adaptive-reuse/996239/"
+    "notes": "Distinctive three-pod, space-age office complex built between 1977 and 1981 and later used by Woden TAFE. The buildings have been empty since mid-2025. In September 2026, reporting on an ACT Legislative Assembly hearing said the Government was considering selling the site and that major refurbishment would be costly. This is a street-view research stop only: do not enter the buildings or grounds, which may be unsafe or restricted. Confirm current redevelopment status before visiting. Source: https://region.com.au/government-wants-to-offload-heritage-listed-woden-landmark-eyes-adaptive-reuse/996239/",
+    "lat": -35.34314,
+    "lon": 149.08903
   },
   {
     "name": "91A Wakefield Gardens — Former Site (Demolished)",
@@ -60,14 +62,16 @@
     "area": "13 Moore Street, Canberra City ACT 2601 — public footpaths only",
     "status": "Closed former club venue — future tenancy / reuse status unconfirmed",
     "notes": "The Hellenic Club's City venue closed in May 2026. The premises have been marketed as a fitted hospitality venue for lease, so this is recorded as a closed former venue rather than confirmed abandoned or vacant. Building remains at the address according to current business/property listings. View from public footpaths only; do not enter. Check for a new tenant before treating it as abandoned. Sources: https://www.hellenicclub.com.au/club-news/cityclubclosure ; https://region.com.au/hellenic-club-to-close-city-venue-to-focus-on-woden-expansion/956979/",
-    "lat": -35.2803,
-    "lon": 149.1291
+    "lat": -35.2767035,
+    "lon": 149.12829785
   },
   {
     "name": "Former YMCA Auxiliary Hall",
     "area": "Mueller Street, Yarralumla ACT — ACT Government parcel identified as Block 3, Sections 12 and 13, Section 53; view from public roads only.",
     "status": "Disused community hall — no longer suitable for occupation; demolition application lodged November 2026, decision pending",
-    "notes": "The former YMCA-leased community hall has reportedly not been used since 2013 and is in a state of disrepair. In November 2026 the ACT Government lodged development application 202645710 to demolish the hall and remediate the site. The application was open for public notification until 25 November 2026, so this entry records the building as standing pending the outcome and works. Do not enter; view only from public space. Sources: https://yra.org.au/latest-news/show/144 ; https://www.planningalerts.org.au/applications/3588249"
+    "notes": "The former YMCA-leased community hall has reportedly not been used since 2013 and is in a state of disrepair. In November 2026 the ACT Government lodged development application 202645710 to demolish the hall and remediate the site. The application was open for public notification until 25 November 2026, so this entry records the building as standing pending the outcome and works. Do not enter; view only from public space. Sources: https://yra.org.au/latest-news/show/144 ; https://www.planningalerts.org.au/applications/3588249",
+    "lat": -35.30691,
+    "lon": 149.10005
   },
   {
     "name": "City Health Building — Closed Lower Levels",
@@ -102,8 +106,10 @@
   {
     "name": "Big Splash Waterpark — Closed / Derelict Aquatic Site",
     "area": "1 Catchpole Street, Macquarie ACT 2614 — view from public roads only; privately controlled site.",
-    "status": "Waterpark closed since early 2024 — facilities reported deteriorated; future use unresolved",
-    "notes": "Canberra's former outdoor waterpark has been closed since early 2024. ABC reporting in September 2026 described disused, deteriorating pools and slides and an uncertain future. In November 2026 a temporary food stall appeared as part of the lease-compliance arrangements; this does not mean the aquatic facility has reopened. The ACT Government says it wants the site returned to aquatic use and is examining options. This is a closed-site record, not permission to enter. The site is fenced/private and must only be viewed from public areas. Sources: https://www.abc.net.au/news/2026-09-19/canberra-big-splash-water-park-explained/107163890 ; https://www.abc.net.au/news/2026-11-02/food-stall-canberra-big-splash-water-park-lease/107335556 ; https://www.cmtedd.act.gov.au/open_government/inform/act_government_media_releases/chris-steel-mla-media-releases/2026/community-to-get-their-say-on-the-future-of-big-splash"
+    "status": "Waterpark closed since late 2023 — aquatic facilities remain derelict; site secured and future use unresolved",
+    "notes": "Canberra's former outdoor waterpark has remained closed since late 2023. ABC reporting in September 2026 said it was unlikely to reopen for the 2026–27 summer season and that the ACT Government had commissioned an options analysis. On 1 November 2026 a temporary food stall operated briefly at the entrance to satisfy a permitted-use interpretation of the Crown lease; Access Canberra stated on 2 November that the lease was more likely than not compliant. This did not reopen the waterpark or its pools and slides. The site is privately controlled and secured; view only from public areas. Do not enter or approach gates/work areas. Sources: https://www.abc.net.au/news/2026-09-15/big-splash-will-not-open-summer-government-seeks-new-owner/107155462 ; https://www.cmtedd.act.gov.au/open_government/inform/act_government_media_releases/ce/2026/update-on-big-splash-following-1-november-deadline ; https://www.abc.net.au/news/2026-11-02/food-stall-canberra-big-splash-water-park-lease/107335556",
+    "lat": -35.251,
+    "lon": 149.07
   },
   {
     "name": "Canberra Indoor Rock Climbing — Former Mitchell Gym",
