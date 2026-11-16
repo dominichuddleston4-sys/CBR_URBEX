@@ -168,5 +168,59 @@
     "status": "Former bank — bank closed in 2020; subsequent building occupancy means it is not confirmed abandoned",
     "notes": "The Commonwealth Bank branch closed in 2020. The six-level Bank House building remains standing at the corner of London Circuit and Ainslie Place. The current property manager's listing reports no vacancies, so this should be treated as a former-bank/history entry, not an abandoned building. Do not enter the building without an authorised appointment. No map pin added because an independently verified coordinate was not available in this check. Sources: https://www.evri.com.au/properties/187-london-circuit/ ; https://region.com.au/former-kingston-post-office-given-heritage-protection/695164/ ; https://hdp-au-prod-app-act-yoursay-files.s3.ap-southeast-2.amazonaws.com/5316/5455/9452/Background_Information_-_Former_Commonwealth_Bank_Building.pdf",
     "confirmedLocation": true
+  },
+  {
+    "name": "Mount Stromlo Observatory — Bushfire-damaged Telescope Ruins",
+    "area": "Mount Stromlo, via Cotter Road, Weston Creek ACT",
+    "status": "Historic bushfire-damaged observatory remains — designated visitor areas only; site remains an active ANU research campus",
+    "notes": "ShotHotspot includes Mount Stromlo Observatory / Canberra Stromlo as an abandoned photography location. The 2003 bushfires destroyed the historic research telescopes, leaving damaged telescope structures and heritage remains. The site is not wholly abandoned: ANU still operates the Mount Stromlo Observatory campus and facilities, and designated visitor/heritage areas are available. Stay on public visitor routes and obey all site signage; do not enter research, work or restricted areas. Sources: https://www.shothotspot.com/abandoned-places/australia/australian-capital-territory/canberra/ ; https://www.anu.edu.au/about/campuses-facilities/mount-stromlo-observatory ; https://visitcanberra.com.au/attractions/56b23b733ed14ca745318141/mount-stromlo-observatory",
+    "lat": -35.317576,
+    "lon": 149.009617,
+    "confirmedLocation": true
+  },
+  {
+    "name": "Abandoned Planetarium — Photo-spot lead",
+    "area": "Canberra, District of Canberra Central — exact site identity requires confirmation",
+    "status": "Unverified photo-spot lead — do not treat as confirmed abandoned building or visit location",
+    "notes": "Listed by ShotHotspot as an 'Abandoned Planetarium' photo spot at approximately -35.249810, 149.145959. The listing supplies a photo-spot label and coordinates but does not establish the building's official name, current condition, ownership or lawful access. Added to All Leads only for further identification; no entry or approach to private/restricted property. Source: https://www.shothotspot.com/hotspot/canberra/abandoned-planetarium",
+    "lat": -35.24981,
+    "lon": 149.145959,
+    "confirmedLocation": false
+  },
+  {
+    "name": "Broken Fairey Graffiti Elk — Photo-spot lead",
+    "area": "Scullin / Belconnen area — underpass photo spot; exact structure and current condition unverified",
+    "status": "Unverified urban-art photo-spot lead — not confirmed as an abandoned building",
+    "notes": "ShotHotspot identifies this as a graffiti/urban photo spot at approximately -35.238153, 149.054684 and tags it as an underpass. It appears to describe graffiti or an artwork/photo subject rather than an abandoned building. Added to All Leads only; use public paths and do not enter road, drainage or restricted infrastructure. Source: https://www.shothotspot.com/hotspot/?hotspot=143436",
+    "lat": -35.238153,
+    "lon": 149.054684,
+    "confirmedLocation": false
+  },
+  {
+    "name": "Pretty Vacant — Photo-spot lead",
+    "area": "Ngunnawal, Gungahlin ACT — exact property/site identity unverified",
+    "status": "Unverified abandoned-photography lead — no confirmed address, building identity or access",
+    "notes": "ShotHotspot lists 'Pretty Vacant' as an abandoned-photography spot at approximately -35.318250, 149.142483 in Ngunnawal. The listing does not identify an official property or establish whether a building remains or whether the site is publicly accessible. Added to All Leads only pending independent identification. Do not enter private land. Source: https://www.shothotspot.com/hotspot/?hotspot=134849",
+    "lat": -35.31825,
+    "lon": 149.142483,
+    "confirmedLocation": false
+  },
+  {
+    "name": "Bloon Ronald Ray Gun — Graffiti Photo-spot Lead",
+    "area": "Canberra City ACT 2601 — photo-spot coordinates only",
+    "status": "Urban-art photo-spot lead — not an abandoned building",
+    "notes": "ShotHotspot lists this as a graffiti/urban photography spot at approximately -35.280683, 149.135654. The name refers to a graffiti/photo subject, not a verified abandoned property. Added to All Leads as an urban-art lead only; use public streets and do not trespass. Source: https://www.shothotspot.com/hotspot/?hotspot=90234",
+    "lat": -35.280683,
+    "lon": 149.135654,
+    "confirmedLocation": false
+  },
+  {
+    "name": "Graffiti Netball Centre Streetart — Photo-spot lead",
+    "area": "Dickson / Canberra Central ACT — exact facility identity and current status unverified",
+    "status": "Unverified graffiti / former-facility lead — not confirmed as an abandoned centre",
+    "notes": "ShotHotspot lists a graffiti/netball-centre photo spot at approximately -35.247724, 149.138304. The photo tags refer to graffiti, decay and a netball centre, but the listing does not confirm the facility's official name, whether it remains standing, or whether the site is accessible. Added to All Leads only pending verification. Do not enter private or restricted property. Source: https://www.shothotspot.com/hotspot/?hotspot=147642",
+    "lat": -35.247724,
+    "lon": 149.138304,
+    "confirmedLocation": false
   }
 ]
