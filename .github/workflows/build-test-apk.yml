@@ -3,7 +3,7 @@ name: Build and publish Canberra Explorer APK
 on:
   workflow_dispatch:
   push:
-    branches: [main, feature/2.0-completion, feature/2.0.5-photo-galleries, feature/iphone-matched-android-ui, release/2-0-half-iphone-menu]
+    branches: [main, feature/2.0-completion, feature/2.0.5-photo-galleries, feature/iphone-matched-android-ui, release/2-0-half-iphone-menu, feature/offline-improvements-test]
     paths:
       - 'app/**'
       - 'build.gradle'
