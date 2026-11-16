@@ -523,7 +523,7 @@ function renderMap(){
   const gta5=appSettings.appStyle==="gta5";
   const genshin=appSettings.appStyle==="genshin";
   const marker=L.circleMarker([lat,lon],cyberpunk?{radius:9,color:"#00f0ff",weight:2,fillColor:"#fcee0a",fillOpacity:1}:gta5?{radius:9,color:"#fff1c2",weight:2,fillColor:"#f0a52b",fillOpacity:1}:genshin?{radius:9,color:"#fff5d6",weight:2,fillColor:"#4f9b78",fillOpacity:1}:{radius:8,color:"#fff",weight:2,fillColor:"#16833b",fillOpacity:1}).addTo(map);
-  marker.bindPopup("<b>"+esc(p.name)+"</b><br>"+esc(p.area||"Canberra / ACT")+"<br><small>"+esc(p.status||"Research lead")+" · location and access not independently verified</small><br><button type=\\"button\\" onclick=\\"focusPlace(decodeURIComponent(\\\'"+encodeURIComponent(p.name)+"\\\'))\\">Show on map</button> <a class=\\"btn\\" target=\\"_blank\\" rel=\\"noopener\\" href=\\"https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(p.lat+","+p.lon)+"&travelmode=driving\\">Get directions ↗</a>");
+  marker.bindPopup("<b>"+esc(p.name)+"</b><br>"+esc(p.area||"Canberra / ACT")+"<br><small>"+esc(p.status||"Research lead")+" · location and access not independently verified</small><br><button type=\\"button\\" onclick=\\"focusPlace(decodeURIComponent(&quot;"+encodeURIComponent(p.name)+"&quot;))\\">Show on map</button> <a class=\\"btn\\" target=\\"_blank\\" rel=\\"noopener\\" href=\\"https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(p.lat!==null&&p.lat!==undefined&&p.lat!==""&&p.lon!==null&&p.lon!==undefined&&p.lon!==""?p.lat+","+p.lon:p.name+" "+(p.area||"Canberra ACT"))+"&travelmode=driving\\">Get directions ↗</a>");
   marker._placeName=p.name;markers.push(marker);
  });
 }
