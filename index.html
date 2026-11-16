@@ -766,7 +766,7 @@ function resetAppSettings(){
  localStorage.setItem("ce_settings",JSON.stringify(appSettings));syncSettingsControls();applyAppearance();
  if(map)map.setView([-35.28,149.13],10);setMapStyle(appSettings.mapStyle);renderMap();
 }
-function showAppInfo(){alert("Canberra Explorer\\nVersion 2.0½\\n\\nYour settings and personal additions are stored on this device. Map tiles and online updates need an internet connection.");}
+function showAppInfo(){alert("Canberra Explorer\\nVersion 2.2\\n\\nYour settings and personal additions are stored on this device. Map tiles and online updates need an internet connection.");}
 function exportMyData(){
  const data={app:"Canberra Explorer",exportedAt:new Date().toISOString(),customPlaces:custom,savedPlaces:saved,settings:appSettings};
  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
@@ -859,4 +859,4 @@ function appNavigate(dest,button){document.querySelectorAll('#appNavItems button
 <button data-dest="profile" onclick="appNavigate('profile',this)"><span class="navIcon">◉</span><span>Profile / Settings</span></button>
 </div>
 </nav></body></html>
-<!-- Canberra Explorer 2.0½ release build trigger -->
+<!-- Canberra Explorer 2.2 release build trigger -->
