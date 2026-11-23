@@ -222,5 +222,33 @@
     "lat": -35.247724,
     "lon": 149.138304,
     "confirmedLocation": true
+  },
+  {
+    "name": "Old Tuggeranong Schoolhouse",
+    "area": "Enid Lorimer Crescent, Chisholm ACT — public-road frontage only; building access not confirmed.",
+    "status": "Closed historic schoolhouse museum — ACT Government-owned; upgrades and future-use planning reported in 2026",
+    "notes": "The brick school and attached teacher's residence date from the early 1880s. The school closed in 1940 and later operated as Tuggeranong Schoolhouse Museum; the museum closed in 2023. An ACT Government answer in 2026 listed the Old Tuggeranong Schoolhouse among government-owned vacant/impaired community-facility buildings, with capital upgrades and planning underway to determine future use. This is a heritage/history stop only: do not enter the building or grounds unless the ACT Government confirms public access. Sources: https://heritage.hall.act.au/school/2893/tuggeranong-school.html ; https://www.parliament.act.gov.au/__data/assets/pdf_file/0003/3117765/QON-287-Answer-iCBR-Vacant-Government-owned-Buildings-EMERSON.pdf ; https://www.environment.act.gov.au/__data/assets/pdf_file/0003/148314/tuggeranong-schoolhouse-entry-to-the-heritage-register.pdf",
+    "confirmedLocation": true
+  },
+  {
+    "name": "Cotter Pub — Former Bushfire-destroyed Site",
+    "area": "Cotter Reserve, Cotter Road, Stromlo ACT — stay within signed public recreation areas.",
+    "status": "Former public hotel site — destroyed in the 2003 bushfires; historical site only",
+    "notes": "The Cotter Pub was a long-running gathering place in the Cotter Reserve and was destroyed in the 2003 bushfires. The reserve remains a public recreation area with visitor facilities and walking routes. This entry marks the former pub's history, not a surviving abandoned building. Do not enter closed, fenced or revegetating areas; follow current Parks ACT signs and track closures. Sources: https://www.canberratracks.act.gov.au/heritage-trails/track-1-ngunnawal-country/cotter-reserve ; https://www.parks.act.gov.au/find-a-nature-park/murrumbidgee-river-corridor/cotter-bend",
+    "confirmedLocation": true
+  },
+  {
+    "name": "Cotter Pumping Station — Industrial Heritage Precinct",
+    "area": "Cotter Road, Stromlo ACT — access to the active pumping station is by authorised guided tour only; public reserve and bridge viewpoints nearby.",
+    "status": "Heritage-listed historic industrial facility — still operational; restricted access",
+    "notes": "Built in 1915, the Cotter Pumping Station is part of Canberra's early water-supply infrastructure and remains in working order. The precinct is listed on the ACT Heritage Register and includes the pump house, historic equipment, associated cottages and bridge. Icon Water offers organised site tours; this is an active industrial site, not an abandoned building. Do not enter the station or cross barriers without an authorised tour. Public visitors can explore the surrounding Cotter Reserve and its signed heritage trails. Sources: https://www.iconwater.com.au/sustainability-and-environment/heritage-protection ; https://www.iconwater.com.au/sites/default/files/2023-12/1904%20Cotter%20Pumping%20Station%20tour%20Factsheet.pdf ; https://www.act.gov.au/environment/heritage/act-heritage-register",
+    "confirmedLocation": true
+  },
+  {
+    "name": "Old Cooma Railway Alignment — Railway Border Walk",
+    "area": "End of Old Tuggeranong Road, Chisholm ACT — walking access only; road is not open to general vehicle traffic.",
+    "status": "Historic railway alignment and border landscape — visible remains along a public heritage walk",
+    "notes": "The former Queanbeyan–Cooma railway opened in 1889 and the last train ran in 1989. Canberra Tracks identifies surviving traces of the old railway line near the ACT/NSW border and describes a walk from the end of Old Tuggeranong Road. The road is not open to general vehicle traffic; access is on foot along the described route. Stay on the public route and respect reserve and land-management signs. Sources: https://www.canberratracks.act.gov.au/heritage-trails/track-8-tuggeranong-heritage-track/railway-border ; https://heritage.hall.act.au/",
+    "confirmedLocation": true
   }
 ]
