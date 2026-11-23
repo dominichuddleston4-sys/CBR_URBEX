@@ -292,5 +292,40 @@
     "status": "Early 1830s pastoral dairy — heritage building within an active Defence site",
     "notes": "The Duntroon Dairy is associated with the Campbell family's Duntroon estate and is identified by Canberra Tracks as part of the Limestone Plains heritage trail. It sits within the active Royal Military College precinct, so it is not an open urbex location. Access may be limited to authorised tours, open days or approved visitors; do not enter Defence grounds or approach security areas without permission. Sources: https://www.canberratracks.act.gov.au/heritage-trails/track-2-the-limestone-plains ; https://www.canberratracks.act.gov.au/sitemap",
     "confirmedLocation": true
+  },
+  {
+    "name": "Cinema Center — Civic",
+    "area": "50 Bunda Street, Canberra City ACT 2601 — public footpaths and public-facing tenancies only.",
+    "status": "Heritage-registered modernist mixed-use building — standing; not an abandoned building",
+    "notes": "Designed by Enrico Taglietti, Cinema Center is a distinctive modernist building completed in the 1960s. It combined retail, offices, food venues and the former underground Center Cinema. It was registered on the ACT Heritage Register in 2021 for its architectural and cultural significance. View the exterior from public footpaths; enter only businesses or areas open to the public. The former cinema auditorium is not assumed to be publicly accessible. Sources: https://www.act.gov.au/environment/heritage/act-heritage-register ; https://www.act.gov.au/__data/assets/pdf_file/0016/2201245/2023-EA_App-E_Heritage-Impact-Assessment.pdf",
+    "confirmedLocation": true
+  },
+  {
+    "name": "ANZ Bank Building — Former ES&A Bank",
+    "area": "Civic, Canberra City ACT 2601 — Section 3, Block 1; view from public streets only.",
+    "status": "Heritage-registered historic commercial building — current internal access/use varies",
+    "notes": "The former English, Scottish and Australian Bank building is listed on the ACT Heritage Register. It is an early Canberra commercial building and part of the historic Civic streetscape. This is an architectural and history stop, not a confirmed abandoned building. View from public footpaths; do not enter non-public offices or tenancies. Confirm current business access before visiting. Sources: https://www.act.gov.au/environment/heritage/act-heritage-register ; https://www.nca.gov.au/sites/default/files/2023-03/environmental_assessment_appendix_e_-_heritage_impact_assessment_0.pdf",
+    "confirmedLocation": true
+  },
+  {
+    "name": "Ian Potter House (Former Beauchamp House)",
+    "area": "9 Gordon Street, Acton ACT 2601 — public street frontage; interior access only for authorised events or visits.",
+    "status": "Heritage-registered 1927 former hotel / residence — currently used by the Australian Academy of Science",
+    "notes": "Built in 1927 as Acton Private Hotel and later known as Beauchamp House, this Inter-war Georgian Revival building is now Ian Potter House and serves as the Australian Academy of Science's administrative home. It is registered on the ACT Heritage Register. The building is in active use, not abandoned. View from public streets; interior access depends on Academy events, bookings or permission. Sources: https://www.act.gov.au/environment/heritage/act-heritage-register ; https://www.nfsa.gov.au/whats-on/our-building ; https://www.nca.gov.au/sites/default/files/2023-03/environmental_assessment_appendix_e_-_heritage_impact_assessment_0.pdf",
+    "confirmedLocation": true
+  },
+  {
+    "name": "Westridge House and Grounds",
+    "area": "Banks Street, Yarralumla ACT — public-road viewing only; grounds/building access is not assumed.",
+    "status": "1928 heritage house within former Australian Forestry School precinct — occupied / managed property, not an abandoned site",
+    "notes": "Westridge House was designed by Harold Desbrowe-Annear and completed in 1928 as the residence of the Principal of the Australian Forestry School. It is part of Canberra's early forestry and research history and has been the subject of ACT heritage registration decisions in 2026. Treat it as a heritage architecture stop only. Do not enter the grounds or building without permission; use public roads and obey all property signs. Sources: https://www.act.gov.au/environment/heritage/act-heritage-register ; https://www.finance.gov.au/government/property-and-construction/heritage-management ; https://www.act.gov.au/__data/assets/pdf_file/0008/1945880/canberra-brickworks-precinct-conservation-management-plan-2021-volume-2.pdf",
+    "confirmedLocation": true
+  },
+  {
+    "name": "Gungahlin Homestead and Historic Estate",
+    "area": "Barton Highway, Crace ACT — general public-road vicinity only; access to the property is restricted unless officially opened.",
+    "status": "Surviving 19th-century pastoral homestead / former CSIRO research estate — heritage provisionally registered in 2026",
+    "notes": "Gungahlin Homestead is a surviving rural estate associated with Canberra's pastoral beginnings. The wider property later formed part of a CSIRO research campus for more than 70 years. It was provisionally registered on the ACT Heritage Register in 2026. This is a historic-building record, not a public urbex location: do not enter the homestead, grounds or research property without explicit permission. Check official heritage and land-manager notices for any public open days. Sources: https://www.act.gov.au/environment/heritage/act-heritage-register ; https://region.com.au/canberras-heritage-story-expands-with-recognition-of-capital-building-structures/1004258/ ; https://www.finance.gov.au/government/property-and-construction/heritage-management",
+    "confirmedLocation": true
   }
 ]
