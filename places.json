@@ -327,5 +327,40 @@
     "status": "Surviving 19th-century pastoral homestead / former CSIRO research estate — heritage provisionally registered in 2026",
     "notes": "Gungahlin Homestead is a surviving rural estate associated with Canberra's pastoral beginnings. The wider property later formed part of a CSIRO research campus for more than 70 years. It was provisionally registered on the ACT Heritage Register in 2026. This is a historic-building record, not a public urbex location: do not enter the homestead, grounds or research property without explicit permission. Check official heritage and land-manager notices for any public open days. Sources: https://www.act.gov.au/environment/heritage/act-heritage-register ; https://region.com.au/canberras-heritage-story-expands-with-recognition-of-capital-building-structures/1004258/ ; https://www.finance.gov.au/government/property-and-construction/heritage-management",
     "confirmedLocation": true
+  },
+  {
+    "name": "Hotel Acton (Acton House)",
+    "area": "Balmain Crescent, Acton ACT 2601 — public street frontage only; interior/grounds access not assumed.",
+    "status": "Heritage-registered former hotel building — standing; not confirmed abandoned",
+    "notes": "Hotel Acton, also known as Acton House, is listed on the ACT Heritage Register. It is an early Canberra hotel building associated with the development of the national capital. This is a heritage architecture/history stop, not a confirmed abandoned site. View from public streets and enter only areas currently open to visitors or with permission. Check current site use and access before visiting. Source: https://www.act.gov.au/environment/heritage/act-heritage-register",
+    "confirmedLocation": true
+  },
+  {
+    "name": "Former Royal Canberra Hospital — Acton Peninsula Buildings",
+    "area": "Acton Peninsula, Canberra ACT 2601 — public waterfront paths only; buildings and grounds may be closed or controlled.",
+    "status": "Former hospital complex — heritage-listed surviving buildings; restricted access",
+    "notes": "This entry covers three surviving buildings of the former Royal Canberra Hospital: Building 1 (former TB Ward), Building 2 (former Isolation Ward) and Building 15 (former Medical Superintendent's Residence). The hospital moved to its present Woden site in 1996. The buildings are individually included in the Commonwealth Heritage List and are part of the Acton Complex. They are not an open urbex site; do not enter buildings, fenced areas or work zones. View only from public paths where permitted and follow current National Capital Authority notices. Sources: https://www.nca.gov.au/planning/heritage/heritage-management-plans/acton-complex-draft-heritage-management-plan ; https://www.nca.gov.au/sites/default/files/2026-04/acton_complex_draft_heritage_management_plan_2026.pdf",
+    "confirmedLocation": true
+  },
+  {
+    "name": "Former MLC Building — Civic",
+    "area": "161 London Circuit, Canberra City ACT 2601 — view from public footpaths only.",
+    "status": "Heritage-registered former commercial office building — current use/access to be checked",
+    "notes": "The Former MLC Building is listed on the ACT Heritage Register and is recognised for its place in Canberra's post-war commercial development and architectural history. This entry records the building as a heritage site, not as confirmed abandoned. View from public footpaths; do not enter offices, construction areas or private premises. Check current occupancy and redevelopment status before visiting. Source: https://www.act.gov.au/environment/heritage/act-heritage-register",
+    "confirmedLocation": true
+  },
+  {
+    "name": "Kingston Powerhouse Historic Precinct",
+    "area": "Kingston, Canberra ACT 2604 — use public precinct paths and venue entrances; some buildings have managed/event access.",
+    "status": "Heritage-registered former industrial power facility — precinct adaptively reused; not abandoned",
+    "notes": "The Kingston Powerhouse Historic Precinct is listed on the ACT Heritage Register. The precinct preserves Canberra's early electricity infrastructure and includes the former powerhouse and associated industrial buildings, including the Fitters' Workshop and former Transport Depot. Some spaces are now used for arts, events and other public-facing activities. This is a heritage precinct, not an abandoned site. Use signed public areas and check individual venue opening times; do not enter closed plant rooms or restricted areas. Source: https://www.act.gov.au/environment/heritage/act-heritage-register",
+    "confirmedLocation": true
+  },
+  {
+    "name": "CSIRO Phytotron Building",
+    "area": "Clunies Ross Street, Acton ACT 2601 — public road frontage only; CSIRO grounds/building access is restricted.",
+    "status": "Historic research building — active/restricted research precinct; not an abandoned site",
+    "notes": "The CSIRO Phytotron is a distinctive research facility associated with controlled-environment plant science and Canberra's research history. The ACT Heritage Register page records a previous provisional registration decision that expired; this should not be described as currently ACT-registered on that basis. The building is within a CSIRO research precinct, so access is restricted unless CSIRO authorises a visit. View only from public roads where possible; do not enter the campus or building without permission. Sources: https://www.act.gov.au/environment/heritage/act-heritage-register ; https://www.csiro.au/",
+    "confirmedLocation": true
   }
 ]
