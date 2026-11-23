@@ -250,5 +250,47 @@
     "status": "Historic railway alignment and border landscape — visible remains along a public heritage walk",
     "notes": "The former Queanbeyan–Cooma railway opened in 1889 and the last train ran in 1989. Canberra Tracks identifies surviving traces of the old railway line near the ACT/NSW border and describes a walk from the end of Old Tuggeranong Road. The road is not open to general vehicle traffic; access is on foot along the described route. Stay on the public route and respect reserve and land-management signs. Sources: https://www.canberratracks.act.gov.au/heritage-trails/track-8-tuggeranong-heritage-track/railway-border ; https://heritage.hall.act.au/",
     "confirmedLocation": true
+  },
+  {
+    "name": "Lanyon Homestead",
+    "area": "Tharwa Drive, Tharwa ACT — use signed visitor entrance and public visitor areas.",
+    "status": "Heritage-listed pastoral homestead — managed visitor attraction; opening hours vary",
+    "notes": "Established in the 1830s; the present homestead dates from 1859. The property preserves buildings and landscape associated with pastoral life, convict labour and the Ngunnawal cultural landscape. Canberra Tracks lists regular visitor opening Tuesday to Sunday, generally 10am–4pm, but check current hours and any conservation works before travelling. This is a managed heritage attraction, not an abandoned site. Stay in visitor areas and follow site directions. Sources: https://www.canberratracks.act.gov.au/heritage-trails/track-2-the-limestone-plains/lanyon ; https://www.act.gov.au/BuiltforCBR/browse-all-projects/entertainment-arts-and-sports/lanyon-homestead",
+    "confirmedLocation": true
+  },
+  {
+    "name": "Calthorpes' House",
+    "area": "24 Mugga Way, Red Hill ACT — visitor access by published opening times / booking.",
+    "status": "Heritage-listed 1920s house museum — managed visitor attraction",
+    "notes": "Built and furnished in 1927, the house preserves the domestic setting and belongings of the Calthorpe family, who lived there until the 1980s. It is a historic house museum, not abandoned. Check the Cultural Facilities Corporation visitor information for current opening days, tours and any temporary closures before visiting. Sources: https://www.canberratracks.act.gov.au/heritage-trails/track-2-the-limestone-plains/calthorpes-house ; https://www.culturalfacilities.act.gov.au/",
+    "confirmedLocation": true
+  },
+  {
+    "name": "Mugga-Mugga Cottage",
+    "area": "129 Narrabundah Lane, Symonston ACT — managed heritage visitor site; check opening dates.",
+    "status": "1850s workers' cottage and heritage collection — periodic public opening",
+    "notes": "A surviving workers' cottage from the Duntroon estate, with a collection associated with the Curley family, who lived there from 1913. Canberra Tracks lists public opening on the first weekend of each month, 10am–2pm; confirm current arrangements before travelling. The site also contains protected grassland and Aboriginal heritage values. Keep to visitor paths and do not disturb plants, artefacts or ground surfaces. Sources: https://www.canberratracks.act.gov.au/heritage-trails/track-7-woden-heritage-track/mugga-mugga ; https://www.act.gov.au/environment/heritage/act-heritage-register",
+    "confirmedLocation": true
+  },
+  {
+    "name": "Hall Village Historic Precinct",
+    "area": "Victoria Street and surrounding public streets, Hall ACT — some heritage buildings are private property.",
+    "status": "Historic rural village — public street heritage walk; individual sites have mixed access",
+    "notes": "Hall was established as a rural village in the 1880s. Canberra Tracks describes ten interpretive signs around the village, including the former general store, school and former Kinlyside Hall; the Laurie Copping School Museum is a visitor attraction. Some buildings shown on the heritage walk are private property, so view only from public streets unless a site is officially open. Sources: https://www.canberratracks.act.gov.au/heritage-trails/track-5-gungahlin/hall-village ; https://www.canberratracks.act.gov.au/sitemap",
+    "confirmedLocation": true
+  },
+  {
+    "name": "Blundells Cottage",
+    "area": "Wendouree Drive, Parkes ACT — public park surrounds; cottage opening/access must be checked.",
+    "status": "Historic 1860s farm workers' cottage — heritage site; visitor access may be limited",
+    "notes": "Built around 1860 on the Duntroon estate, Blundells Cottage is one of the last small farmhouses surviving in central Canberra. It was home to farm workers including George and Flora Blundell for almost 60 years. It is a heritage attraction rather than an abandoned building; check the National Capital Authority for current opening or tour arrangements. Do not enter when closed. Sources: https://www.canberratracks.act.gov.au/heritage-trails/track-2-the-limestone-plains/blundells-cottage ; https://www.archives.act.gov.au/__data/assets/pdf_file/0008/562544/Canberra_Research_Guide.pdf",
+    "confirmedLocation": true
+  },
+  {
+    "name": "Duntroon Dairy",
+    "area": "Royal Military College Duntroon, Campbell ACT — controlled Defence precinct; external viewing only where permitted.",
+    "status": "Early 1830s pastoral dairy — heritage building within an active Defence site",
+    "notes": "The Duntroon Dairy is associated with the Campbell family's Duntroon estate and is identified by Canberra Tracks as part of the Limestone Plains heritage trail. It sits within the active Royal Military College precinct, so it is not an open urbex location. Access may be limited to authorised tours, open days or approved visitors; do not enter Defence grounds or approach security areas without permission. Sources: https://www.canberratracks.act.gov.au/heritage-trails/track-2-the-limestone-plains ; https://www.canberratracks.act.gov.au/sitemap",
+    "confirmedLocation": true
   }
 ]
