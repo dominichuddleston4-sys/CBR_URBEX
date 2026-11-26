@@ -324,8 +324,8 @@
   {
     "name": "Gungahlin Homestead and Historic Estate",
     "area": "Barton Highway, Crace ACT — general public-road vicinity only; access to the property is restricted unless officially opened.",
-    "status": "Surviving 19th-century pastoral homestead / former CSIRO research estate — heritage provisionally registered in 2026",
-    "notes": "Gungahlin Homestead is a surviving rural estate associated with Canberra's pastoral beginnings. The wider property later formed part of a CSIRO research campus for more than 70 years. It was provisionally registered on the ACT Heritage Register in 2026. This is a historic-building record, not a public urbex location: do not enter the homestead, grounds or research property without explicit permission. Check official heritage and land-manager notices for any public open days. Sources: https://www.act.gov.au/environment/heritage/act-heritage-register ; https://region.com.au/canberras-heritage-story-expands-with-recognition-of-capital-building-structures/1004258/ ; https://www.finance.gov.au/government/property-and-construction/heritage-management",
+    "status": "Surviving 19th-century pastoral homestead — currently used by Soldier On; closed to the public",
+    "notes": "Gungahlin Homestead is a surviving rural estate associated with Canberra's pastoral beginnings. The wider property later formed part of a CSIRO research campus for more than 70 years. It was provisionally registered on the ACT Heritage Register in 2026. This is a historic-building record, not a public urbex location: do not enter the homestead, grounds or research property without explicit permission. Check official heritage and land-manager notices for any public open days. Sources: https://www.act.gov.au/environment/heritage/act-heritage-register ; https://region.com.au/canberras-heritage-story-expands-with-recognition-of-capital-building-structures/1004258/ ; https://www.finance.gov.au/government/property-and-construction/heritage-management Canberra Tracks confirms Soldier On currently uses the premises and that buildings cannot be visited or viewed close up; a public sign is on Bellenden Road. Do not enter or approach the property. Checked 26 Nov 2026. Source: https://www.canberratracks.act.gov.au/heritage-trails/track-5-gungahlin/gungahlin-homestead",
     "confirmedLocation": true
   },
   {
@@ -551,5 +551,54 @@
     "status": "Former derelict building demolished in September 2025; 55-unit housing project reached topping-out milestone in May 2026",
     "confirmedLocation": true,
     "notes": "The storm-damaged former PCYC headquarters became derelict before demolition began on 23 September 2025. CHC reported the 55-unit social and affordable housing project reached its topping-out milestone on 7 May 2026, with completion expected in early 2027. This is no longer an abandoned building. Active construction site: stay outside hoarding and follow all traffic and site-safety signs. Checked 26 Nov 2026. Sources: https://chcaustralia.com.au/55-new-social-and-affordable-homes-a-step-closer-as-cpcyc-project-tops-out/ ; https://www.snowfoundation.org.au/news/turner-site-topping-out-a-milestone-worth-celebrating/ ; https://www.snowfoundation.org.au/wp-content/uploads/2025/09/Media-Release-Turner-CPCYC-Demolition.pdf"
+  },
+  {
+    "name": "The Valley Ruin",
+    "area": "Gungahlin — public heritage viewing area near Gungahlin Drive / The Valley Avenue; no entry into the ruin.",
+    "status": "Verified standing pastoral ruin — three phases of dwelling construction remain visible; public heritage stop, not an active building",
+    "confirmedLocation": true,
+    "notes": "The Gribble family settled here in the 1860s. A slab hut was followed by a pisé addition in 1874–78 and a stone house in 1887; Canberra Tracks says all three phases remain visible. The site is listed as an open daily heritage stop. View from public areas only; do not climb or enter the ruin. Uneven ground, fragile masonry and nearby road traffic are hazards. Checked 26 Nov 2026. Source: https://www.canberratracks.act.gov.au/heritage-trails/track-5-gungahlin/the-valley-ruin"
+  },
+  {
+    "name": "Crinigan's Hut Ruin",
+    "area": "Amaroo — Crinigan Park, Ling Place; public park.",
+    "status": "Verified archaeological dwelling ruin — excavated and stabilised for public interpretation; not an intact or habitable building",
+    "confirmedLocation": true,
+    "notes": "Crinigan's Hut is described by Canberra Tracks as the only remaining small Ginninderra dwelling. The Canberra Archaeological Society excavated and secured the ruin so visitors can learn about the mid-to-late-1800s household; part of the original orchard survives. Open daily as a public park. Do not climb, dig, remove objects or disturb the archaeology; uneven ground and fragile remains are hazards. Checked 26 Nov 2026. Source: https://www.canberratracks.act.gov.au/heritage-trails/track-5-gungahlin/crinigans-hut"
+  },
+  {
+    "name": "Mulligans Flat Schools Site",
+    "area": "Forde — Mulligans Flat Nature Reserve, near the designated visitor carpark; public reserve.",
+    "status": "Historic school-site remains — no school building survives; brick/stone mound and planted pines remain",
+    "confirmedLocation": true,
+    "notes": "The first school was a slab hut built in 1896 and was later replaced by a weatherboard building removed in 1933. Canberra Tracks records two rows of radiata pines planted by pupils in 1920 and a small mound of brick and stone where the chimney stood. The site is in the public nature reserve and is open daily. Stay on visitor paths, do not disturb the mound or remove artefacts; uneven ground and reserve conditions are hazards. Checked 26 Nov 2026. Source: https://www.canberratracks.act.gov.au/heritage-trails/track-5-gungahlin/mulligans-flat-schools"
+  },
+  {
+    "name": "Tralee Slab Hut",
+    "area": "Hume — Tralee Street public-road frontage; hut is fenced off and not accessible.",
+    "status": "Restored 19th-century slab hut — repaired in 2011; currently fenced off; visible from public land at a distance",
+    "confirmedLocation": true,
+    "notes": "The late-1800s slab hut demonstrates vertical and horizontal slab construction. ACT-funded repairs using period-appropriate timber skills were completed in 2011. Canberra Tracks currently says the site is fenced off and inaccessible, with the hut visible from about 50 metres away. Do not cross the fence or attempt entry. The nearby Hume industrial area has vehicle and worksite traffic. Checked 26 Nov 2026. Source: https://www.canberratracks.act.gov.au/heritage-trails/track-8-tuggeranong-heritage-track/tralee-slab-hut"
+  },
+  {
+    "name": "Stromlo Forestry Settlement",
+    "area": "Duffy — Forestry Street / former Stromlo Forestry Settlement; private homes, general area only.",
+    "status": "Historic forestry settlement — 2003 bushfires destroyed 17 homes and forestry buildings; three older houses survive as private residences",
+    "confirmedLocation": true,
+    "notes": "The settlement developed from the late 1920s through 1972 to house forestry workers and support the forestry depot. Canberra Tracks records that the 2003 fires destroyed 17 homes and all other forestry-associated buildings; only three older houses survived. These are private residences, not urbex sites. No house numbers, coordinates or directions are published. View the historic settlement only from public roads; do not approach or photograph residents. Checked 26 Nov 2026. Source: https://www.canberratracks.act.gov.au/heritage-trails/track-7-woden-heritage-track/stromlo-forestry-settlement"
+  },
+  {
+    "name": "Gungaderra Historic Homestead and Machinery Shed",
+    "area": "Harrison — Mapleton Avenue community precinct; use advertised public/community access only.",
+    "status": "Historic pastoral complex — homestead and machinery shed survive and are in community use; not abandoned",
+    "confirmedLocation": true,
+    "notes": "Gungaderra began as a slab hut in 1861. The 1902–04 homestead and 1911–13 machinery shed survive with historic plantings. Canberra Tracks says the site is managed by CHC Affordable Housing and now hosts playgroups, exhibitions and a men's shed. It is an active community site, not an abandoned building. Respect program hours and do not enter private or closed areas. Checked 26 Nov 2026. Source: https://www.canberratracks.act.gov.au/heritage-trails/track-5-gungahlin/gungaderra"
+  },
+  {
+    "name": "Well Station Historic Farm and Track",
+    "area": "Harrison — Nullarbor Avenue public walking track; old farm buildings are not confirmed as public-access interiors.",
+    "status": "Historic pastoral farm — surviving old farm and outbuildings beside a public heritage walking track; current building occupancy unverified",
+    "confirmedLocation": true,
+    "notes": "The late-1800s Well Station track connected the farms of Well Station and Gungaderra. Canberra Tracks describes surviving old farm buildings alongside newer Harrison development and lists the walking track as open daily. This does not grant access to the farm buildings or paddocks. Stay on the public track and do not enter structures or private land; current occupancy and structural condition are unverified. Checked 26 Nov 2026. Source: https://www.canberratracks.act.gov.au/heritage-trails/track-5-gungahlin/well-station-track"
   }
 ]
