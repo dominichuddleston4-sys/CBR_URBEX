@@ -600,5 +600,12 @@
     "status": "Historic pastoral farm — surviving old farm and outbuildings beside a public heritage walking track; current building occupancy unverified",
     "confirmedLocation": true,
     "notes": "The late-1800s Well Station track connected the farms of Well Station and Gungaderra. Canberra Tracks describes surviving old farm buildings alongside newer Harrison development and lists the walking track as open daily. This does not grant access to the farm buildings or paddocks. Stay on the public track and do not enter structures or private land; current occupancy and structural condition are unverified. Checked 26 Nov 2026. Source: https://www.canberratracks.act.gov.au/heritage-trails/track-5-gungahlin/well-station-track"
+  },
+  {
+    "name": "Belconnen Naval Transmitting Station (Former HMAS Belconnen)",
+    "area": "Lawson North — former Commonwealth defence site; general area only; public access prohibited.",
+    "status": "Decommissioned defence communications site — last transmission 17 June 2005; towers felled in 2006; remaining site off-limits and subject to redevelopment/land management",
+    "confirmedLocation": true,
+    "notes": "Built in 1938–39, the Royal Australian Naval Transmitting Station (also known as HMAS Belconnen or 'Bells') was a major naval wireless facility. The final message was sent on 17 June 2005; the transmitter towers were felled in December 2006. Canberra Tracks explicitly says the former site is off limits to the public. Defence and National Capital Authority documents describe Commonwealth land, heritage/ecological constraints and past decontamination requirements; parts of Lawson North have been proposed for Defence housing redevelopment. Do not enter, approach fences or attempt to locate remaining equipment. Potential contamination, protected grassland, active development and restricted defence land are hazards. Exact location, coordinates and access details withheld. Checked 26 Nov 2026. Sources: https://www.canberratracks.act.gov.au/heritage-trails/track-6-belconnen/naval-transmitting-station ; https://navyhistory.au/naval-heritage-sites/royal-australian-naval-transmitting-station-act/ ; https://www.dcceew.gov.au/sites/default/files/documents/72181.pdf ; https://www.nca.gov.au/sites/default/files/DCP-1209-Block-2-Section-6-Block-1-Section-16%20-Lawson-%20Belconnen-Naval-Transmitting%20Station-Consultation-Report.pdf ; https://region.com.au/lawson-defence-housing-project-site-halved-but-conservationists-vow-to-fight-on/740436/"
   }
 ]
