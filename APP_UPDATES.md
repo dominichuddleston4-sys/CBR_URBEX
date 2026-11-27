@@ -207,3 +207,12 @@ The release-gate checklist is maintained in [docs/CANBERRA_EXPLORER_2_0_TEST_PLA
 - The shared photo-gallery UI and Android upload/review code are now included; the 13 November status above remains a dated snapshot from before that merge.
 - Firestore security rules were deployed successfully in workflow run 43332250302. The release's Android photo-upload code writes Base64 image data to Firestore; no Firebase Storage upload path or Storage-rules deployment was verified.
 - The release APK build, debug APK artifact build, GitHub Pages deployment and version-metadata publication all succeeded. Physical-device feature tests and the end-to-end automatic-update flow remain unverified.
+
+
+## Canberra Explorer location data update — 28 November 2026
+
+- Added six missing Canberra/ACT location records to `places.json`: Richardson Shops (reactivation underway; not currently classified as abandoned), Former Hawker Tennis Centre, Yarralumla Brickworks Cottages derelict site, Belconnen Mine (provisional lead; access and history unverified), Canberra City Garbage Incinerator (heritage industrial landmark, not an abandoned destination), and Alexander and Albemarle Buildings (former abandoned towers now undergoing adaptive reuse).
+- Existing records for the Former CSIRO Forestry Site, Former Newcastle House, and Big Splash were retained without duplication.
+- Private, fenced, restricted, demolished, reused and unverified sites are labelled accordingly. No entry/access directions or precise pins were added for restricted or unverified sites.
+- Source-data commit: `6f7ad15a3a798777072dadede70dd24979d04af5`.
+- This is a source-data update; deployment and live-app rendering still need verification.
