@@ -607,5 +607,47 @@
     "status": "Decommissioned defence communications site — last transmission 17 June 2005; towers felled in 2006; remaining site off-limits and subject to redevelopment/land management",
     "confirmedLocation": true,
     "notes": "Built in 1938–39, the Royal Australian Naval Transmitting Station (also known as HMAS Belconnen or 'Bells') was a major naval wireless facility. The final message was sent on 17 June 2005; the transmitter towers were felled in December 2006. Canberra Tracks explicitly says the former site is off limits to the public. Defence and National Capital Authority documents describe Commonwealth land, heritage/ecological constraints and past decontamination requirements; parts of Lawson North have been proposed for Defence housing redevelopment. Do not enter, approach fences or attempt to locate remaining equipment. Potential contamination, protected grassland, active development and restricted defence land are hazards. Exact location, coordinates and access details withheld. Checked 26 Nov 2026. Sources: https://www.canberratracks.act.gov.au/heritage-trails/track-6-belconnen/naval-transmitting-station ; https://navyhistory.au/naval-heritage-sites/royal-australian-naval-transmitting-station-act/ ; https://www.dcceew.gov.au/sites/default/files/documents/72181.pdf ; https://www.nca.gov.au/sites/default/files/DCP-1209-Block-2-Section-6-Block-1-Section-16%20-Lawson-%20Belconnen-Naval-Transmitting%20Station-Consultation-Report.pdf ; https://region.com.au/lawson-defence-housing-project-site-halved-but-conservationists-vow-to-fight-on/740436/"
+  },
+  {
+    "name": "Richardson Shops — Former Vacant Shopping Centre",
+    "area": "Richardson — Clift Crescent shopping precinct; private property; view from public areas only.",
+    "status": "Formerly derelict / vacant local shopping centre — reactivation works reported in 2026; not to be treated as abandoned without a fresh status check",
+    "notes": "The Richardson shops had no tenants from 2020 and were fenced and boarded up. ABC reported the derelict condition in June 2026. ACT Assembly records in May 2026 confirmed the site was vacant; a 29 October 2026 Assembly discussion reported works underway for a laundromat and café, with reopening targeted by the end of 2026. Record this as a former-vacant-building lead, not a confirmed abandoned site. Privately leased and fenced; view only from public areas, do not enter. Recheck tenancy before visiting. Checked 28 Nov 2026. Sources: https://www.abc.net.au/news/2026-06-24/canberra-local-shops-some-thriving-while-others-failing/106835652 ; https://www.hansard.act.gov.au/hansard/11th-assembly/2026/PDF/tP260528.pdf ; https://www.polyfact.com/videos/au-act-327a1a15a76246e4a77243beb809863d-60a5b538e4054b87a504b1c20f6e757c-vod?t=5473",
+    "confirmedLocation": true
+  },
+  {
+    "name": "Former Hawker Tennis Centre",
+    "area": "Hawker — Block 9 Section 3; former tennis centre site; fenced private leasehold; public-road viewing only.",
+    "status": "Long-abandoned former tennis facility — derelict site; clubhouse demolished after fire; redevelopment application still unresolved in October 2026",
+    "notes": "The centre closed in 2010 and has not operated as a tennis centre since. The clubhouse was demolished after a fire; the remaining site has been described as derelict, with fencing and rubbish/overgrowth reported. On 7 October 2026 Region Canberra reported that no new development application had been submitted and the deadline had again been extended. ACT Government records identify the site as Block 9 Section 3 Hawker. Do not enter the fenced private site; the former clubhouse no longer stands. Checked 28 Nov 2026. Sources: https://region.com.au/hawker-tennis-centres-future-remains-in-limbo-with-da-timeline-extended-yet-again/1004871/ ; https://www.parliament.act.gov.au/__data/assets/pdf_file/0009/2907306/QON-283-Answer-CED-Access-Canberra-Use-of-Crown-lease-and-Planning-Act-2023-to-enforce-compliance-CLAY.pdf ; https://www.parliament.act.gov.au/parliamentary-business/in-committees/committees-11th-assembly/EPC/eptcs-246a/2026-09-16-246a-statement-petitions-hawker-tennis-club-and-save-big-splash",
+    "confirmedLocation": true
+  },
+  {
+    "name": "Yarralumla Brickworks Cottages — Derelict Former Housing Precinct",
+    "area": "39 Bentham Street and 33 Hutchins Street, Yarralumla — former brickworks workers' cottage precinct; private redevelopment site; public-road viewing only.",
+    "status": "Derelict former workers' housing site — current standing structures and commencement of redevelopment unverified",
+    "notes": "The Yarralumla Residents Association identifies the blocks at 39 Bentham Street and 33 Hutchins Street as part of the early-1920s Canberra Brickworks Housing Precinct and describes the site as derelict. The approved development application has had extensions; the latest association update in May 2026 said works were to commence by 9 September 2026. No reliable post-deadline confirmation of works or surviving cottage fabric was located. Include as a historical derelict-site lead only; do not assume intact cottages remain. Private site: view from public roads only, no entry. Checked 28 Nov 2026. Sources: https://www.yarralumlaresidents.org.au/planning-and-development/current/cnr-bentham-and-hutchins-st/ ; https://www.yarralumlaresidents.org.au/planning-and-development/current/canberra-brickworks/",
+    "confirmedLocation": true
+  },
+  {
+    "name": "Belconnen Mine — Former Mine Adit",
+    "area": "Strathnairn / Belconnen western edge — general area only; exact pin withheld pending authoritative access and safety verification.",
+    "status": "Former small mine adit — historical lead; public access and current condition unverified; do not enter",
+    "notes": "A mapped local landmark listing describes Belconnen Mine as a small abandoned horizontal mine tunnel (adit) in bushland near the Murrumbidgee/Molonglo river corridor. This is a provisional industrial-history lead only: authoritative historical documentation, land tenure, current condition and public access have not yet been independently verified. No coordinates or approach directions are supplied. Mine workings can contain unstable ground, poor air, hidden shafts and collapse hazards; do not enter or approach the opening. Checked 28 Nov 2026. Further verification required before promotion to a confirmed urbex destination.",
+    "confirmedLocation": false
+  },
+  {
+    "name": "Canberra City Garbage Incinerator — Yarralumla",
+    "area": "Westbourne Woods, Bentham Street, Yarralumla — heritage-listed industrial building on/near Royal Canberra Golf Club land; no entry without permission.",
+    "status": "Decommissioned historic industrial building — heritage landmark, not a confirmed abandoned or publicly accessible site",
+    "notes": "Designed in 1938 and completed in 1939, the Canberra City Garbage Incinerator is a rare inter-war industrial building and is listed on the ACT Heritage Register. It is associated with Royal Canberra Golf Club land. Included as an industrial-history location, not as an abandoned-building destination. Private/restricted setting; do not enter golf-course land or the structure without permission. Checked 28 Nov 2026. Sources: https://www.architecture.com.au/wp-content/uploads/r017_canberra_city_garbage_incinerator_rstca.pdf ; https://www.act.gov.au/environment/heritage/act-heritage-register",
+    "confirmedLocation": true
+  },
+  {
+    "name": "Alexander and Albemarle Buildings — Former Abandoned Woden Towers",
+    "area": "35–45 Furzer Street, Phillip / Woden — adaptive-reuse redevelopment precinct; public areas only.",
+    "status": "Formerly abandoned office towers — adaptive reuse and reoccupation underway; not a current abandoned-site recommendation",
+    "notes": "The two mid-1960s office towers were abandoned from around 2010 and became a well-known derelict Woden landmark. Doma Group's current project information describes adaptive reuse of the towers as apartments with new retail and commercial uses; commercial listings show tenancies in the precinct. Include for urban-development and former-urbex history only, not as a currently abandoned building. Do not enter construction or private areas. Checked 28 Nov 2026. Sources: https://www.abc.net.au/news/specials/curious-canberra/2018-02-19/abandoned-alexander-albemarle-buildings-in-woden/9451240 ; https://domagroup.com.au/news/the-alexander-and-albemarle-buildings-are-undergoing-a-rebirth ; https://www.realcommercial.com.au/leased/phillip-act/",
+    "confirmedLocation": true
   }
 ]
